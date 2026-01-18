@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#222222" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Workout Tracker" />
+  <link rel="manifest" href="manifest.json" />
+  <title>3-Day Beginner Strength Training</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      margin: 0;
+      padding: 12px;
+      background: #f2f2f2;
+      line-height: 1.5;
+    }
+    h1 { font-size: 1.4rem; margin-bottom: 8px; }
+    h2 { font-size: 1.2rem; margin-top: 0; }
+    h3 { font-size: 1rem; margin-bottom: 6px; }
+
+    .install-prompt {
+      background: #4a6fd6;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+    .install-prompt.show { display: flex; }
+    .install-prompt button {
+      background: white;
+      color: #4a6fd6;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      margin-left: auto;
+    }
+    .install-prompt .close-install {
+      background: transparent;
+      color: white;
+      padding: 4px 8px;
+      margin-left: 0;
+      font-size: 1.2rem;
+    }
+
+    .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+    .tab { flex: 1; padding: 10px; border-radius: 10px; border: none; background: #ddd; font-weight: 600; }
+    .tab.active { background: #222; color: #fff; }
+
+    .day { display: none; background: #ffffff; border-radius: 14px; padding: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+    .day.active { display: block; }
+
+    .section { margin-bottom: 14px; }
+    ul { list-style: none; padding-left: 0; margin: 0; }
+    li { margin-bottom: 12px; }
+
+    label { display: flex; gap: 10px; align-items: flex-start; transition: opacity 0.2s; }
+    input[type="checkbox"] { margin-top: 6px; transform: scale(1.3); }
+
+    input[type="checkbox"]:checked ~ .exercise-name,
+    input[type="checkbox"]:checked ~ span:not(.exercise-name) {
+      opacity: 0.5;
+      text-decoration: line-through;
+    }
+
+    label:has(input[type="checkbox"]:checked) {
+      opacity: 0.6;
+    }
+
+    .exercise { display: flex; gap: 10px; align-items: flex-start; }
+    .svg-wrap { width: 56px; height: 56px; border-radius: 12px; background: #f0f0f0; flex-shrink: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+    .variants-toggle { font-size: 0.75rem; color: #0066cc; cursor: pointer; margin-left: 76px; margin-top: 4px; }
+    .exercise-variants { display: none; margin-left: 76px; margin-top: 6px; border-left: 2px solid #ddd; padding-left: 8px; }
+    .exercise-variants.active { display: block; }
+    .variant-option { font-size: 0.8rem; margin-bottom: 6px; cursor: pointer; }
+    .variant-option span { color: #666; font-size: 0.75rem; }
+    .variant-option.selected { font-weight: bold; color: #d64545; }
+
+    svg { width: 44px; height: 44px; }
+    .primary { fill: #d64545; stroke: #d64545; }
+    .secondary { fill: #4a6fd6; stroke: #4a6fd6; }
+    .movement { stroke-dasharray: 4 2; }
+
+    .instructions { font-size: 0.85rem; color: #444; margin-left: 76px; }
+    button.clear { width: 100%; padding: 10px; font-size: 0.95rem; border: none; border-radius: 10px; background: #222; color: #fff; margin-top: 10px; }
+
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .overlay.active { display: flex; }
+    .overlay svg { width: 80vw; height: 80vw; max-width: 360px; max-height: 360px; background: #fff; border-radius: 16px; padding: 16px; }
+    .overlay .close { position: absolute; top: 16px; right: 16px; font-size: 1.4rem; color: #fff; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<div class="install-prompt" id="installPrompt">
+  <button class="close-install" onclick="hideInstallPrompt()">&times;</button>
+  <span>Install this app for easy access</span>
+  <button onclick="installApp()">Install</button>
+</div>
+
+<div id="svgOverlay" class="overlay" onclick="closeOverlay()">
+  <div class="close">&times;</div>
+  <div id="overlayContent"></div>
+</div>
+
+<h1>3-Day Beginner Strength Training</h1>
+<p style="font-size:0.85rem">Each workout &asymp; 45 minutes: 5&ndash;7 min warm-up, 30&ndash;32 min strength + core, 5&ndash;6 min cooldown.</p>
+
+<div class="tabs">
+  <button class="tab active" onclick="showDay('push', this)">Push</button>
+  <button class="tab" onclick="showDay('pull', this)">Pull</button>
+  <button class="tab" onclick="showDay('legs', this)">Legs</button>
+</div>
+
+<div class="day active" id="push">
+  <h2>Push Day</h2>
+
+  <div class="section warmup">
+    <h3>Warm-Up (8 minutes)</h3>
+    <ul>
+      <li><label><input type="checkbox" /><span>Light cardio (walk/bike) &mdash; 2 min</span></label></li>
+      <li><label><input type="checkbox" /><span>Arm circles + band pull-aparts &mdash; 3 min</span></label></li>
+      <li><label><input type="checkbox" /><span>Warm-up sets for first two lifts &mdash; 3 min</span></label></li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Strength + Core (&asymp;32 minutes)</h3>
+    <ul>
+      <li>
+        <label class="exercise">
+          <input type="checkbox" />
+          <div class="svg-wrap" onclick="expandSVG(this)">
+            <svg viewBox="0 0 64 64"><rect x="16" y="22" width="32" height="20" class="primary" /><line x1="16" y1="32" x2="48" y2="32" stroke-width="2" class="movement secondary" /></svg>
+          </div>
+          <span class="exercise-name">Chest Press &mdash; 3&times;8&ndash;10</span>
+        </label>
+        <div class="instructions"><strong>Sets/Reps:</strong> 3&times;8&ndash;10<br><strong>Rest:</strong> 60&ndash;90 sec<br><strong>Time:</strong> ~6&ndash;7 min<br>Press weight away while keeping shoulders down.</div>
+        <div class="variants-toggle" onclick="toggleVariants(this)">Change variation</div>
+        <div class="exercise-variants">
+          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Chest Press — 3×8–10" data-instructions="Press weight away while keeping shoulders down.">Machine Press <span>(machine)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Dumbbell Bench — 3×8–10" data-instructions="Lower dumbbells to chest and press up under control.">Dumbbell Bench <span>(free weight)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Push-Ups — 3×8–12" data-instructions="Lower chest toward floor and press up with straight body.">Push-Ups <span>(bodyweight)</span></div>
+        </div>
+      </li>
+
+      <li>
+        <label class="exercise">
+          <input type="checkbox" />
+          <div class="svg-wrap" onclick="expandSVG(this)">
+            <svg viewBox="0 0 64 64"><rect x="26" y="12" width="12" height="40" class="primary" /><line x1="32" y1="12" x2="32" y2="52" stroke-width="2" class="movement secondary" /></svg>
+          </div>
+          <span class="exercise-name">Overhead Press &mdash; 3&times;8</span>
+        </label>
+        <div class="instructions"><strong>Sets/Reps:</strong> 3&times;8<br><strong>Rest:</strong> 60&ndash;90 sec<br><strong>Time:</strong> ~6 min<br>Press weight overhead while bracing core.</div>
+      </li>
+
+      <li>
+        <label class="exercise">
+          <input type="checkbox" />
+          <span class="exercise-name">Plank &mdash; 2&times;30 sec</span>
+        </label>
+        <div class="instructions"><strong>Rest:</strong> 30 sec<br><strong>Time:</strong> ~4 min<br>Maintain straight body line, brace core.</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="section cooldown">
+    <h3>Cooldown (5 minutes)</h3>
+    <ul>
+      <li><label><input type="checkbox" /><span>Chest stretch &mdash; 30s/side</span></label></li>
+      <li><label><input type="checkbox" /><span>Shoulder stretch &mdash; 30s/side</span></label></li>
+      <li><label><input type="checkbox" /><span>Breathing &mdash; 1&ndash;2 min</span></label></li>
+    </ul>
+  </div>
+
+  <button class="clear" onclick="clearChecks('push')">Clear Push Day</button>
+</div>
+
+<div class="day" id="pull">
+  <h2>Pull Day</h2>
+
+  <div class="section warmup">
+    <h3>Warm-Up (8 minutes)</h3>
+    <ul>
+      <li><label><input type="checkbox" /><span>Light cardio (walk/row/bike) &mdash; 2 min</span></label></li>
+      <li><label><input type="checkbox" /><span>Band pull-aparts + arm circles &mdash; 3 min</span></label></li>
+      <li><label><input type="checkbox" /><span>Warm-up sets for first two lifts &mdash; 3 min</span></label></li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Strength + Core (&asymp;32 minutes)</h3>
+    <ul>
+      <li>
+        <label class="exercise">
+          <input type="checkbox" />
+          <div class="svg-wrap" onclick="expandSVG(this)">
+            <svg viewBox="0 0 64 64"><rect x="18" y="16" width="28" height="32" class="primary" /><line x1="18" y1="32" x2="46" y2="32" stroke-width="2" class="movement secondary" /></svg>
+          </div>
+          <span class="exercise-name">Seated Row &mdash; 3&times;8&ndash;10</span>
+        </label>
+        <div class="instructions"><strong>Sets/Reps:</strong> 3&times;8&ndash;10<br><strong>Rest:</strong> 60&ndash;90 sec<br><strong>Time:</strong> ~6&ndash;7 min<br>Pull handle toward ribs while squeezing shoulder blades.</div>
+        <div class="variants-toggle" onclick="toggleVariants(this)">Change variation</div>
+        <div class="exercise-variants">
+          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Seated Row — 3×8–10" data-instructions="Pull handle toward ribs while squeezing shoulder blades.">Cable Row <span>(machine)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Dumbbell Row — 3×8–10" data-instructions="Pull dumbbell toward hip with flat back.">Dumbbell Row <span>(free weight)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Inverted Row — 3×8–12" data-instructions="Pull chest to bar with straight body.">Inverted Row <span>(bodyweight)</span></div>
+        </div>
+      </li>
+
+      <li>
+        <label class="exercise">
+          <input type="checkbox" />
+          <div class="svg-wrap" onclick="expandSVG(this)">
+            <svg viewBox="0 0 64 64"><rect x="26" y="12" width="12" height="40" class="primary" /><line x1="32" y1="12" x2="32" y2="52" stroke-width="2" class="movement secondary" /></svg>
+          </div>
+          <span class="exercise-name">Lat Pulldown &mdash; 3&times;8&ndash;10</span>
+        </label>
+        <div class="instructions"><strong>Sets/Reps:</strong> 3&times;8&ndash;10<br><strong>Rest:</strong> 60&ndash;90 sec<br><strong>Time:</strong> ~6 min<br>Pull bar to chest while keeping torso upright.</div>
+      </li>
+
+      <li>
+        <label class="exercise">
+          <input type="checkbox" />
+          <span class="exercise-name">Dead Bug &mdash; 2&times;8/side</span>
+        </label>
+        <div class="instructions"><strong>Rest:</strong> 30 sec<br><strong>Time:</strong> ~4 min<br>Extend opposite arm and leg while bracing core.</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="section cooldown">
+    <h3>Cooldown (5 minutes)</h3>
+    <ul>
+      <li><label><input type="checkbox" /><span>Lat stretch &mdash; 30s/side</span></label></li>
+      <li><label><input type="checkbox" /><span>Upper-back stretch &mdash; 30s</span></label></li>
+      <li><label><input type="checkbox" /><span>Breathing &mdash; 1&ndash;2 min</span></label></li>
+    </ul>
+  </div>
+
+  <button class="clear" onclick="clearChecks('pull')">Clear Pull Day</button>
+</div>
+
+<div class="day" id="legs">
+  <h2>Legs Day</h2>
+
+  <div class="section warmup">
+    <h3>Warm-Up (8 minutes)</h3>
+    <ul>
+      <li><label><input type="checkbox" /><span>Light cardio (walk/bike) &mdash; 2 min</span></label></li>
+      <li><label><input type="checkbox" /><span>Hip circles + leg swings &mdash; 3 min</span></label></li>
+      <li><label><input type="checkbox" /><span>Warm-up sets for first two lifts &mdash; 3 min</span></label></li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Strength + Core (&asymp;32 minutes)</h3>
+    <ul>
+      <li>
+        <label class="exercise">
+          <input type="checkbox" />
+          <div class="svg-wrap" onclick="expandSVG(this)">
+            <svg viewBox="0 0 64 64"><rect x="20" y="18" width="24" height="28" class="primary" /><line x1="32" y1="18" x2="32" y2="46" stroke-width="2" class="movement secondary" /></svg>
+          </div>
+          <span class="exercise-name">Goblet Squat &mdash; 3&times;8&ndash;10</span>
+        </label>
+        <div class="instructions"><strong>Sets/Reps:</strong> 3&times;8&ndash;10<br><strong>Rest:</strong> 60&ndash;90 sec<br><strong>Time:</strong> ~6&ndash;7 min<br>Sit hips back and down while keeping chest tall.</div>
+        <div class="variants-toggle" onclick="toggleVariants(this)">Change variation</div>
+        <div class="exercise-variants">
+          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Goblet Squat — 3×8–10" data-instructions="Sit hips back and down while keeping chest tall.">Goblet Squat <span>(free weight)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Leg Press — 3×10" data-instructions="Press platform away with controlled depth.">Leg Press <span>(machine)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Bodyweight Squat — 3×12" data-instructions="Squat to comfortable depth with control.">Bodyweight Squat <span>(bodyweight)</span></div>
+        </div>
+      </li>
+
+      <li>
+        <label class="exercise">
+          <input type="checkbox" />
+          <div class="svg-wrap" onclick="expandSVG(this)">
+            <svg viewBox="0 0 64 64"><rect x="24" y="16" width="16" height="32" class="primary" /><line x1="32" y1="16" x2="32" y2="48" stroke-width="2" class="movement secondary" /></svg>
+          </div>
+          <span class="exercise-name">Romanian Deadlift &mdash; 3&times;8</span>
+        </label>
+        <div class="instructions"><strong>Sets/Reps:</strong> 3&times;8<br><strong>Rest:</strong> 60&ndash;90 sec<br><strong>Time:</strong> ~6 min<br>Hinge at hips keeping back neutral.</div>
+      </li>
+
+      <li>
+        <label class="exercise">
+          <input type="checkbox" />
+          <span class="exercise-name">Side Plank &mdash; 2&times;20s/side</span>
+        </label>
+        <div class="instructions"><strong>Rest:</strong> 30 sec<br><strong>Time:</strong> ~4 min<br>Keep body in straight line, brace core.</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="section cooldown">
+    <h3>Cooldown (5 minutes)</h3>
+    <ul>
+      <li><label><input type="checkbox" /><span>Hamstring stretch &mdash; 30s/side</span></label></li>
+      <li><label><input type="checkbox" /><span>Quad stretch &mdash; 30s/side</span></label></li>
+      <li><label><input type="checkbox" /><span>Breathing &mdash; 1&ndash;2 min</span></label></li>
+    </ul>
+  </div>
+
+  <button class="clear" onclick="clearChecks('legs')">Clear Legs Day</button>
+</div>
+
+<script>
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installPrompt').classList.add('show');
+});
+
+function installApp() {
+  const promptEl = document.getElementById('installPrompt');
+  promptEl.classList.remove('show');
+  
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((choiceResult) => {
+      deferredPrompt = null;
+    });
+  }
+}
+
+function hideInstallPrompt() {
+  document.getElementById('installPrompt').classList.remove('show');
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {
+      console.log('Service worker registration failed');
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadProgress();
+
+  window.showDay = function(dayId, tabBtn) {
+    const day = document.getElementById(dayId);
+    if (!day || !tabBtn) return;
+    document.querySelectorAll('.day').forEach(d => d.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    day.classList.add('active');
+    tabBtn.classList.add('active');
+  };
+
+  window.clearChecks = function(dayId) {
+    const container = document.getElementById(dayId);
+    if (!container) return;
+    container.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+    saveProgress();
+  };
+
+  window.expandSVG = function(el) {
+    const overlay = document.getElementById('svgOverlay');
+    const container = document.getElementById('overlayContent');
+    if (!overlay || !container || !el) return;
+    container.innerHTML = el.innerHTML;
+    overlay.classList.add('active');
+  };
+
+  window.closeOverlay = function() {
+    const overlay = document.getElementById('svgOverlay');
+    if (overlay) overlay.classList.remove('active');
+  };
+
+  window.toggleVariants = function(btn) {
+    const list = btn.nextElementSibling;
+    if (!list) return;
+    list.classList.toggle('active');
+  };
+
+  window.selectVariant = function(option) {
+    const container = option.closest('.exercise-variants');
+    const exerciseItem = option.closest('li');
+    if (!container || !exerciseItem) return;
+
+    const nameEl = exerciseItem.querySelector('.exercise-name');
+    const instructionsEl = exerciseItem.querySelector('.instructions');
+
+    nameEl.textContent = option.dataset.name;
+    instructionsEl.textContent = option.dataset.instructions;
+
+    container.classList.remove('active');
+
+    container.querySelectorAll('.variant-option').forEach(v => v.classList.remove('selected'));
+    option.classList.add('selected');
+  };
+
+  document.addEventListener('change', function(e) {
+    if (e.target.type === 'checkbox') {
+      saveProgress();
+    }
+  });
+
+  function saveProgress() {
+    const state = {};
+    document.querySelectorAll('input[type="checkbox"]').forEach((checkbox, index) => {
+      state[`checkbox-${index}`] = checkbox.checked;
+    });
+    try {
+      localStorage.setItem('workout-progress', JSON.stringify(state));
+    } catch (e) {
+      console.error('Failed to save progress:', e);
+    }
+  }
+
+  function loadProgress() {
+    try {
+      const saved = localStorage.getItem('workout-progress');
+      if (saved) {
+        const state = JSON.parse(saved);
+        document.querySelectorAll('input[type="checkbox"]').forEach((checkbox, index) => {
+          if (state[`checkbox-${index}`] !== undefined) {
+            checkbox.checked = state[`checkbox-${index}`];
+          }
+        });
+      }
+    } catch (e) {
+      console.error('Failed to load progress:', e);
+    }
+  }
+
+  window.saveProgress = saveProgress;
+  window.loadProgress = loadProgress;
+});
+</script>
+
+</body>
+</html>
