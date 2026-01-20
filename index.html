@@ -4,10 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#222222" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Workout Tracker" />
-  <link rel="manifest" href="manifest.json" />
+  <link rel="manifest" href="./manifest.json" />
   <title>3-Day Beginner Strength Training</title>
   <style>
     body {
@@ -74,7 +71,59 @@
     }
 
     .exercise { display: flex; gap: 10px; align-items: flex-start; }
-    .svg-wrap { width: 56px; height: 56px; border-radius: 12px; background: #f0f0f0; flex-shrink: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .svg-wrap { 
+      width: 56px; 
+      height: 56px; 
+      border-radius: 12px; 
+      background: #f0f0f0; 
+      flex-shrink: 0; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      cursor: pointer; 
+    }
+
+    .exercise-visual {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      background: #f0f0f0;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+      border: 2px solid #e0e0e0;
+    }
+
+    .exercise-visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .exercise-visual .placeholder {
+      font-size: 2rem;
+      color: #ccc;
+    }
+
+    .expand-hint {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      pointer-events: none;
+    }
 
     .variants-toggle { font-size: 0.75rem; color: #0066cc; cursor: pointer; margin-left: 76px; margin-top: 4px; }
     .exercise-variants { display: none; margin-left: 76px; margin-top: 6px; border-left: 2px solid #ddd; padding-left: 8px; }
@@ -89,10 +138,43 @@
     .movement { stroke-dasharray: 4 2; }
 
     .instructions { font-size: 0.85rem; color: #444; margin-left: 76px; }
+    
+    .video-link {
+      margin-left: 76px;
+      margin-top: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: #0066cc;
+      text-decoration: none;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: #f0f7ff;
+      transition: background 0.2s;
+    }
+
+    .video-link:hover {
+      background: #e3f2fd;
+    }
+
+    .video-link::before {
+      content: '▶';
+      font-size: 0.7rem;
+    }
+
     button.clear { width: 100%; padding: 10px; font-size: 0.95rem; border: none; border-radius: 10px; background: #222; color: #fff; margin-top: 10px; }
 
     .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; }
     .overlay.active { display: flex; }
+    .overlay img {
+      width: 90vw;
+      max-width: 400px;
+      height: auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px;
+    }
     .overlay svg { width: 80vw; height: 80vw; max-width: 360px; max-height: 360px; background: #fff; border-radius: 16px; padding: 16px; }
     .overlay .close { position: absolute; top: 16px; right: 16px; font-size: 1.4rem; color: #fff; cursor: pointer; }
   </style>
@@ -111,8 +193,8 @@
 </div>
 
 <h1>3-Day Beginner Strength Training</h1>
-<p style="font-size:0.85rem">Each workout &asymp; 45 minutes: 5&ndash;7 min warm-up, 30&ndash;32 min strength + core, 5&ndash;6 min cooldown.</p>
-<p style="font-size:0.75rem; color:#999; text-align:center; margin-top:4px;">v2.0 &mdash; Updated January 2026</p>
+<p style="font-size:0.85rem">Each workout ≈ 45 minutes: 5–7 min warm-up, 30–32 min strength + core, 5–6 min cooldown.</p>
+<p style="font-size:0.75rem; color:#999; text-align:center; margin-top:4px;">v2.1 — Updated January 2026</p>
 
 <div class="tabs">
   <button class="tab active" onclick="showDay('push', this)">Push</button>
@@ -126,94 +208,117 @@
   <div class="section warmup">
     <h3>Warm-Up (8 minutes)</h3>
     <ul>
-      <li><label><input type="checkbox" /><span>Light cardio (walk/bike) &mdash; 2 min</span></label></li>
-      <li><label><input type="checkbox" /><span>Arm circles + band pull-aparts &mdash; 3 min</span></label></li>
-      <li><label><input type="checkbox" /><span>Warm-up sets for first two lifts &mdash; 3 min</span></label></li>
+      <li><label><input type="checkbox" /><span>Light cardio (walk/bike) — 2 min</span></label></li>
+      <li><label><input type="checkbox" /><span>Arm circles + band pull-aparts — 3 min</span></label></li>
+      <li><label><input type="checkbox" /><span>Warm-up sets for first two lifts — 3 min</span></label></li>
     </ul>
   </div>
 
   <div class="section">
-    <h3>Strength + Core (&asymp;35 minutes)</h3>
+    <h3>Strength + Core (≈35 minutes)</h3>
     <ul>
       <li>
-        <label class="exercise">
-          <input type="checkbox" />
-          <div class="svg-wrap" onclick="expandSVG(this)">
-            <svg viewBox="0 0 64 64"><rect x="16" y="22" width="32" height="20" class="primary" /><line x1="16" y1="32" x2="48" y2="32" stroke-width="2" class="movement secondary" /></svg>
+        <div class="exercise">
+          <label>
+            <input type="checkbox" />
+          </label>
+          <div class="exercise-visual" data-media-key="flat-bench-press" onclick="expandImage(event, '')">
+            <img src="" alt="Flat Bench Press" />
+            <div class="expand-hint">🔍</div>
           </div>
-          <span class="exercise-name">Flat Bench Press &mdash; 3&times;8&ndash;10</span>
-        </label>
-        <div class="instructions"><strong>Sets/Reps:</strong> 3&times;8&ndash;10<br><strong>Rest:</strong> 60&ndash;90 sec<br><strong>Time:</strong> ~6&ndash;7 min<br><strong>Targets:</strong> Chest, shoulders, triceps<br>Press dumbbells up from chest level.</div>
+          <span class="exercise-name">Flat Bench Press — 3×8–10</span>
+        </div>
+        <div class="instructions"><strong>Sets/Reps:</strong> 3×8–10<br><strong>Rest:</strong> 60–90 sec<br><strong>Time:</strong> ~6–7 min<br><strong>Targets:</strong> Chest, shoulders, triceps<br>Press dumbbells up from chest level.</div>
+        <a href="#" data-media-key="flat-bench-press" target="_blank" class="video-link" rel="noopener noreferrer">Watch Form Tutorial</a>
         <div class="variants-toggle" onclick="toggleVariants(this)">Change exercise (same muscles)</div>
         <div class="exercise-variants">
-          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Flat Bench Press — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Chest, shoulders, triceps | Press dumbbells up from chest level.">Flat Bench Press <span>(chest, front delts, triceps)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Push-Ups — 3×10–15" data-instructions="Sets/Reps: 3×10–15 | Rest: 60 sec | Time: ~6 min | Targets: Chest, shoulders, triceps | Lower chest to floor and press up with control.">Push-Ups <span>(chest, front delts, triceps)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Chest Fly — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 60 sec | Time: ~6 min | Targets: Chest, shoulders | Arc arms out and bring together over chest.">Chest Fly <span>(chest isolation, front delts)</span></div>
+          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Flat Bench Press — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Chest, shoulders, triceps | Press dumbbells up from chest level." data-media-key="flat-bench-press">Flat Bench Press <span>(chest, front delts, triceps)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Push-Ups — 3×10–15" data-instructions="Sets/Reps: 3×10–15 | Rest: 60 sec | Time: ~6 min | Targets: Chest, shoulders, triceps | Lower chest to floor and press up with control." data-media-key="push-ups">Push-Ups <span>(chest, front delts, triceps)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Chest Fly — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 60 sec | Time: ~6 min | Targets: Chest, shoulders | Arc arms out and bring together over chest." data-media-key="chest-fly">Chest Fly <span>(chest isolation, front delts)</span></div>
         </div>
       </li>
 
       <li>
-        <label class="exercise">
-          <input type="checkbox" />
-          <div class="svg-wrap" onclick="expandSVG(this)">
-            <svg viewBox="0 0 64 64"><rect x="26" y="12" width="12" height="40" class="primary" /><line x1="32" y1="12" x2="32" y2="52" stroke-width="2" class="movement secondary" /></svg>
+        <div class="exercise">
+          <label>
+            <input type="checkbox" />
+          </label>
+          <div class="exercise-visual" data-media-key="overhead-press" onclick="expandImage(event, '')">
+            <img src="" alt="Overhead Press" />
+            <div class="expand-hint">🔍</div>
           </div>
-          <span class="exercise-name">Overhead Press &mdash; 3&times;8&ndash;10</span>
-        </label>
-        <div class="instructions"><strong>Sets/Reps:</strong> 3&times;8&ndash;10<br><strong>Rest:</strong> 60&ndash;90 sec<br><strong>Time:</strong> ~6&ndash;7 min<br><strong>Targets:</strong> Shoulders, triceps<br>Press dumbbells overhead from shoulder height.</div>
+          <span class="exercise-name">Overhead Press — 3×8–10</span>
+        </div>
+        <div class="instructions"><strong>Sets/Reps:</strong> 3×8–10<br><strong>Rest:</strong> 60–90 sec<br><strong>Time:</strong> ~6–7 min<br><strong>Targets:</strong> Shoulders, triceps<br>Press dumbbells overhead from shoulder height.</div>
+        <a href="#" data-media-key="overhead-press" target="_blank" class="video-link" rel="noopener noreferrer">Watch Form Tutorial</a>
         <div class="variants-toggle" onclick="toggleVariants(this)">Change exercise (same muscles)</div>
         <div class="exercise-variants">
-          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Overhead Press — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Shoulders, triceps | Press dumbbells overhead from shoulder height.">Overhead Press <span>(shoulders, triceps)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Arnold Press — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Shoulders, triceps | Rotate palms from facing you to facing forward while pressing.">Arnold Press <span>(shoulders, triceps)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Landmine Press — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Shoulders, triceps | Press barbell end diagonally overhead.">Landmine Press <span>(shoulders, triceps, core)</span></div>
+          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Overhead Press — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Shoulders, triceps | Press dumbbells overhead from shoulder height." data-media-key="overhead-press">Overhead Press <span>(shoulders, triceps)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Arnold Press — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Shoulders, triceps | Rotate palms from facing you to facing forward while pressing." data-media-key="arnold-press">Arnold Press <span>(shoulders, triceps)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Landmine Press — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Shoulders, triceps | Press barbell end diagonally overhead." data-media-key="landmine-press">Landmine Press <span>(shoulders, triceps, core)</span></div>
         </div>
       </li>
 
       <li>
-        <label class="exercise">
-          <input type="checkbox" />
-          <div class="svg-wrap" onclick="expandSVG(this)">
-            <svg viewBox="0 0 64 64"><rect x="16" y="18" width="32" height="24" class="primary" /><line x1="20" y1="30" x2="44" y2="30" stroke-width="2" class="movement secondary" /></svg>
+        <div class="exercise">
+          <label>
+            <input type="checkbox" />
+          </label>
+          <div class="exercise-visual" data-media-key="incline-press" onclick="expandImage(event, '')">
+            <img src="" alt="Incline Press" />
+            <div class="expand-hint">🔍</div>
           </div>
-          <span class="exercise-name">Incline Press &mdash; 3&times;10</span>
-        </label>
-        <div class="instructions"><strong>Sets/Reps:</strong> 3&times;10<br><strong>Rest:</strong> 60&ndash;90 sec<br><strong>Time:</strong> ~6&ndash;7 min<br><strong>Targets:</strong> Upper chest, front delts<br>Press dumbbells up at 30-45 degree angle.</div>
+          <span class="exercise-name">Incline Press — 3×10</span>
+        </div>
+        <div class="instructions"><strong>Sets/Reps:</strong> 3×10<br><strong>Rest:</strong> 60–90 sec<br><strong>Time:</strong> ~6–7 min<br><strong>Targets:</strong> Upper chest, front delts<br>Press dumbbells up at 30-45 degree angle.</div>
+        <a href="#" data-media-key="incline-press" target="_blank" class="video-link" rel="noopener noreferrer">Watch Form Tutorial</a>
         <div class="variants-toggle" onclick="toggleVariants(this)">Change exercise (same muscles)</div>
         <div class="exercise-variants">
-          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Incline Press — 3×10" data-instructions="Sets/Reps: 3×10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Upper chest, front delts | Press dumbbells up at 30-45 degree angle.">Incline Press <span>(upper chest, front delts)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Incline Fly — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 60 sec | Time: ~6 min | Targets: Upper chest, front delts | Arc dumbbells out and together on incline bench.">Incline Fly <span>(upper chest, front delts)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Low-to-High Cable Fly — 3×12" data-instructions="Sets/Reps: 3×12 | Rest: 60 sec | Time: ~6 min | Targets: Upper chest, front delts | Pull cables from low to high across body.">Low-to-High Cable Fly <span>(upper chest, front delts)</span></div>
+          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Incline Press — 3×10" data-instructions="Sets/Reps: 3×10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Upper chest, front delts | Press dumbbells up at 30-45 degree angle." data-media-key="incline-press">Incline Press <span>(upper chest, front delts)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Incline Fly — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 60 sec | Time: ~6 min | Targets: Upper chest, front delts | Arc dumbbells out and together on incline bench." data-media-key="incline-fly">Incline Fly <span>(upper chest, front delts)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Low-to-High Cable Fly — 3×12" data-instructions="Sets/Reps: 3×12 | Rest: 60 sec | Time: ~6 min | Targets: Upper chest, front delts | Pull cables from low to high across body." data-media-key="cable-fly">Low-to-High Cable Fly <span>(upper chest, front delts)</span></div>
         </div>
       </li>
 
       <li>
-        <label class="exercise">
-          <input type="checkbox" />
-          <div class="svg-wrap" onclick="expandSVG(this)">
-            <svg viewBox="0 0 64 64"><rect x="28" y="16" width="8" height="32" class="primary" /><line x1="32" y1="48" x2="32" y2="24" stroke-width="2" class="movement secondary" /></svg>
+        <div class="exercise">
+          <label>
+            <input type="checkbox" />
+          </label>
+          <div class="exercise-visual" data-media-key="tricep-pushdown" onclick="expandImage(event, '')">
+            <img src="" alt="Tricep Pushdown" />
+            <div class="expand-hint">🔍</div>
           </div>
-          <span class="exercise-name">Tricep Pushdown &mdash; 3&times;10&ndash;12</span>
-        </label>
-        <div class="instructions"><strong>Sets/Reps:</strong> 3&times;10&ndash;12<br><strong>Rest:</strong> 45&ndash;60 sec<br><strong>Time:</strong> ~5&ndash;6 min<br><strong>Targets:</strong> Triceps<br>Press cable down keeping elbows at sides.</div>
+          <span class="exercise-name">Tricep Pushdown — 3×10–12</span>
+        </div>
+        <div class="instructions"><strong>Sets/Reps:</strong> 3×10–12<br><strong>Rest:</strong> 45–60 sec<br><strong>Time:</strong> ~5–6 min<br><strong>Targets:</strong> Triceps<br>Press cable down keeping elbows at sides.</div>
+        <a href="#" data-media-key="tricep-pushdown" target="_blank" class="video-link" rel="noopener noreferrer">Watch Form Tutorial</a>
         <div class="variants-toggle" onclick="toggleVariants(this)">Change exercise (same muscles)</div>
         <div class="exercise-variants">
-          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Tricep Pushdown — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 45–60 sec | Time: ~5–6 min | Targets: Triceps | Press cable down keeping elbows at sides.">Tricep Pushdown <span>(triceps)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Overhead Tricep Extension — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 45–60 sec | Time: ~5–6 min | Targets: Triceps | Lower dumbbell behind head and extend upward.">Overhead Tricep Extension <span>(triceps, long head focus)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Close-Grip Push-Ups — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 45–60 sec | Time: ~5–6 min | Targets: Triceps | Hands close together, lower and press emphasizing triceps.">Close-Grip Push-Ups <span>(triceps, chest)</span></div>
+          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Tricep Pushdown — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 45–60 sec | Time: ~5–6 min | Targets: Triceps | Press cable down keeping elbows at sides." data-media-key="tricep-pushdown">Tricep Pushdown <span>(triceps)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Overhead Tricep Extension — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 45–60 sec | Time: ~5–6 min | Targets: Triceps | Lower dumbbell behind head and extend upward." data-media-key="overhead-tricep-ext">Overhead Tricep Extension <span>(triceps, long head focus)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Close-Grip Push-Ups — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 45–60 sec | Time: ~5–6 min | Targets: Triceps | Hands close together, lower and press emphasizing triceps." data-media-key="close-grip-pushup">Close-Grip Push-Ups <span>(triceps, chest)</span></div>
         </div>
       </li>
 
       <li>
-        <label class="exercise">
-          <input type="checkbox" />
-          <span class="exercise-name">Plank &mdash; 2&times;30 sec</span>
-        </label>
+        <div class="exercise">
+          <label>
+            <input type="checkbox" />
+          </label>
+          <div class="exercise-visual" data-media-key="plank" onclick="expandImage(event, '')">
+            <img src="" alt="Plank" />
+            <div class="expand-hint">🔍</div>
+          </div>
+          <span class="exercise-name">Plank — 2×30 sec</span>
+        </div>
         <div class="instructions"><strong>Rest:</strong> 30 sec<br><strong>Time:</strong> ~4 min<br><strong>Targets:</strong> Core, shoulders<br>Hold straight body line on forearms.</div>
+        <a href="#" data-media-key="plank" target="_blank" class="video-link" rel="noopener noreferrer">Watch Form Tutorial</a>
         <div class="variants-toggle" onclick="toggleVariants(this)">Change exercise (same muscles)</div>
         <div class="exercise-variants">
-          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Plank — 2×30 sec" data-instructions="Rest: 30 sec | Time: ~4 min | Targets: Core, shoulders | Hold straight body line on forearms.">Plank <span>(core, shoulders)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Mountain Climbers — 2×20 sec" data-instructions="Rest: 30 sec | Time: ~4 min | Targets: Core, shoulders | Alternate driving knees to chest from plank position.">Mountain Climbers <span>(core, shoulders, cardio)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Ab Wheel Rollout — 2×8–10" data-instructions="Rest: 30 sec | Time: ~4 min | Targets: Core, shoulders | Roll wheel forward and pull back with control.">Ab Wheel Rollout <span>(core, shoulders, lats)</span></div>
+          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Plank — 2×30 sec" data-instructions="Rest: 30 sec | Time: ~4 min | Targets: Core, shoulders | Hold straight body line on forearms." data-media-key="plank">Plank <span>(core, shoulders)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Mountain Climbers — 2×20 sec" data-instructions="Rest: 30 sec | Time: ~4 min | Targets: Core, shoulders | Alternate driving knees to chest from plank position." data-media-key="mountain-climbers">Mountain Climbers <span>(core, shoulders, cardio)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Ab Wheel Rollout — 2×8–10" data-instructions="Rest: 30 sec | Time: ~4 min | Targets: Core, shoulders | Roll wheel forward and pull back with control." data-media-key="ab-wheel">Ab Wheel Rollout <span>(core, shoulders, lats)</span></div>
         </div>
       </li>
     </ul>
@@ -222,9 +327,9 @@
   <div class="section cooldown">
     <h3>Cooldown (5 minutes)</h3>
     <ul>
-      <li><label><input type="checkbox" /><span>Chest stretch &mdash; 30s/side</span></label></li>
-      <li><label><input type="checkbox" /><span>Shoulder stretch &mdash; 30s/side</span></label></li>
-      <li><label><input type="checkbox" /><span>Breathing &mdash; 1&ndash;2 min</span></label></li>
+      <li><label><input type="checkbox" /><span>Chest stretch — 30s/side</span></label></li>
+      <li><label><input type="checkbox" /><span>Shoulder stretch — 30s/side</span></label></li>
+      <li><label><input type="checkbox" /><span>Breathing — 1–2 min</span></label></li>
     </ul>
   </div>
 
@@ -237,94 +342,117 @@
   <div class="section warmup">
     <h3>Warm-Up (8 minutes)</h3>
     <ul>
-      <li><label><input type="checkbox" /><span>Light cardio (walk/row/bike) &mdash; 2 min</span></label></li>
-      <li><label><input type="checkbox" /><span>Band pull-aparts + arm circles &mdash; 3 min</span></label></li>
-      <li><label><input type="checkbox" /><span>Warm-up sets for first two lifts &mdash; 3 min</span></label></li>
+      <li><label><input type="checkbox" /><span>Light cardio (walk/row/bike) — 2 min</span></label></li>
+      <li><label><input type="checkbox" /><span>Band pull-aparts + arm circles — 3 min</span></label></li>
+      <li><label><input type="checkbox" /><span>Warm-up sets for first two lifts — 3 min</span></label></li>
     </ul>
   </div>
 
   <div class="section">
-    <h3>Strength + Core (&asymp;35 minutes)</h3>
+    <h3>Strength + Core (≈35 minutes)</h3>
     <ul>
       <li>
-        <label class="exercise">
-          <input type="checkbox" />
-          <div class="svg-wrap" onclick="expandSVG(this)">
-            <svg viewBox="0 0 64 64"><rect x="18" y="16" width="28" height="32" class="primary" /><line x1="18" y1="32" x2="46" y2="32" stroke-width="2" class="movement secondary" /></svg>
+        <div class="exercise">
+          <label>
+            <input type="checkbox" />
+          </label>
+          <div class="exercise-visual" data-media-key="cable-row" onclick="expandImage(event, '')">
+            <img src="" alt="Seated Cable Row" />
+            <div class="expand-hint">🔍</div>
           </div>
-          <span class="exercise-name">Seated Cable Row &mdash; 3&times;8&ndash;10</span>
-        </label>
-        <div class="instructions"><strong>Sets/Reps:</strong> 3&times;8&ndash;10<br><strong>Rest:</strong> 60&ndash;90 sec<br><strong>Time:</strong> ~6&ndash;7 min<br><strong>Targets:</strong> Mid back, lats, biceps<br>Pull handle to ribs squeezing shoulder blades.</div>
+          <span class="exercise-name">Seated Cable Row — 3×8–10</span>
+        </div>
+        <div class="instructions"><strong>Sets/Reps:</strong> 3×8–10<br><strong>Rest:</strong> 60–90 sec<br><strong>Time:</strong> ~6–7 min<br><strong>Targets:</strong> Mid back, lats, biceps<br>Pull handle to ribs squeezing shoulder blades.</div>
+        <a href="#" data-media-key="cable-row" target="_blank" class="video-link" rel="noopener noreferrer">Watch Form Tutorial</a>
         <div class="variants-toggle" onclick="toggleVariants(this)">Change exercise (same muscles)</div>
         <div class="exercise-variants">
-          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Seated Cable Row — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Mid back, lats, biceps | Pull handle to ribs squeezing shoulder blades.">Seated Cable Row <span>(mid back, lats, biceps)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Dumbbell Row — 3×8–10/side" data-instructions="Sets/Reps: 3×8–10/side | Rest: 60–90 sec | Time: ~6–7 min | Targets: Mid back, lats, biceps | Pull dumbbell to hip with flat back, one arm at a time.">Dumbbell Row <span>(mid back, lats, biceps)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Bent-Over Barbell Row — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Mid back, lats, biceps | Hinge forward and pull barbell to lower chest.">Bent-Over Barbell Row <span>(mid back, lats, biceps, core)</span></div>
+          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Seated Cable Row — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Mid back, lats, biceps | Pull handle to ribs squeezing shoulder blades." data-media-key="cable-row">Seated Cable Row <span>(mid back, lats, biceps)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Dumbbell Row — 3×8–10/side" data-instructions="Sets/Reps: 3×8–10/side | Rest: 60–90 sec | Time: ~6–7 min | Targets: Mid back, lats, biceps | Pull dumbbell to hip with flat back, one arm at a time." data-media-key="dumbbell-row">Dumbbell Row <span>(mid back, lats, biceps)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Bent-Over Barbell Row — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Mid back, lats, biceps | Hinge forward and pull barbell to lower chest." data-media-key="barbell-row">Bent-Over Barbell Row <span>(mid back, lats, biceps, core)</span></div>
         </div>
       </li>
 
       <li>
-        <label class="exercise">
-          <input type="checkbox" />
-          <div class="svg-wrap" onclick="expandSVG(this)">
-            <svg viewBox="0 0 64 64"><rect x="26" y="12" width="12" height="40" class="primary" /><line x1="32" y1="12" x2="32" y2="52" stroke-width="2" class="movement secondary" /></svg>
+        <div class="exercise">
+          <label>
+            <input type="checkbox" />
+          </label>
+          <div class="exercise-visual" data-media-key="lat-pulldown" onclick="expandImage(event, '')">
+            <img src="" alt="Lat Pulldown" />
+            <div class="expand-hint">🔍</div>
           </div>
-          <span class="exercise-name">Lat Pulldown &mdash; 3&times;8&ndash;10</span>
-        </label>
-        <div class="instructions"><strong>Sets/Reps:</strong> 3&times;8&ndash;10<br><strong>Rest:</strong> 60&ndash;90 sec<br><strong>Time:</strong> ~6&ndash;7 min<br><strong>Targets:</strong> Lats, upper back, biceps<br>Pull bar to upper chest keeping torso upright.</div>
+          <span class="exercise-name">Lat Pulldown — 3×8–10</span>
+        </div>
+        <div class="instructions"><strong>Sets/Reps:</strong> 3×8–10<br><strong>Rest:</strong> 60–90 sec<br><strong>Time:</strong> ~6–7 min<br><strong>Targets:</strong> Lats, upper back, biceps<br>Pull bar to upper chest keeping torso upright.</div>
+        <a href="#" data-media-key="lat-pulldown" target="_blank" class="video-link" rel="noopener noreferrer">Watch Form Tutorial</a>
         <div class="variants-toggle" onclick="toggleVariants(this)">Change exercise (same muscles)</div>
         <div class="exercise-variants">
-          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Lat Pulldown — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Lats, upper back, biceps | Pull bar to upper chest keeping torso upright.">Lat Pulldown <span>(lats, upper back, biceps)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Pull-Ups — 3×5–8" data-instructions="Sets/Reps: 3×5–8 | Rest: 90 sec | Time: ~6–7 min | Targets: Lats, upper back, biceps | Pull chin over bar with controlled movement.">Pull-Ups <span>(lats, upper back, biceps)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Straight-Arm Pulldown — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 60 sec | Time: ~6 min | Targets: Lats, upper back | Pull cable down with straight arms focusing on lats.">Straight-Arm Pulldown <span>(lats isolation, upper back)</span></div>
+          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Lat Pulldown — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Lats, upper back, biceps | Pull bar to upper chest keeping torso upright." data-media-key="lat-pulldown">Lat Pulldown <span>(lats, upper back, biceps)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Pull-Ups — 3×5–8" data-instructions="Sets/Reps: 3×5–8 | Rest: 90 sec | Time: ~6–7 min | Targets: Lats, upper back, biceps | Pull chin over bar with controlled movement." data-media-key="pull-ups">Pull-Ups <span>(lats, upper back, biceps)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Straight-Arm Pulldown — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 60 sec | Time: ~6 min | Targets: Lats, upper back | Pull cable down with straight arms focusing on lats." data-media-key="straight-arm-pulldown">Straight-Arm Pulldown <span>(lats isolation, upper back)</span></div>
         </div>
       </li>
 
       <li>
-        <label class="exercise">
-          <input type="checkbox" />
-          <div class="svg-wrap" onclick="expandSVG(this)">
-            <svg viewBox="0 0 64 64"><rect x="20" y="20" width="24" height="28" class="primary" /><line x1="32" y1="34" x2="32" y2="20" stroke-width="2" class="movement secondary" /></svg>
+        <div class="exercise">
+          <label>
+            <input type="checkbox" />
+          </label>
+          <div class="exercise-visual" data-media-key="face-pulls" onclick="expandImage(event, '')">
+            <img src="" alt="Face Pulls" />
+            <div class="expand-hint">🔍</div>
           </div>
-          <span class="exercise-name">Face Pulls &mdash; 3&times;12&ndash;15</span>
-        </label>
-        <div class="instructions"><strong>Sets/Reps:</strong> 3&times;12&ndash;15<br><strong>Rest:</strong> 45&ndash;60 sec<br><strong>Time:</strong> ~5&ndash;6 min<br><strong>Targets:</strong> Rear delts, upper back<br>Pull rope to face separating handles at end.</div>
+          <span class="exercise-name">Face Pulls — 3×12–15</span>
+        </div>
+        <div class="instructions"><strong>Sets/Reps:</strong> 3×12–15<br><strong>Rest:</strong> 45–60 sec<br><strong>Time:</strong> ~5–6 min<br><strong>Targets:</strong> Rear delts, upper back<br>Pull rope to face separating handles at end.</div>
+        <a href="#" data-media-key="face-pulls" target="_blank" class="video-link" rel="noopener noreferrer">Watch Form Tutorial</a>
         <div class="variants-toggle" onclick="toggleVariants(this)">Change exercise (same muscles)</div>
         <div class="exercise-variants">
-          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Face Pulls — 3×12–15" data-instructions="Sets/Reps: 3×12–15 | Rest: 45–60 sec | Time: ~5–6 min | Targets: Rear delts, upper back | Pull rope to face separating handles at end.">Face Pulls <span>(rear delts, upper back)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Reverse Fly — 3×12–15" data-instructions="Sets/Reps: 3×12–15 | Rest: 45–60 sec | Time: ~5–6 min | Targets: Rear delts, upper back | Bend forward and pull dumbbells out to sides.">Reverse Fly <span>(rear delts, upper back)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Wide-Grip Upright Row — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 60 sec | Time: ~5–6 min | Targets: Rear delts, upper back | Pull barbell up to chest with wide grip.">Wide-Grip Upright Row <span>(rear delts, upper back, traps)</span></div>
+          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Face Pulls — 3×12–15" data-instructions="Sets/Reps: 3×12–15 | Rest: 45–60 sec | Time: ~5–6 min | Targets: Rear delts, upper back | Pull rope to face separating handles at end." data-media-key="face-pulls">Face Pulls <span>(rear delts, upper back)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Reverse Fly — 3×12–15" data-instructions="Sets/Reps: 3×12–15 | Rest: 45–60 sec | Time: ~5–6 min | Targets: Rear delts, upper back | Bend forward and pull dumbbells out to sides." data-media-key="reverse-fly">Reverse Fly <span>(rear delts, upper back)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Wide-Grip Upright Row — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 60 sec | Time: ~5–6 min | Targets: Rear delts, upper back | Pull barbell up to chest with wide grip." data-media-key="upright-row">Wide-Grip Upright Row <span>(rear delts, upper back, traps)</span></div>
         </div>
       </li>
 
       <li>
-        <label class="exercise">
-          <input type="checkbox" />
-          <div class="svg-wrap" onclick="expandSVG(this)">
-            <svg viewBox="0 0 64 64"><rect x="28" y="20" width="8" height="28" class="primary" /><line x1="32" y1="48" x2="32" y2="28" stroke-width="2" class="movement secondary" /></svg>
+        <div class="exercise">
+          <label>
+            <input type="checkbox" />
+          </label>
+          <div class="exercise-visual" data-media-key="bicep-curls" onclick="expandImage(event, '')">
+            <img src="" alt="Bicep Curls" />
+            <div class="expand-hint">🔍</div>
           </div>
-          <span class="exercise-name">Bicep Curls &mdash; 3&times;10&ndash;12</span>
-        </label>
-        <div class="instructions"><strong>Sets/Reps:</strong> 3&times;10&ndash;12<br><strong>Rest:</strong> 45&ndash;60 sec<br><strong>Time:</strong> ~5&ndash;6 min<br><strong>Targets:</strong> Biceps<br>Curl dumbbells up keeping elbows stationary.</div>
+          <span class="exercise-name">Bicep Curls — 3×10–12</span>
+        </div>
+        <div class="instructions"><strong>Sets/Reps:</strong> 3×10–12<br><strong>Rest:</strong> 45–60 sec<br><strong>Time:</strong> ~5–6 min<br><strong>Targets:</strong> Biceps<br>Curl dumbbells up keeping elbows stationary.</div>
+        <a href="#" data-media-key="bicep-curls" target="_blank" class="video-link" rel="noopener noreferrer">Watch Form Tutorial</a>
         <div class="variants-toggle" onclick="toggleVariants(this)">Change exercise (same muscles)</div>
         <div class="exercise-variants">
-          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Bicep Curls — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 45–60 sec | Time: ~5–6 min | Targets: Biceps | Curl dumbbells up keeping elbows stationary.">Dumbbell Bicep Curls <span>(biceps)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Hammer Curls — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 45–60 sec | Time: ~5–6 min | Targets: Biceps | Curl with palms facing each other, neutral grip.">Hammer Curls <span>(biceps, brachialis, forearms)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Cable Curls — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 45–60 sec | Time: ~5–6 min | Targets: Biceps | Curl cable attachment with constant tension.">Cable Curls <span>(biceps, constant tension)</span></div>
+          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Bicep Curls — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 45–60 sec | Time: ~5–6 min | Targets: Biceps | Curl dumbbells up keeping elbows stationary." data-media-key="bicep-curls">Dumbbell Bicep Curls <span>(biceps)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Hammer Curls — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 45–60 sec | Time: ~5–6 min | Targets: Biceps | Curl with palms facing each other, neutral grip." data-media-key="hammer-curls">Hammer Curls <span>(biceps, brachialis, forearms)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Cable Curls — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 45–60 sec | Time: ~5–6 min | Targets: Biceps | Curl cable attachment with constant tension." data-media-key="cable-curls">Cable Curls <span>(biceps, constant tension)</span></div>
         </div>
       </li>
 
       <li>
-        <label class="exercise">
-          <input type="checkbox" />
-          <span class="exercise-name">Dead Bug &mdash; 2&times;8/side</span>
-        </label>
+        <div class="exercise">
+          <label>
+            <input type="checkbox" />
+          </label>
+          <div class="exercise-visual" data-media-key="dead-bug" onclick="expandImage(event, '')">
+            <img src="" alt="Dead Bug" />
+            <div class="expand-hint">🔍</div>
+          </div>
+          <span class="exercise-name">Dead Bug — 2×8/side</span>
+        </div>
         <div class="instructions"><strong>Rest:</strong> 30 sec<br><strong>Time:</strong> ~4 min<br><strong>Targets:</strong> Core, hip flexors<br>Extend opposite arm and leg while bracing core.</div>
+        <a href="#" data-media-key="dead-bug" target="_blank" class="video-link" rel="noopener noreferrer">Watch Form Tutorial</a>
         <div class="variants-toggle" onclick="toggleVariants(this)">Change exercise (same muscles)</div>
         <div class="exercise-variants">
-          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Dead Bug — 2×8/side" data-instructions="Rest: 30 sec | Time: ~4 min | Targets: Core, hip flexors | Extend opposite arm and leg while bracing core.">Dead Bug <span>(core, hip flexors)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Bird Dog — 2×8/side" data-instructions="Rest: 30 sec | Time: ~4 min | Targets: Core, hip flexors | From hands and knees, extend opposite arm and leg.">Bird Dog <span>(core, lower back, balance)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Hollow Body Hold — 2×20–30 sec" data-instructions="Rest: 30 sec | Time: ~4 min | Targets: Core, hip flexors | Hold body in hollow position with lower back pressed down.">Hollow Body Hold <span>(core, hip flexors)</span></div>
+          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Dead Bug — 2×8/side" data-instructions="Rest: 30 sec | Time: ~4 min | Targets: Core, hip flexors | Extend opposite arm and leg while bracing core." data-media-key="dead-bug">Dead Bug <span>(core, hip flexors)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Bird Dog — 2×8/side" data-instructions="Rest: 30 sec | Time: ~4 min | Targets: Core, hip flexors | From hands and knees, extend opposite arm and leg." data-media-key="bird-dog">Bird Dog <span>(core, lower back, balance)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Hollow Body Hold — 2×20–30 sec" data-instructions="Rest: 30 sec | Time: ~4 min | Targets: Core, hip flexors | Hold body in hollow position with lower back pressed down." data-media-key="hollow-body">Hollow Body Hold <span>(core, hip flexors)</span></div>
         </div>
       </li>
     </ul>
@@ -333,9 +461,9 @@
   <div class="section cooldown">
     <h3>Cooldown (5 minutes)</h3>
     <ul>
-      <li><label><input type="checkbox" /><span>Lat stretch &mdash; 30s/side</span></label></li>
-      <li><label><input type="checkbox" /><span>Upper-back stretch &mdash; 30s</span></label></li>
-      <li><label><input type="checkbox" /><span>Breathing &mdash; 1&ndash;2 min</span></label></li>
+      <li><label><input type="checkbox" /><span>Lat stretch — 30s/side</span></label></li>
+      <li><label><input type="checkbox" /><span>Upper-back stretch — 30s</span></label></li>
+      <li><label><input type="checkbox" /><span>Breathing — 1–2 min</span></label></li>
     </ul>
   </div>
 
@@ -348,94 +476,117 @@
   <div class="section warmup">
     <h3>Warm-Up (8 minutes)</h3>
     <ul>
-      <li><label><input type="checkbox" /><span>Light cardio (walk/bike) &mdash; 2 min</span></label></li>
-      <li><label><input type="checkbox" /><span>Hip circles + leg swings &mdash; 3 min</span></label></li>
-      <li><label><input type="checkbox" /><span>Warm-up sets for first two lifts &mdash; 3 min</span></label></li>
+      <li><label><input type="checkbox" /><span>Light cardio (walk/bike) — 2 min</span></label></li>
+      <li><label><input type="checkbox" /><span>Hip circles + leg swings — 3 min</span></label></li>
+      <li><label><input type="checkbox" /><span>Warm-up sets for first two lifts — 3 min</span></label></li>
     </ul>
   </div>
 
   <div class="section">
-    <h3>Strength + Core (&asymp;35 minutes)</h3>
+    <h3>Strength + Core (≈35 minutes)</h3>
     <ul>
       <li>
-        <label class="exercise">
-          <input type="checkbox" />
-          <div class="svg-wrap" onclick="expandSVG(this)">
-            <svg viewBox="0 0 64 64"><rect x="20" y="18" width="24" height="28" class="primary" /><line x1="32" y1="18" x2="32" y2="46" stroke-width="2" class="movement secondary" /></svg>
+        <div class="exercise">
+          <label>
+            <input type="checkbox" />
+          </label>
+          <div class="exercise-visual" data-media-key="goblet-squat" onclick="expandImage(event, '')">
+            <img src="" alt="Goblet Squat" />
+            <div class="expand-hint">🔍</div>
           </div>
-          <span class="exercise-name">Goblet Squat &mdash; 3&times;8&ndash;10</span>
-        </label>
-        <div class="instructions"><strong>Sets/Reps:</strong> 3&times;8&ndash;10<br><strong>Rest:</strong> 60&ndash;90 sec<br><strong>Time:</strong> ~6&ndash;7 min<br><strong>Targets:</strong> Quads, glutes, core<br>Sit hips back and down while keeping chest tall.</div>
+          <span class="exercise-name">Goblet Squat — 3×8–10</span>
+        </div>
+        <div class="instructions"><strong>Sets/Reps:</strong> 3×8–10<br><strong>Rest:</strong> 60–90 sec<br><strong>Time:</strong> ~6–7 min<br><strong>Targets:</strong> Quads, glutes, core<br>Sit hips back and down while keeping chest tall.</div>
+        <a href="#" data-media-key="goblet-squat" target="_blank" class="video-link" rel="noopener noreferrer">Watch Form Tutorial</a>
         <div class="variants-toggle" onclick="toggleVariants(this)">Change exercise (same muscles)</div>
         <div class="exercise-variants">
-          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Goblet Squat — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Quads, glutes, core | Sit hips back and down while keeping chest tall.">Goblet Squat <span>(quads, glutes, core)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Barbell Back Squat — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 90 sec | Time: ~7 min | Targets: Quads, glutes, core | Squat with bar on upper back, full depth.">Barbell Back Squat <span>(quads, glutes, core)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Leg Press — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Quads, glutes | Press platform away with controlled depth.">Leg Press <span>(quads, glutes)</span></div>
+          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Goblet Squat — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Quads, glutes, core | Sit hips back and down while keeping chest tall." data-media-key="goblet-squat">Goblet Squat <span>(quads, glutes, core)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Barbell Back Squat — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 90 sec | Time: ~7 min | Targets: Quads, glutes, core | Squat with bar on upper back, full depth." data-media-key="back-squat">Barbell Back Squat <span>(quads, glutes, core)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Leg Press — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Quads, glutes | Press platform away with controlled depth." data-media-key="leg-press">Leg Press <span>(quads, glutes)</span></div>
         </div>
       </li>
 
       <li>
-        <label class="exercise">
-          <input type="checkbox" />
-          <div class="svg-wrap" onclick="expandSVG(this)">
-            <svg viewBox="0 0 64 64"><rect x="24" y="16" width="16" height="32" class="primary" /><line x1="32" y1="16" x2="32" y2="48" stroke-width="2" class="movement secondary" /></svg>
+        <div class="exercise">
+          <label>
+            <input type="checkbox" />
+          </label>
+          <div class="exercise-visual" data-media-key="rdl" onclick="expandImage(event, '')">
+            <img src="" alt="Romanian Deadlift" />
+            <div class="expand-hint">🔍</div>
           </div>
-          <span class="exercise-name">Romanian Deadlift &mdash; 3&times;8&ndash;10</span>
-        </label>
-        <div class="instructions"><strong>Sets/Reps:</strong> 3&times;8&ndash;10<br><strong>Rest:</strong> 60&ndash;90 sec<br><strong>Time:</strong> ~6&ndash;7 min<br><strong>Targets:</strong> Hamstrings, glutes, lower back<br>Hinge at hips keeping back neutral.</div>
+          <span class="exercise-name">Romanian Deadlift — 3×8–10</span>
+        </div>
+        <div class="instructions"><strong>Sets/Reps:</strong> 3×8–10<br><strong>Rest:</strong> 60–90 sec<br><strong>Time:</strong> ~6–7 min<br><strong>Targets:</strong> Hamstrings, glutes, lower back<br>Hinge at hips keeping back neutral.</div>
+        <a href="#" data-media-key="rdl" target="_blank" class="video-link" rel="noopener noreferrer">Watch Form Tutorial</a>
         <div class="variants-toggle" onclick="toggleVariants(this)">Change exercise (same muscles)</div>
         <div class="exercise-variants">
-          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Romanian Deadlift — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Hamstrings, glutes, lower back | Hinge at hips keeping back neutral.">Romanian Deadlift <span>(hamstrings, glutes, lower back)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Leg Curl — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 60 sec | Time: ~6 min | Targets: Hamstrings, glutes | Curl legs up while lying or seated on machine.">Leg Curl <span>(hamstrings isolation)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Good Mornings — 3×10" data-instructions="Sets/Reps: 3×10 | Rest: 60–90 sec | Time: ~6 min | Targets: Hamstrings, glutes, lower back | Hinge forward with bar on shoulders and return upright.">Good Mornings <span>(hamstrings, glutes, lower back)</span></div>
+          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Romanian Deadlift — 3×8–10" data-instructions="Sets/Reps: 3×8–10 | Rest: 60–90 sec | Time: ~6–7 min | Targets: Hamstrings, glutes, lower back | Hinge at hips keeping back neutral." data-media-key="rdl">Romanian Deadlift <span>(hamstrings, glutes, lower back)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Leg Curl — 3×10–12" data-instructions="Sets/Reps: 3×10–12 | Rest: 60 sec | Time: ~6 min | Targets: Hamstrings, glutes | Curl legs up while lying or seated on machine." data-media-key="leg-curl">Leg Curl <span>(hamstrings isolation)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Good Mornings — 3×10" data-instructions="Sets/Reps: 3×10 | Rest: 60–90 sec | Time: ~6 min | Targets: Hamstrings, glutes, lower back | Hinge forward with bar on shoulders and return upright." data-media-key="good-mornings">Good Mornings <span>(hamstrings, glutes, lower back)</span></div>
         </div>
       </li>
 
       <li>
-        <label class="exercise">
-          <input type="checkbox" />
-          <div class="svg-wrap" onclick="expandSVG(this)">
-            <svg viewBox="0 0 64 64"><rect x="22" y="24" width="20" height="24" class="primary" /><line x1="32" y1="48" x2="32" y2="32" stroke-width="2" class="movement secondary" /></svg>
+        <div class="exercise">
+          <label>
+            <input type="checkbox" />
+          </label>
+          <div class="exercise-visual" data-media-key="bulgarian-split" onclick="expandImage(event, '')">
+            <img src="" alt="Bulgarian Split Squat" />
+            <div class="expand-hint">🔍</div>
           </div>
-          <span class="exercise-name">Bulgarian Split Squat &mdash; 3&times;8/side</span>
-        </label>
-        <div class="instructions"><strong>Sets/Reps:</strong> 3&times;8/side<br><strong>Rest:</strong> 60&ndash;90 sec<br><strong>Time:</strong> ~7&ndash;8 min<br><strong>Targets:</strong> Quads, glutes, balance<br>Lower back knee toward ground with front leg forward.</div>
+          <span class="exercise-name">Bulgarian Split Squat — 3×8/side</span>
+        </div>
+        <div class="instructions"><strong>Sets/Reps:</strong> 3×8/side<br><strong>Rest:</strong> 60–90 sec<br><strong>Time:</strong> ~7–8 min<br><strong>Targets:</strong> Quads, glutes, balance<br>Lower back knee toward ground with front leg forward.</div>
+        <a href="#" data-media-key="bulgarian-split" target="_blank" class="video-link" rel="noopener noreferrer">Watch Form Tutorial</a>
         <div class="variants-toggle" onclick="toggleVariants(this)">Change exercise (same muscles)</div>
         <div class="exercise-variants">
-          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Bulgarian Split Squat — 3×8/side" data-instructions="Sets/Reps: 3×8/side | Rest: 60–90 sec | Time: ~7–8 min | Targets: Quads, glutes, balance | Lower back knee toward ground with front leg forward.">Bulgarian Split Squat <span>(quads, glutes, balance)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Walking Lunges — 3×10/side" data-instructions="Sets/Reps: 3×10/side | Rest: 60 sec | Time: ~6–7 min | Targets: Quads, glutes, balance | Step forward into lunge, alternating legs.">Walking Lunges <span>(quads, glutes, balance)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Step-Ups — 3×10/side" data-instructions="Sets/Reps: 3×10/side | Rest: 60 sec | Time: ~6–7 min | Targets: Quads, glutes, balance | Step up onto bench driving through front leg.">Step-Ups <span>(quads, glutes, balance)</span></div>
+          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Bulgarian Split Squat — 3×8/side" data-instructions="Sets/Reps: 3×8/side | Rest: 60–90 sec | Time: ~7–8 min | Targets: Quads, glutes, balance | Lower back knee toward ground with front leg forward." data-media-key="bulgarian-split">Bulgarian Split Squat <span>(quads, glutes, balance)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Walking Lunges — 3×10/side" data-instructions="Sets/Reps: 3×10/side | Rest: 60 sec | Time: ~6–7 min | Targets: Quads, glutes, balance | Step forward into lunge, alternating legs." data-media-key="walking-lunges">Walking Lunges <span>(quads, glutes, balance)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Step-Ups — 3×10/side" data-instructions="Sets/Reps: 3×10/side | Rest: 60 sec | Time: ~6–7 min | Targets: Quads, glutes, balance | Step up onto bench driving through front leg." data-media-key="step-ups">Step-Ups <span>(quads, glutes, balance)</span></div>
         </div>
       </li>
 
       <li>
-        <label class="exercise">
-          <input type="checkbox" />
-          <div class="svg-wrap" onclick="expandSVG(this)">
-            <svg viewBox="0 0 64 64"><rect x="26" y="28" width="12" height="20" class="primary" /><line x1="32" y1="28" x2="32" y2="40" stroke-width="2" class="movement secondary" /></svg>
+        <div class="exercise">
+          <label>
+            <input type="checkbox" />
+          </label>
+          <div class="exercise-visual" data-media-key="calf-raises" onclick="expandImage(event, '')">
+            <img src="" alt="Calf Raises" />
+            <div class="expand-hint">🔍</div>
           </div>
-          <span class="exercise-name">Calf Raises &mdash; 3&times;12&ndash;15</span>
-        </label>
-        <div class="instructions"><strong>Sets/Reps:</strong> 3&times;12&ndash;15<br><strong>Rest:</strong> 45&ndash;60 sec<br><strong>Time:</strong> ~5&ndash;6 min<br><strong>Targets:</strong> Calves<br>Rise up on toes and lower with control.</div>
+          <span class="exercise-name">Calf Raises — 3×12–15</span>
+        </div>
+        <div class="instructions"><strong>Sets/Reps:</strong> 3×12–15<br><strong>Rest:</strong> 45–60 sec<br><strong>Time:</strong> ~5–6 min<br><strong>Targets:</strong> Calves<br>Rise up on toes and lower with control.</div>
+        <a href="#" data-media-key="calf-raises" target="_blank" class="video-link" rel="noopener noreferrer">Watch Form Tutorial</a>
         <div class="variants-toggle" onclick="toggleVariants(this)">Change exercise (same muscles)</div>
         <div class="exercise-variants">
-          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Calf Raises — 3×12–15" data-instructions="Sets/Reps: 3×12–15 | Rest: 45–60 sec | Time: ~5–6 min | Targets: Calves | Rise up on toes and lower with control.">Standing Calf Raise <span>(calves - gastrocnemius focus)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Seated Calf Raise — 3×15–20" data-instructions="Sets/Reps: 3×15–20 | Rest: 45 sec | Time: ~5 min | Targets: Calves | Seated position, raise heels with weight on knees.">Seated Calf Raise <span>(calves - soleus focus)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Single-Leg Calf Raise — 3×10–12/side" data-instructions="Sets/Reps: 3×10–12/side | Rest: 45 sec | Time: ~6 min | Targets: Calves | Rise on one leg at a time for balance and strength.">Single-Leg Calf Raise <span>(calves, balance)</span></div>
+          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Calf Raises — 3×12–15" data-instructions="Sets/Reps: 3×12–15 | Rest: 45–60 sec | Time: ~5–6 min | Targets: Calves | Rise up on toes and lower with control." data-media-key="calf-raises">Standing Calf Raise <span>(calves - gastrocnemius focus)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Seated Calf Raise — 3×15–20" data-instructions="Sets/Reps: 3×15–20 | Rest: 45 sec | Time: ~5 min | Targets: Calves | Seated position, raise heels with weight on knees." data-media-key="seated-calf">Seated Calf Raise <span>(calves - soleus focus)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Single-Leg Calf Raise — 3×10–12/side" data-instructions="Sets/Reps: 3×10–12/side | Rest: 45 sec | Time: ~6 min | Targets: Calves | Rise on one leg at a time for balance and strength." data-media-key="single-calf">Single-Leg Calf Raise <span>(calves, balance)</span></div>
         </div>
       </li>
 
       <li>
-        <label class="exercise">
-          <input type="checkbox" />
-          <span class="exercise-name">Side Plank &mdash; 2&times;20s/side</span>
-        </label>
+        <div class="exercise">
+          <label>
+            <input type="checkbox" />
+          </label>
+          <div class="exercise-visual" data-media-key="side-plank" onclick="expandImage(event, '')">
+            <img src="" alt="Side Plank" />
+            <div class="expand-hint">🔍</div>
+          </div>
+          <span class="exercise-name">Side Plank — 2×20s/side</span>
+        </div>
         <div class="instructions"><strong>Rest:</strong> 30 sec<br><strong>Time:</strong> ~4 min<br><strong>Targets:</strong> Obliques, core stability<br>Keep body in straight line on side.</div>
+        <a href="#" data-media-key="side-plank" target="_blank" class="video-link" rel="noopener noreferrer">Watch Form Tutorial</a>
         <div class="variants-toggle" onclick="toggleVariants(this)">Change exercise (same muscles)</div>
         <div class="exercise-variants">
-          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Side Plank — 2×20s/side" data-instructions="Rest: 30 sec | Time: ~4 min | Targets: Obliques, core stability | Keep body in straight line on side.">Side Plank <span>(obliques, core stability)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Pallof Press — 2×10/side" data-instructions="Rest: 30 sec | Time: ~4 min | Targets: Obliques, core stability | Press cable straight out resisting rotation.">Pallof Press <span>(obliques, anti-rotation)</span></div>
-          <div class="variant-option" onclick="selectVariant(this)" data-name="Russian Twists — 2×20 (10/side)" data-instructions="Rest: 30 sec | Time: ~4 min | Targets: Obliques, core stability | Rotate torso side to side holding weight.">Russian Twists <span>(obliques, rotational core)</span></div>
+          <div class="variant-option selected" onclick="selectVariant(this)" data-name="Side Plank — 2×20s/side" data-instructions="Rest: 30 sec | Time: ~4 min | Targets: Obliques, core stability | Keep body in straight line on side." data-media-key="side-plank">Side Plank <span>(obliques, core stability)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Pallof Press — 2×10/side" data-instructions="Rest: 30 sec | Time: ~4 min | Targets: Obliques, core stability | Press cable straight out resisting rotation." data-media-key="pallof-press">Pallof Press <span>(obliques, anti-rotation)</span></div>
+          <div class="variant-option" onclick="selectVariant(this)" data-name="Russian Twists — 2×20 (10/side)" data-instructions="Rest: 30 sec | Time: ~4 min | Targets: Obliques, core stability | Rotate torso side to side holding weight." data-media-key="russian-twists">Russian Twists <span>(obliques, rotational core)</span></div>
         </div>
       </li>
     </ul>
@@ -444,9 +595,9 @@
   <div class="section cooldown">
     <h3>Cooldown (5 minutes)</h3>
     <ul>
-      <li><label><input type="checkbox" /><span>Hamstring stretch &mdash; 30s/side</span></label></li>
-      <li><label><input type="checkbox" /><span>Quad stretch &mdash; 30s/side</span></label></li>
-      <li><label><input type="checkbox" /><span>Breathing &mdash; 1&ndash;2 min</span></label></li>
+      <li><label><input type="checkbox" /><span>Hamstring stretch — 30s/side</span></label></li>
+      <li><label><input type="checkbox" /><span>Quad stretch — 30s/side</span></label></li>
+      <li><label><input type="checkbox" /><span>Breathing — 1–2 min</span></label></li>
     </ul>
   </div>
 
@@ -455,6 +606,238 @@
 
 <script>
 let deferredPrompt;
+
+// Centralized exercise media database
+const exerciseMedia = {
+  // Push Day
+  'flat-bench-press': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Bench',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Bench+Press+GIF',
+    video: 'https://www.youtube.com/watch?v=rT7DgCr-3pg'
+  },
+  'push-ups': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Push-Up',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Push-Up+GIF',
+    video: 'https://www.youtube.com/watch?v=IODxDxX7oi4'
+  },
+  'chest-fly': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Fly',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Chest+Fly+GIF',
+    video: 'https://www.youtube.com/watch?v=eozdVDA78K0'
+  },
+  'overhead-press': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=OHP',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Overhead+Press+GIF',
+    video: 'https://www.youtube.com/watch?v=2yjwXTZQDDI'
+  },
+  'arnold-press': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Arnold',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Arnold+Press+GIF',
+    video: 'https://www.youtube.com/watch?v=6Z15_WdXmVw'
+  },
+  'landmine-press': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Landmine',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Landmine+Press+GIF',
+    video: 'https://www.youtube.com/watch?v=kzbnHIDFEXA'
+  },
+  'incline-press': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Incline',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Incline+Press+GIF',
+    video: 'https://www.youtube.com/watch?v=8iPEnn-ltC8'
+  },
+  'incline-fly': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Inc+Fly',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Incline+Fly+GIF',
+    video: 'https://www.youtube.com/watch?v=IP22TBj_KU'
+  },
+  'cable-fly': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Cable',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Cable+Fly+GIF',
+    video: 'https://www.youtube.com/watch?v=taI4XduLpTk'
+  },
+  'tricep-pushdown': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Tricep',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Tricep+Pushdown+GIF',
+    video: 'https://www.youtube.com/watch?v=2-LAMcpzODU'
+  },
+  'overhead-tricep-ext': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=OH+Ext',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Overhead+Extension+GIF',
+    video: 'https://www.youtube.com/watch?v=YbX7Wd8jQ-Q'
+  },
+  'close-grip-pushup': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=CG+Push',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Close-Grip+Pushup+GIF',
+    video: 'https://www.youtube.com/watch?v=nTJQJzGkGTg'
+  },
+  'plank': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Plank',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Plank+GIF',
+    video: 'https://www.youtube.com/watch?v=ASdvN_XEl_c'
+  },
+  'mountain-climbers': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Mtn+Clmb',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Mountain+Climbers+GIF',
+    video: 'https://www.youtube.com/watch?v=nmwgirgXLYM'
+  },
+  'ab-wheel': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Ab+Wheel',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Ab+Wheel+GIF',
+    video: 'https://www.youtube.com/watch?v=EXm4BDrxT1g'
+  },
+  // Pull Day
+  'cable-row': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Row',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Cable+Row+GIF',
+    video: 'https://www.youtube.com/watch?v=GZbfZ033f74'
+  },
+  'dumbbell-row': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=DB+Row',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=DB+Row+GIF',
+    video: 'https://www.youtube.com/watch?v=roCP6wCXPqo'
+  },
+  'barbell-row': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=BB+Row',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=BB+Row+GIF',
+    video: 'https://www.youtube.com/watch?v=FWJR5Ve8bnQ'
+  },
+  'lat-pulldown': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Pulldown',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Lat+Pulldown+GIF',
+    video: 'https://www.youtube.com/watch?v=CAwf7n6Luuc'
+  },
+  'pull-ups': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Pull-Up',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Pull-Up+GIF',
+    video: 'https://www.youtube.com/watch?v=eGo4IYlbE5g'
+  },
+  'straight-arm-pulldown': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=SA+PD',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Straight+Arm+GIF',
+    video: 'https://www.youtube.com/watch?v=kiuVA0gs3EI'
+  },
+  'face-pulls': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Face',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Face+Pulls+GIF',
+    video: 'https://www.youtube.com/watch?v=rep-qVOkqgk'
+  },
+  'reverse-fly': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Rev+Fly',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Reverse+Fly+GIF',
+    video: 'https://www.youtube.com/watch?v=ea-H-QB1ZNg'
+  },
+  'upright-row': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Upright',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Upright+Row+GIF',
+    video: 'https://www.youtube.com/watch?v=TkRz-5gdT2M'
+  },
+  'bicep-curls': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Curls',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Bicep+Curls+GIF',
+    video: 'https://www.youtube.com/watch?v=ykJmrZ5v0Oo'
+  },
+  'hammer-curls': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Hammer',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Hammer+Curls+GIF',
+    video: 'https://www.youtube.com/watch?v=zC3nLlEvin4'
+  },
+  'cable-curls': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Cable',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Cable+Curls+GIF',
+    video: 'https://www.youtube.com/watch?v=Jvj2wV0vOYU'
+  },
+  'dead-bug': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Bug',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Dead+Bug+GIF',
+    video: 'https://www.youtube.com/watch?v=4XLEnwUr1d8'
+  },
+  'bird-dog': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Bird',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Bird+Dog+GIF',
+    video: 'https://www.youtube.com/watch?v=wiFNA3sqjCA'
+  },
+  'hollow-body': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Hollow',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Hollow+Body+GIF',
+    video: 'https://www.youtube.com/watch?v=LlDNef_Ztsc'
+  },
+  // Legs Day
+  'goblet-squat': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Goblet',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Goblet+Squat+GIF',
+    video: 'https://www.youtube.com/watch?v=MeIiIdhvXT4'
+  },
+  'back-squat': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=BB+Squat',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Back+Squat+GIF',
+    video: 'https://www.youtube.com/watch?v=ultWZbUMPL8'
+  },
+  'leg-press': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Leg+Press',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Leg+Press+GIF',
+    video: 'https://www.youtube.com/watch?v=IZxyjW7MPJQ'
+  },
+  'rdl': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=RDL',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=RDL+GIF',
+    video: 'https://www.youtube.com/watch?v=2SHsk9AzdjA'
+  },
+  'leg-curl': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Leg+Curl',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Leg+Curl+GIF',
+    video: 'https://www.youtube.com/watch?v=ELOCsoDSmrg'
+  },
+  'good-mornings': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=GM',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Good+Mornings+GIF',
+    video: 'https://www.youtube.com/watch?v=YA-h3n9L4YU'
+  },
+  'bulgarian-split': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=BSS',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Bulgarian+Split+GIF',
+    video: 'https://www.youtube.com/watch?v=2C-uNgKwPLE'
+  },
+  'walking-lunges': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Lunges',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Walking+Lunges+GIF',
+    video: 'https://www.youtube.com/watch?v=L8fvypPrzzs'
+  },
+  'step-ups': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Step-Up',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Step-Ups+GIF',
+    video: 'https://www.youtube.com/watch?v=dQqApCGd5Ss'
+  },
+  'calf-raises': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Calves',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Calf+Raise+GIF',
+    video: 'https://www.youtube.com/watch?v=gwLzBJYoWlI'
+  },
+  'seated-calf': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Seated',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Seated+Calf+GIF',
+    video: 'https://www.youtube.com/watch?v=JbyjNymZOt0'
+  },
+  'single-calf': {
+    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Single',
+    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Single+Leg+GIF',
+    video: 'https://www.youtube.com/watch?v=gwLzBJYoWlI'
+  },
+  'side-plank': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Side',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Side+Plank+GIF',
+    video: 'https://www.youtube.com/watch?v=K2VljzCC16g'
+  },
+  'pallof-press': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Pallof',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Pallof+Press+GIF',
+    video: 'https://www.youtube.com/watch?v=AH_QZLm_0-s'
+  },
+  'russian-twists': {
+    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Russian',
+    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Russian+Twists+GIF',
+    video: 'https://www.youtube.com/watch?v=wkD8rjkodUI'
+  }
+};
 
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
@@ -486,9 +869,20 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  loadProgress();
 
+document.addEventListener('DOMContentLoaded', () => {
+  const STORAGE_KEY = 'workoutTrackerState';
+  const STATE_VERSION = 1;
+  const PROGRAM_VERSION = '2026-01-v2.1';
+
+  // In-memory working state (persisted to localStorage)
+  let state = loadState();
+
+  assignStableIds();
+  applyMediaFromKeys();
+  applyStateToUI();
+
+  // ---------- Public API ----------
   window.showDay = function(dayId, tabBtn) {
     const day = document.getElementById(dayId);
     if (!day || !tabBtn) return;
@@ -501,8 +895,14 @@ document.addEventListener('DOMContentLoaded', () => {
   window.clearChecks = function(dayId) {
     const container = document.getElementById(dayId);
     if (!container) return;
-    container.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
-    saveProgress();
+
+    container.querySelectorAll('input[type="checkbox"]').forEach(c => {
+      c.checked = false;
+      const checkId = c.dataset.checkId;
+      if (checkId) delete state.checkmarks[checkId];
+    });
+
+    persistState();
   };
 
   window.expandSVG = function(el) {
@@ -510,6 +910,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('overlayContent');
     if (!overlay || !container || !el) return;
     container.innerHTML = el.innerHTML;
+    overlay.classList.add('active');
+  };
+
+  window.expandImage = function(event, url) {
+    event.stopPropagation();
+    const overlay = document.getElementById('svgOverlay');
+    const container = document.getElementById('overlayContent');
+    if (!overlay || !container) return;
+    container.innerHTML = `<img src="${url}" alt="Exercise demonstration" />`;
     overlay.classList.add('active');
   };
 
@@ -531,53 +940,205 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const nameEl = exerciseItem.querySelector('.exercise-name');
     const instructionsEl = exerciseItem.querySelector('.instructions');
+    const videoLink = exerciseItem.querySelector('.video-link');
+    const visualEl = exerciseItem.querySelector('.exercise-visual');
+    const imgEl = visualEl ? visualEl.querySelector('img') : null;
 
-    nameEl.textContent = option.dataset.name;
-    instructionsEl.textContent = option.dataset.instructions;
+    const mediaKey = option.dataset.mediaKey;
+    const media = mediaKey ? exerciseMedia[mediaKey] : null;
+
+    if (nameEl) nameEl.textContent = option.dataset.name || nameEl.textContent;
+    if (instructionsEl && option.dataset.instructions) {
+      // Preserve existing display style while avoiding brittle parsing
+      const normalized = option.dataset.instructions
+        .split('|')
+        .map(s => s.trim())
+        .filter(Boolean)
+        .map(line => {
+          const idx = line.indexOf(':');
+          if (idx === -1) return line;
+          const k = line.slice(0, idx).trim();
+          const v = line.slice(idx + 1).trim();
+          return `<strong>${k}:</strong> ${v}`;
+        })
+        .join('<br>');
+      instructionsEl.innerHTML = normalized;
+    }
+
+    // Update media key on the exercise (single source of truth)
+    if (visualEl && mediaKey) visualEl.dataset.mediaKey = mediaKey;
+    if (videoLink && mediaKey) videoLink.dataset.mediaKey = mediaKey;
+
+    if (media) {
+      if (videoLink && media.video) videoLink.href = media.video;
+      if (imgEl && media.img) {
+        imgEl.src = media.img;
+        imgEl.alt = option.dataset.name || imgEl.alt;
+      }
+      if (visualEl && media.imgFull) {
+        visualEl.onclick = (e) => expandImage(e, media.imgFull);
+      }
+    }
+
+    // Persist selection by stable exercise id
+    const exerciseId = exerciseItem.dataset.exerciseId;
+    if (exerciseId && mediaKey) {
+      state.selections[exerciseId] = mediaKey;
+      persistState();
+    }
 
     container.classList.remove('active');
-
     container.querySelectorAll('.variant-option').forEach(v => v.classList.remove('selected'));
     option.classList.add('selected');
   };
 
+  // ---------- Event Wiring ----------
   document.addEventListener('change', function(e) {
-    if (e.target.type === 'checkbox') {
-      saveProgress();
+    if (e.target && e.target.type === 'checkbox') {
+      const checkId = e.target.dataset.checkId;
+      if (!checkId) return;
+      if (e.target.checked) state.checkmarks[checkId] = true;
+      else delete state.checkmarks[checkId];
+      persistState();
     }
   });
 
-  function saveProgress() {
-    const state = {};
-    document.querySelectorAll('input[type="checkbox"]').forEach((checkbox, index) => {
-      state[`checkbox-${index}`] = checkbox.checked;
-    });
+  // ---------- State + Media ----------
+  function defaultState() {
+    return {
+      stateVersion: STATE_VERSION,
+      programVersion: PROGRAM_VERSION,
+      checkmarks: {},
+      selections: {}
+    };
+  }
+
+  function loadState() {
     try {
-      localStorage.setItem('workout-progress', JSON.stringify(state));
-    } catch (e) {
-      console.error('Failed to save progress:', e);
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return defaultState();
+      const parsed = JSON.parse(raw);
+
+      if (!parsed || typeof parsed !== 'object') return defaultState();
+      if (parsed.stateVersion !== STATE_VERSION) return defaultState();
+      if (parsed.programVersion !== PROGRAM_VERSION) return defaultState();
+
+      return {
+        stateVersion: STATE_VERSION,
+        programVersion: PROGRAM_VERSION,
+        checkmarks: parsed.checkmarks && typeof parsed.checkmarks === 'object' ? parsed.checkmarks : {},
+        selections: parsed.selections && typeof parsed.selections === 'object' ? parsed.selections : {}
+      };
+    } catch (_) {
+      return defaultState();
     }
   }
 
-  function loadProgress() {
+  function persistState() {
     try {
-      const saved = localStorage.getItem('workout-progress');
-      if (saved) {
-        const state = JSON.parse(saved);
-        document.querySelectorAll('input[type="checkbox"]').forEach((checkbox, index) => {
-          if (state[`checkbox-${index}`] !== undefined) {
-            checkbox.checked = state[`checkbox-${index}`];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (_) {
+      // Ignore storage errors (private mode, quota, etc.)
+    }
+  }
+
+  function assignStableIds() {
+    document.querySelectorAll('.day').forEach(day => {
+      const dayId = day.id || 'day';
+      let warmIdx = 0;
+      let coolIdx = 0;
+      let miscIdx = 0;
+
+      day.querySelectorAll('li').forEach(li => {
+        const checkbox = li.querySelector('input[type="checkbox"]');
+        if (!checkbox) return;
+
+        const section = li.closest('.section');
+        const sectionIsWarm = section && section.classList.contains('warmup');
+        const sectionIsCool = section && section.classList.contains('cooldown');
+
+        // Strength/core exercises: use the media key as stable identity when possible
+        const visual = li.querySelector('.exercise-visual');
+        const mediaKey = visual && visual.dataset.mediaKey ? visual.dataset.mediaKey : null;
+
+        let itemId;
+        if (li.classList.contains('exercise-li')) {
+          // reserved if you later add a class
+          itemId = `${dayId}-ex-${mediaKey || (miscIdx++)}`;
+        } else if (visual && li.querySelector('.exercise-name')) {
+          itemId = `${dayId}-ex-${mediaKey || (miscIdx++)}`;
+        } else if (sectionIsWarm) {
+          itemId = `${dayId}-warmup-${warmIdx++}`;
+        } else if (sectionIsCool) {
+          itemId = `${dayId}-cooldown-${coolIdx++}`;
+        } else {
+          itemId = `${dayId}-item-${miscIdx++}`;
+        }
+
+        if (!li.dataset.exerciseId && (visual && li.querySelector('.exercise-name'))) {
+          li.dataset.exerciseId = itemId;
+        }
+
+        checkbox.dataset.checkId = itemId;
+
+        // Tag variants with stable ids (variantId = mediaKey)
+        const variants = li.querySelectorAll('.variant-option');
+        variants.forEach(v => {
+          if (v.dataset.mediaKey) {
+            v.dataset.variantId = v.dataset.mediaKey;
+            if (li.dataset.exerciseId) v.dataset.exerciseId = li.dataset.exerciseId;
           }
         });
-      }
-    } catch (e) {
-      console.error('Failed to load progress:', e);
-    }
+      });
+    });
   }
 
-  window.saveProgress = saveProgress;
-  window.loadProgress = loadProgress;
+  function applyMediaFromKeys() {
+    // Initialize all exercise visuals from centralized media
+    document.querySelectorAll('.exercise-visual').forEach(visual => {
+      const mediaKey = visual.dataset.mediaKey;
+      if (!mediaKey || !exerciseMedia[mediaKey]) return;
+
+      const media = exerciseMedia[mediaKey];
+      const img = visual.querySelector('img');
+      if (img && media.img) img.src = media.img;
+      if (media.imgFull) {
+        visual.onclick = (e) => expandImage(e, media.imgFull);
+      }
+    });
+
+    // Initialize all video links from centralized media
+    document.querySelectorAll('.video-link').forEach(link => {
+      const mediaKey = link.dataset.mediaKey;
+      if (!mediaKey || !exerciseMedia[mediaKey] || !exerciseMedia[mediaKey].video) return;
+      link.href = exerciseMedia[mediaKey].video;
+    });
+  }
+
+  function applyStateToUI() {
+    // Apply checkmarks
+    document.querySelectorAll('input[type="checkbox"]').forEach(c => {
+      const checkId = c.dataset.checkId;
+      if (!checkId) return;
+      c.checked = !!state.checkmarks[checkId];
+    });
+
+    // Apply saved variant selections
+    document.querySelectorAll('li[data-exercise-id], li[data-exercise-id=""]').forEach(li => {
+      const exerciseId = li.dataset.exerciseId;
+      if (!exerciseId) return;
+      const selectedKey = state.selections[exerciseId];
+      if (!selectedKey) return;
+
+      const option = li.querySelector(`.variant-option[data-media-key="${CSS.escape(selectedKey)}"]`);
+      if (option) {
+        // Update selection styling + UI media
+        window.selectVariant(option);
+      }
+    });
+  }
 });
+
 </script>
 
 </body>

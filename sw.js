@@ -1,8 +1,10 @@
-const CACHE_NAME = 'workout-tracker-v3';  // ← Increment this each major update
+const CACHE_NAME = 'workout-tracker-v4';  // ← Increment this each major update
 const urlsToCache = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 // Install event - cache files
