@@ -1,11 +1,15 @@
-const CACHE_NAME = 'workout-tracker-v5';  // ← Increment this each major update
+const CACHE_NAME = 'workout-tracker-v6';  // ← Increment this each major update
+const RUNTIME_CACHE = 'workout-tracker-runtime-v1';
 const urlsToCache = [
   './',
   './index.html',
+  './styles.css',
+  './app.js',
   './manifest.json',
   './icon-192.png',
   './icon-512.png'
 ];
+const OFFLINE_FALLBACK_URL = './index.html';
 
 // Install event - cache files
 self.addEventListener('install', event => {
@@ -27,7 +31,7 @@ self.addEventListener('activate', event => {
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
+          if (cacheName !== CACHE_NAME && cacheName !== RUNTIME_CACHE) {
             console.log('[Service Worker] Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
@@ -39,18 +43,46 @@ self.addEventListener('activate', event => {
 
 // Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        if (response) {
-          console.log('[Service Worker] Serving from cache:', event.request.url);
+  const { request } = event;
+  if (request.method !== 'GET') return;
+
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          const copy = response.clone();
+          caches.open(RUNTIME_CACHE).then(cache => cache.put(request, copy));
           return response;
-        }
-        console.log('[Service Worker] Fetching from network:', event.request.url);
-        return fetch(event.request);
+        })
+        .catch(() => caches.match(request).then(res => res || caches.match(OFFLINE_FALLBACK_URL)))
+    );
+    return;
+  }
+
+  if (request.destination === 'image' || request.destination === 'video') {
+    event.respondWith(
+      caches.match(request).then(cached => {
+        const fetchPromise = fetch(request)
+          .then(response => {
+            const copy = response.clone();
+            caches.open(RUNTIME_CACHE).then(cache => cache.put(request, copy));
+            return response;
+          })
+          .catch(() => cached);
+        return cached || fetchPromise;
       })
-      .catch(error => {
-        console.error('[Service Worker] Fetch failed:', error);
-      })
+    );
+    return;
+  }
+
+  event.respondWith(
+    caches.match(request).then(cached => {
+      if (cached) return cached;
+      return fetch(request).then(response => {
+        const copy = response.clone();
+        caches.open(RUNTIME_CACHE).then(cache => cache.put(request, copy));
+        return response;
+      });
+    })
   );
 });
