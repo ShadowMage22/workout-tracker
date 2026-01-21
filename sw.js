@@ -2,6 +2,8 @@ const CACHE_NAME = 'workout-tracker-v5';  // ← Increment this each major updat
 const urlsToCache = [
   './',
   './index.html',
+  './styles.css',
+  './app.js',
   './manifest.json',
   './icon-192.png',
   './icon-512.png'
