@@ -272,6 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // In-memory working state (persisted to localStorage)
   let state = loadState();
 
+  enhanceAccessibility();
   assignStableIds();
   applyMediaFromKeys();
   applyStateToUI();
@@ -368,6 +369,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (imgEl && media.img) {
         imgEl.src = media.img;
         imgEl.alt = option.dataset.name || imgEl.alt;
+        if (visualEl && imgEl.alt) {
+          visualEl.setAttribute('aria-label', imgEl.alt);
+        }
       }
       if (visualEl && media.imgFull) {
         visualEl.onclick = (e) => expandImage(e, media.imgFull);
@@ -483,6 +487,42 @@ document.addEventListener('DOMContentLoaded', () => {
             if (li.dataset.exerciseId) v.dataset.exerciseId = li.dataset.exerciseId;
           }
         });
+      });
+    });
+  }
+
+  function enhanceAccessibility() {
+    document.querySelectorAll('.exercise-visual, .svg-wrap').forEach(el => {
+      if (!el.hasAttribute('role')) el.setAttribute('role', 'button');
+      if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+      const img = el.querySelector('img');
+      const label = img && img.alt ? img.alt : 'Exercise demonstration';
+      if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', label);
+    });
+
+    document.querySelectorAll('.exercise-visual img').forEach(img => {
+      if (!img.hasAttribute('loading')) img.loading = 'lazy';
+      if (!img.hasAttribute('decoding')) img.decoding = 'async';
+      if (!img.hasAttribute('width')) img.width = 80;
+      if (!img.hasAttribute('height')) img.height = 80;
+    });
+
+    const overlayClose = document.querySelector('#svgOverlay .close');
+    if (overlayClose) {
+      overlayClose.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          window.closeOverlay();
+        }
+      });
+    }
+
+    document.querySelectorAll('.exercise-visual, .svg-wrap').forEach(el => {
+      el.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          el.click();
+        }
       });
     });
   }
