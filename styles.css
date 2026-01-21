@@ -1,0 +1,170 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  margin: 0;
+  padding: 12px;
+  background: #f2f2f2;
+  line-height: 1.5;
+}
+h1 { font-size: 1.4rem; margin-bottom: 8px; }
+h2 { font-size: 1.2rem; margin-top: 0; }
+h3 { font-size: 1rem; margin-bottom: 6px; }
+
+.install-prompt {
+  background: #4a6fd6;
+  color: white;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  display: none;
+  align-items: center;
+  gap: 10px;
+}
+.install-prompt.show { display: flex; }
+.install-prompt button {
+  background: white;
+  color: #4a6fd6;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  margin-left: auto;
+}
+.install-prompt .close-install {
+  background: transparent;
+  color: white;
+  padding: 4px 8px;
+  margin-left: 0;
+  font-size: 1.2rem;
+}
+
+.tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+.tab { flex: 1; padding: 10px; border-radius: 10px; border: none; background: #ddd; font-weight: 600; }
+.tab.active { background: #222; color: #fff; }
+
+.day { display: none; background: #ffffff; border-radius: 14px; padding: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+.day.active { display: block; }
+
+.section { margin-bottom: 14px; }
+ul { list-style: none; padding-left: 0; margin: 0; }
+li { margin-bottom: 12px; }
+
+label { display: flex; gap: 10px; align-items: flex-start; transition: opacity 0.2s; }
+input[type="checkbox"] { margin-top: 6px; transform: scale(1.3); }
+
+input[type="checkbox"]:checked ~ .exercise-name,
+input[type="checkbox"]:checked ~ span:not(.exercise-name) {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+label:has(input[type="checkbox"]:checked) {
+  opacity: 0.6;
+}
+
+.exercise { display: flex; gap: 10px; align-items: flex-start; }
+.svg-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: #f0f0f0;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.exercise-visual {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  background: #f0f0f0;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  border: 2px solid #e0e0e0;
+}
+
+.exercise-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.exercise-visual .placeholder {
+  font-size: 2rem;
+  color: #ccc;
+}
+
+.expand-hint {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.variants-toggle { font-size: 0.75rem; color: #0066cc; cursor: pointer; margin-left: 76px; margin-top: 4px; }
+.exercise-variants { display: none; margin-left: 76px; margin-top: 6px; border-left: 2px solid #ddd; padding-left: 8px; }
+.exercise-variants.active { display: block; }
+.variant-option { font-size: 0.8rem; margin-bottom: 6px; cursor: pointer; }
+.variant-option span { color: #666; font-size: 0.75rem; }
+.variant-option.selected { font-weight: bold; color: #d64545; }
+
+svg { width: 44px; height: 44px; }
+.primary { fill: #d64545; stroke: #d64545; }
+.secondary { fill: #4a6fd6; stroke: #4a6fd6; }
+.movement { stroke-dasharray: 4 2; }
+
+.instructions { font-size: 0.85rem; color: #444; margin-left: 76px; }
+
+.video-link {
+  margin-left: 76px;
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #0066cc;
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #f0f7ff;
+  transition: background 0.2s;
+}
+
+.video-link:hover {
+  background: #e3f2fd;
+}
+
+.video-link::before {
+  content: '▶';
+  font-size: 0.7rem;
+}
+
+button.clear { width: 100%; padding: 10px; font-size: 0.95rem; border: none; border-radius: 10px; background: #222; color: #fff; margin-top: 10px; }
+
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; }
+.overlay.active { display: flex; }
+.overlay img {
+  width: 90vw;
+  max-width: 400px;
+  height: auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+}
+.overlay svg { width: 80vw; height: 80vw; max-width: 360px; max-height: 360px; background: #fff; border-radius: 16px; padding: 16px; }
+.overlay .close { position: absolute; top: 16px; right: 16px; font-size: 1.4rem; color: #fff; cursor: pointer; }
