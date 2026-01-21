@@ -166,5 +166,13 @@ button.clear { width: 100%; padding: 10px; font-size: 0.95rem; border: none; bor
   border-radius: 16px;
   padding: 16px;
 }
+.overlay video {
+  width: 90vw;
+  max-width: 400px;
+  height: auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+}
 .overlay svg { width: 80vw; height: 80vw; max-width: 360px; max-height: 360px; background: #fff; border-radius: 16px; padding: 16px; }
 .overlay .close { position: absolute; top: 16px; right: 16px; font-size: 1.4rem; color: #fff; cursor: pointer; }

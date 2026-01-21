@@ -308,12 +308,28 @@ document.addEventListener('DOMContentLoaded', () => {
     overlay.classList.add('active');
   };
 
-  window.expandImage = function(event, url) {
+  function isVideoSource(url) {
+    return typeof url === 'string' && /\.(mp4|webm|ogg)(\?|#|$)/i.test(url);
+  }
+
+  function getPreviewImage(media) {
+    if (!media) return null;
+    if (media.preview) return media.preview;
+    if (media.imgFull && media.imgFull.toLowerCase().endsWith('.gif')) return media.imgFull;
+    return media.img || null;
+  }
+
+  window.expandMedia = function(event, url, altText = 'Exercise demonstration') {
     event.stopPropagation();
     const overlay = document.getElementById('svgOverlay');
     const container = document.getElementById('overlayContent');
-    if (!overlay || !container) return;
-    container.innerHTML = `<img src="${url}" alt="Exercise demonstration" />`;
+    if (!overlay || !container || !url) return;
+    const safeAlt = altText || 'Exercise demonstration';
+    if (isVideoSource(url)) {
+      container.innerHTML = `<video src="${url}" controls autoplay loop muted playsinline></video>`;
+    } else {
+      container.innerHTML = `<img src="${url}" alt="${safeAlt}" />`;
+    }
     overlay.classList.add('active');
   };
 
@@ -366,15 +382,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (media) {
       if (videoLink && media.video) videoLink.href = media.video;
-      if (imgEl && media.img) {
-        imgEl.src = media.img;
+      const previewSrc = getPreviewImage(media);
+      if (imgEl && previewSrc) {
+        imgEl.src = previewSrc;
         imgEl.alt = option.dataset.name || imgEl.alt;
         if (visualEl && imgEl.alt) {
           visualEl.setAttribute('aria-label', imgEl.alt);
         }
       }
       if (visualEl && media.imgFull) {
-        visualEl.onclick = (e) => expandImage(e, media.imgFull);
+        visualEl.onclick = (e) => expandMedia(e, media.imgFull, imgEl ? imgEl.alt : undefined);
       }
     }
 
@@ -535,9 +552,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const media = exerciseMedia[mediaKey];
       const img = visual.querySelector('img');
-      if (img && media.img) img.src = media.img;
+      const previewSrc = getPreviewImage(media);
+      if (img && previewSrc) img.src = previewSrc;
       if (media.imgFull) {
-        visual.onclick = (e) => expandImage(e, media.imgFull);
+        visual.onclick = (e) => expandMedia(e, media.imgFull, img ? img.alt : undefined);
       }
     });
 
