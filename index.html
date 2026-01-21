@@ -609,233 +609,235 @@ let deferredPrompt;
 
 // Centralized exercise media database
 const exerciseMedia = {
-  // Push Day
-  'flat-bench-press': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Bench',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Bench+Press+GIF',
-    video: 'https://www.youtube.com/watch?v=VmB1G1K7v94'
+  // PUSH
+  "flat-bench-press": {
+    video: "https://www.youtube.com/watch?v=gRVjAtPip0Y",
+    img: "https://img.youtube.com/vi/gRVjAtPip0Y/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/gRVjAtPip0Y/hqdefault.jpg"
   },
-  'push-ups': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Push-Up',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Push-Up+GIF',
-    video: 'https://www.youtube.com/watch?v=IODxDxX7oi4'
+  "push-ups": {
+    video: "https://www.youtube.com/watch?v=_l3ySVKYVJ8",
+    img: "https://img.youtube.com/vi/_l3ySVKYVJ8/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/_l3ySVKYVJ8/hqdefault.jpg"
   },
-  'chest-fly': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Fly',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Chest+Fly+GIF',
-    video: 'https://www.youtube.com/watch?v=eozdVDA78K0'
+  "chest-fly": {
+    video: "https://www.youtube.com/watch?v=eozdVDA78K0",
+    img: "https://img.youtube.com/vi/eozdVDA78K0/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/eozdVDA78K0/hqdefault.jpg"
   },
-  'overhead-press': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=OHP',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Overhead+Press+GIF',
-    video: 'https://www.youtube.com/watch?v=M2rwvNhTOu0'
+  "overhead-press": {
+    video: "https://www.youtube.com/watch?v=qEwKCR5JCog",
+    img: "https://img.youtube.com/vi/qEwKCR5JCog/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/qEwKCR5JCog/hqdefault.jpg"
   },
-  'arnold-press': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Arnold',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Arnold+Press+GIF',
-    video: 'https://www.youtube.com/watch?v=6Z15_WdXmVw'
+  "arnold-press": {
+    video: "https://www.youtube.com/watch?v=vj2w851ZHRM",
+    img: "https://img.youtube.com/vi/vj2w851ZHRM/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/vj2w851ZHRM/hqdefault.jpg"
   },
-  'landmine-press': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Landmine',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Landmine+Press+GIF',
-    video: 'https://www.youtube.com/watch?v=kzbnHIDFEXA'
+  "landmine-press": {
+    video: "https://www.youtube.com/watch?v=G0ZxJwTny3U",
+    img: "https://img.youtube.com/vi/G0ZxJwTny3U/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/G0ZxJwTny3U/hqdefault.jpg"
   },
-  'incline-press': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Incline',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Incline+Press+GIF',
-    video: 'https://www.youtube.com/watch?v=8iPEnn-ltC8'
+  "incline-press": {
+    video: "https://www.youtube.com/watch?v=8iPEnn-ltC8",
+    img: "https://img.youtube.com/vi/8iPEnn-ltC8/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/8iPEnn-ltC8/hqdefault.jpg"
   },
-  'incline-fly': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Inc+Fly',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Incline+Fly+GIF',
-    video: 'https://www.youtube.com/watch?v=idAvu2HvqSQ'
+  "incline-fly": {
+    video: "https://www.youtube.com/watch?v=3xKsdFfbYTM",
+    img: "https://img.youtube.com/vi/3xKsdFfbYTM/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/3xKsdFfbYTM/hqdefault.jpg"
   },
-  'cable-fly': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Cable',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Cable+Fly+GIF',
-    video: 'https://www.youtube.com/watch?v=eQ_NBB6OBH4'
+  "cable-fly": {
+    video: "https://www.youtube.com/watch?v=taI4XduLpTk",
+    img: "https://img.youtube.com/vi/taI4XduLpTk/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/taI4XduLpTk/hqdefault.jpg"
   },
-  'tricep-pushdown': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Tricep',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Tricep+Pushdown+GIF',
-    video: 'https://www.youtube.com/watch?v=2-LAMcpzODU'
+  "tricep-pushdown": {
+    video: "https://www.youtube.com/watch?v=2-LqU9xeYVY",
+    img: "https://img.youtube.com/vi/2-LqU9xeYVY/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/2-LqU9xeYVY/hqdefault.jpg"
   },
-  'overhead-tricep-ext': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=OH+Ext',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Overhead+Extension+GIF',
-    video: 'https://www.youtube.com/watch?v=YbX7Wd8jQ-Q'
+  "overhead-tricep-ext": {
+    video: "https://www.youtube.com/watch?v=GzmlxvSFE7A",
+    img: "https://img.youtube.com/vi/GzmlxvSFE7A/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/GzmlxvSFE7A/hqdefault.jpg"
   },
-  'close-grip-pushup': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=CG+Push',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Close-Grip+Pushup+GIF',
-    video: 'https://www.youtube.com/watch?v=2cdIRe5tcqI'
+  "close-grip-pushup": {
+    video: "https://www.youtube.com/watch?v=IODxDxX7oi4",
+    img: "https://img.youtube.com/vi/IODxDxX7oi4/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/IODxDxX7oi4/hqdefault.jpg"
   },
-  'plank': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Plank',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Plank+GIF',
-    video: 'https://www.youtube.com/watch?v=ASdvN_XEl_c'
+  "plank": {
+    video: "https://www.youtube.com/watch?v=pSHjTRCQxIw",
+    img: "https://img.youtube.com/vi/pSHjTRCQxIw/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/pSHjTRCQxIw/hqdefault.jpg"
   },
-  'mountain-climbers': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Mtn+Clmb',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Mountain+Climbers+GIF',
-    video: 'https://www.youtube.com/watch?v=nmwgirgXLYM'
+  "mountain-climbers": {
+    video: "https://www.youtube.com/watch?v=nmwgirgXLYM",
+    img: "https://img.youtube.com/vi/nmwgirgXLYM/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/nmwgirgXLYM/hqdefault.jpg"
   },
-  'ab-wheel': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Ab+Wheel',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Ab+Wheel+GIF',
-    video: 'https://www.youtube.com/watch?v=qeqofno2lSM'
+  "ab-wheel": {
+    video: "https://www.youtube.com/watch?v=F2D08SHuZco",
+    img: "https://img.youtube.com/vi/F2D08SHuZco/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/F2D08SHuZco/hqdefault.jpg"
   },
-  // Pull Day
-  'cable-row': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Row',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Cable+Row+GIF',
-    video: 'https://www.youtube.com/watch?v=GZbfZ033f74'
+
+  // PULL
+  "cable-row": {
+    video: "https://www.youtube.com/watch?v=7BkgqzC6WsM",
+    img: "https://img.youtube.com/vi/7BkgqzC6WsM/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/7BkgqzC6WsM/hqdefault.jpg"
   },
-  'dumbbell-row': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=DB+Row',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=DB+Row+GIF',
-    video: 'https://www.youtube.com/watch?v=roCP6wCXPqo'
+  "dumbbell-row": {
+    video: "https://www.youtube.com/watch?v=gfUg6qWohTk",
+    img: "https://img.youtube.com/vi/gfUg6qWohTk/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/gfUg6qWohTk/hqdefault.jpg"
   },
-  'barbell-row': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=BB+Row',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=BB+Row+GIF',
-    video: 'https://www.youtube.com/watch?v=FWJR5Ve8bnQ'
+  "barbell-row": {
+    video: "https://www.youtube.com/watch?v=vT2GjY_Umpw",
+    img: "https://img.youtube.com/vi/vT2GjY_Umpw/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/vT2GjY_Umpw/hqdefault.jpg"
   },
-  'lat-pulldown': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Pulldown',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Lat+Pulldown+GIF',
-    video: 'https://www.youtube.com/watch?v=CAwf7n6Luuc'
+  "lat-pulldown": {
+    video: "https://www.youtube.com/watch?v=SALxEARiMkw",
+    img: "https://img.youtube.com/vi/SALxEARiMkw/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/SALxEARiMkw/hqdefault.jpg"
   },
-  'pull-ups': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Pull-Up',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Pull-Up+GIF',
-    video: 'https://www.youtube.com/watch?v=eGo4IYlbE5g'
+  "pull-ups": {
+    video: "https://www.youtube.com/watch?v=eGo4IYlbE5g",
+    img: "https://img.youtube.com/vi/eGo4IYlbE5g/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/eGo4IYlbE5g/hqdefault.jpg"
   },
-  'straight-arm-pulldown': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=SA+PD',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Straight+Arm+GIF',
-    video: 'https://www.youtube.com/watch?v=kiuVA0gs3EI'
+  "straight-arm-pulldown": {
+    video: "https://www.youtube.com/watch?v=ko0bgiRn0uQ",
+    img: "https://img.youtube.com/vi/ko0bgiRn0uQ/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/ko0bgiRn0uQ/hqdefault.jpg"
   },
-  'face-pulls': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Face',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Face+Pulls+GIF',
-    video: 'https://www.youtube.com/watch?v=rep-qVOkqgk'
+  "face-pulls": {
+    video: "https://www.youtube.com/watch?v=dT1L1dRX494",
+    img: "https://img.youtube.com/vi/dT1L1dRX494/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/dT1L1dRX494/hqdefault.jpg"
   },
-  'reverse-fly': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Rev+Fly',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Reverse+Fly+GIF',
-    video: 'https://www.youtube.com/watch?v=ea-H-QB1ZNg'
+  "reverse-fly": {
+    video: "https://www.youtube.com/watch?v=KlQf6K-1Bfc",
+    img: "https://img.youtube.com/vi/6j6BE0rWqkQ/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/6j6BE0rWqkQ/hqdefault.jpg"
   },
-  'upright-row': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Upright',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Upright+Row+GIF',
-    video: 'https://www.youtube.com/watch?v=TkRz-5gdT2M'
+  "upright-row": {
+    video: "https://www.youtube.com/watch?v=7F1KhyI36zI",
+    img: "https://img.youtube.com/vi/7F1KhyI36zI/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/7F1KhyI36zI/hqdefault.jpg"
   },
-  'bicep-curls': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Curls',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Bicep+Curls+GIF',
-    video: 'https://www.youtube.com/watch?v=ykJmrZ5v0Oo'
+  "bicep-curls": {
+    video: "https://www.youtube.com/watch?v=NFzTWp2qpiE",
+    img: "https://img.youtube.com/vi/ykJmrZ5v0Oo/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/ykJmrZ5v0Oo/hqdefault.jpg"
   },
-  'hammer-curls': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Hammer',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Hammer+Curls+GIF',
-    video: 'https://www.youtube.com/watch?v=zC3nLlEvin4'
+  "hammer-curls": {
+    video: "https://www.youtube.com/watch?v=zC3nLlEvin4",
+    img: "https://img.youtube.com/vi/zC3nLlEvin4/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/zC3nLlEvin4/hqdefault.jpg"
   },
-  'cable-curls': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Cable',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Cable+Curls+GIF',
-    video: 'https://www.youtube.com/watch?v=Jvj2wV0vOYU'
+  "cable-curls": {
+    video: "https://www.youtube.com/watch?v=2bxX2cFHtos",
+    img: "https://img.youtube.com/vi/2bxX2cFHtos/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/2bxX2cFHtos/hqdefault.jpg"
   },
-  'dead-bug': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Bug',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Dead+Bug+GIF',
-    video: 'https://www.youtube.com/watch?v=4XLEnwUr1d8'
+  "dead-bug": {
+    video: "https://www.youtube.com/watch?v=GZD20NNrE0E",
+    img: "https://img.youtube.com/vi/GZD20NNrE0E/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/GZD20NNrE0E/hqdefault.jpg"
   },
-  'bird-dog': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Bird',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Bird+Dog+GIF',
-    video: 'https://www.youtube.com/watch?v=wiFNA3sqjCA'
+  "bird-dog": {
+    video: "https://www.youtube.com/watch?v=vzYZ9hE2XjM",
+    img: "https://img.youtube.com/vi/vzYZ9hE2XjM/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/vzYZ9hE2XjM/hqdefault.jpg"
   },
-  'hollow-body': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Hollow',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Hollow+Body+GIF',
-    video: 'https://www.youtube.com/watch?v=LlDNef_Ztsc'
+  "hollow-body": {
+    video: "https://www.youtube.com/watch?v=Kd7gKchqR0g",
+    img: "https://img.youtube.com/vi/Kd7gKchqR0g/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/Kd7gKchqR0g/hqdefault.jpg"
   },
-  // Legs Day
-  'goblet-squat': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Goblet',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Goblet+Squat+GIF',
-    video: 'https://www.youtube.com/watch?v=MeIiIdhvXT4'
+
+  // LEGS
+  "goblet-squat": {
+    video: "https://www.youtube.com/watch?v=MeIiIdhvXT4",
+    img: "https://img.youtube.com/vi/MeIiIdhvXT4/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/MeIiIdhvXT4/hqdefault.jpg"
   },
-  'back-squat': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=BB+Squat',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Back+Squat+GIF',
-    video: 'https://www.youtube.com/watch?v=ultWZbUMPL8'
+  "back-squat": {
+    video: "https://www.youtube.com/watch?v=aclHkVaku9U",
+    img: "https://img.youtube.com/vi/aclHkVaku9U/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/aclHkVaku9U/hqdefault.jpg"
   },
-  'leg-press': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Leg+Press',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Leg+Press+GIF',
-    video: 'https://www.youtube.com/watch?v=IZxyjW7MPJQ'
+  "leg-press": {
+    video: "https://www.youtube.com/watch?v=IZxyjW7MPJQ",
+    img: "https://img.youtube.com/vi/IZxyjW7MPJQ/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/IZxyjW7MPJQ/hqdefault.jpg"
   },
-  'rdl': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=RDL',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=RDL+GIF',
-    video: 'https://www.youtube.com/watch?v=2SHsk9AzdjA'
+  "rdl": {
+    video: "https://www.youtube.com/watch?v=2SHsk9AzdjA",
+    img: "https://img.youtube.com/vi/2SHsk9AzdjA/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/2SHsk9AzdjA/hqdefault.jpg"
   },
-  'leg-curl': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Leg+Curl',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Leg+Curl+GIF',
-    video: 'https://www.youtube.com/watch?v=ELOCsoDSmrg'
+  "leg-curl": {
+    video: "https://www.youtube.com/watch?v=1Tq3QdYUuHs",
+    img: "https://img.youtube.com/vi/1Tq3QdYUuHs/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/1Tq3QdYUuHs/hqdefault.jpg"
   },
-  'good-mornings': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=GM',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Good+Mornings+GIF',
-    video: 'https://www.youtube.com/watch?v=YA-h3n9L4YU'
+  "good-mornings": {
+    video: "https://www.youtube.com/watch?v=W8PPpF2ZJYc",
+    img: "https://img.youtube.com/vi/W8PPpF2ZJYc/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/W8PPpF2ZJYc/hqdefault.jpg"
   },
-  'bulgarian-split': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=BSS',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Bulgarian+Split+GIF',
-    video: 'https://www.youtube.com/watch?v=2C-uNgKwPLE'
+  "bulgarian-split-squat": {
+    video: "https://www.youtube.com/watch?v=2C-uNgKwPLE",
+    img: "https://img.youtube.com/vi/2C-uNgKwPLE/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/2C-uNgKwPLE/hqdefault.jpg"
   },
-  'walking-lunges': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Lunges',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Walking+Lunges+GIF',
-    video: 'https://www.youtube.com/watch?v=L8fvypPrzzs'
+  "walking-lunges": {
+    video: "https://www.youtube.com/watch?v=QOVaHwm-QHQ",
+    img: "https://img.youtube.com/vi/QOVaHwm-QHQ/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/QOVaHwm-QHQ/hqdefault.jpg"
   },
-  'step-ups': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Step-Up',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Step-Ups+GIF',
-    video: 'https://www.youtube.com/watch?v=dQqApCGd5Ss'
+  "step-ups": {
+    video: "https://www.youtube.com/watch?v=dQqApCGd5Ss",
+    img: "https://img.youtube.com/vi/dQqApCGd5Ss/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/dQqApCGd5Ss/hqdefault.jpg"
   },
-  'calf-raises': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Calves',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Calf+Raise+GIF',
-    video: 'https://www.youtube.com/watch?v=gwLzBJYoWlI'
+  "calf-raises": {
+    video: "https://www.youtube.com/watch?v=-M4-G9pK8pE",
+    img: "https://img.youtube.com/vi/-M4-G9pK8pE/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/-M4-G9pK8pE/hqdefault.jpg"
   },
-  'seated-calf': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Seated',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Seated+Calf+GIF',
-    video: 'https://www.youtube.com/watch?v=JbyjNymZOt0'
+  "seated-calf-raise": {
+    video: "https://www.youtube.com/watch?v=YMmgqO8Jo-Y",
+    img: "https://img.youtube.com/vi/YMmgqO8Jo-Y/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/YMmgqO8Jo-Y/hqdefault.jpg"
   },
-  'single-calf': {
-    img: 'https://via.placeholder.com/80x80/4a6fd6/ffffff?text=Single',
-    imgFull: 'https://via.placeholder.com/400x400/4a6fd6/ffffff?text=Single+Leg+GIF',
-    video: 'https://www.youtube.com/watch?v=gwLzBJYoWlI'
+  "single-calf": {
+    video: "https://www.youtube.com/watch?v=ElcvJ0kjt6c",
+    img: "https://img.youtube.com/vi/QF0BQS2W80k/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/QF0BQS2W80k/hqdefault.jpg"
   },
-  'side-plank': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Side',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Side+Plank+GIF',
-    video: 'https://www.youtube.com/watch?v=K2VljzCC16g'
+  "side-plank": {
+    video: "https://www.youtube.com/watch?v=K2VljzCC16g",
+    img: "https://img.youtube.com/vi/K2VljzCC16g/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/K2VljzCC16g/hqdefault.jpg"
   },
-  'pallof-press': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Pallof',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Pallof+Press+GIF',
-    video: 'https://www.youtube.com/watch?v=AH_QZLm_0-s'
+  "pallof-press": {
+    video: "https://www.youtube.com/watch?v=Ex7kQRyWbEk",
+    img: "https://img.youtube.com/vi/Ex7kQRyWbEk/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/Ex7kQRyWbEk/hqdefault.jpg"
   },
-  'russian-twists': {
-    img: 'https://via.placeholder.com/80x80/d64545/ffffff?text=Russian',
-    imgFull: 'https://via.placeholder.com/400x400/d64545/ffffff?text=Russian+Twists+GIF',
-    video: 'https://www.youtube.com/watch?v=wkD8rjkodUI'
+  "russian-twists": {
+    video: "https://www.youtube.com/watch?v=wkD8rjkodUI",
+    img: "https://img.youtube.com/vi/wkD8rjkodUI/mqdefault.jpg",
+    imgFull: "https://img.youtube.com/vi/wkD8rjkodUI/hqdefault.jpg"
   }
 };
 
