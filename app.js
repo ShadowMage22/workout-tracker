@@ -460,6 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
   enhanceAccessibility();
   assignStableIds();
   applyMediaFromKeys();
+  prefetchMediaAssets();
   applyStateToUI();
 
   // ---------- Public API ----------
@@ -773,6 +774,25 @@ document.addEventListener('DOMContentLoaded', () => {
       const mediaKey = link.dataset.mediaKey;
       if (!mediaKey || !exerciseMedia[mediaKey] || !exerciseMedia[mediaKey].video) return;
       link.href = exerciseMedia[mediaKey].video;
+    });
+  }
+
+  function prefetchMediaAssets() {
+    const sources = new Set();
+
+    Object.values(exerciseMedia).forEach(media => {
+      if (!media) return;
+      if (media.preview) sources.add(media.preview);
+      if (media.img) sources.add(media.img);
+      if (media.imgFull) sources.add(media.imgFull);
+    });
+
+    sources.forEach(src => {
+      if (!src || /^https?:/i.test(src)) return;
+      if (isVideoSource(src)) return;
+      const img = new Image();
+      img.decoding = 'async';
+      img.src = src;
     });
   }
 
