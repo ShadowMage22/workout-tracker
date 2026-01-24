@@ -131,6 +131,63 @@ h3 { font-size: 1rem; margin-bottom: 6px; }
   margin-top: 12px;
 }
 
+.history-panel {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  margin-bottom: 16px;
+}
+.history-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.history-header label {
+  font-size: 0.8rem;
+  color: #444;
+}
+.history-header select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.85rem;
+}
+.history-subtitle {
+  margin: 6px 0 12px;
+  font-size: 0.85rem;
+  color: #555;
+}
+.history-list {
+  display: grid;
+  gap: 10px;
+}
+.history-card {
+  background: #f9fafc;
+  border: 1px solid #e2e6f0;
+  border-radius: 12px;
+  padding: 12px;
+}
+.history-card h3 {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+}
+.history-summary {
+  font-size: 0.8rem;
+  color: #4a5568;
+  margin-bottom: 8px;
+}
+.history-exercise {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+}
+.history-exercise:last-child {
+  margin-bottom: 0;
+}
+
 .install-prompt {
   background: #4a6fd6;
   color: white;
@@ -277,6 +334,58 @@ svg { width: 44px; height: 44px; }
 }
 
 button.clear { width: 100%; padding: 10px; font-size: 0.95rem; border: none; border-radius: 10px; background: #222; color: #fff; margin-top: 10px; }
+.save-session {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.set-tracker {
+  margin-left: 76px;
+  margin-top: 10px;
+  background: #f7f7f7;
+  border-radius: 10px;
+  padding: 10px;
+}
+.set-tracker h4 {
+  margin: 0 0 6px;
+  font-size: 0.8rem;
+  color: #333;
+}
+.set-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+  gap: 8px;
+  margin-bottom: 6px;
+  align-items: center;
+}
+.set-row input {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.8rem;
+}
+.set-row button {
+  border: none;
+  background: #eee;
+  border-radius: 8px;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+.set-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.set-actions button {
+  font-size: 0.75rem;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+}
+
 
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; }
 .overlay.active { display: flex; }
