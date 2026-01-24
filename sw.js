@@ -58,22 +58,81 @@ self.addEventListener('message', event => {
 });
 
 // Fetch event - serve from cache, fallback to network
-self.addEventListener('fetch', event => {
+self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
 
-  if (shouldHandleAppShell(request)) {
-    event.respondWith(
-      fetch(request)
-        .then(response => {
-          const copy = response.clone();
-          caches.open(RUNTIME_CACHE).then(cache => cache.put(request, copy));
-          return response;
-        })
-        .catch(() => caches.match(request).then(res => res || caches.match(OFFLINE_FALLBACK_URL)))
-    );
+  const url = new URL(request.url);
+  const sameOrigin = url.origin === self.location.origin;
+
+  // 1) Navigations: NETWORK-FIRST, fallback to cached index.html
+  if (request.mode === 'navigate') {
+    event.respondWith((async () => {
+      try {
+        // Always try the network for navigations
+        const networkResponse = await fetch(request);
+        // Optionally update cached index.html to keep offline fresh
+        const cache = await caches.open(CACHE_NAME);
+        cache.put('./index.html', networkResponse.clone());
+        return networkResponse;
+      } catch (err) {
+        // Offline / network error: fall back to precached index.html
+        const cached = await caches.match('./index.html');
+        return cached || Response.error();
+      }
+    })());
     return;
   }
+
+  // Only handle same-origin caching; let cross-origin pass through
+  if (!sameOrigin) return;
+
+  // 2) Media: cache-first with runtime update (your prior logic, simplified)
+  if (request.destination === 'image' || request.destination === 'video') {
+    event.respondWith((async () => {
+      const cached = await caches.match(request);
+      if (cached) return cached;
+
+      try {
+        const response = await fetch(request);
+        const cache = await caches.open(RUNTIME_CACHE);
+        cache.put(request, response.clone());
+        return response;
+      } catch (e) {
+        return cached || Response.error();
+      }
+    })());
+    return;
+  }
+
+  // 3) App shell assets (js/css/manifest): STALE-WHILE-REVALIDATE
+  // Use your existing shouldHandleAppShell but only for non-navigate assets
+  if (shouldHandleAppShell(request)) {
+    event.respondWith((async () => {
+      const cached = await caches.match(request);
+      const fetchPromise = fetch(request).then(async (response) => {
+        const cache = await caches.open(CACHE_NAME);
+        cache.put(request, response.clone());
+        return response;
+      }).catch(() => null);
+
+      // Return cache immediately if present, otherwise wait for network
+      return cached || (await fetchPromise) || Response.error();
+    })());
+    return;
+  }
+
+  // 4) Everything else: network-first or cache-first; keep simple
+  event.respondWith((async () => {
+    const cached = await caches.match(request);
+    if (cached) return cached;
+
+    const response = await fetch(request);
+    const cache = await caches.open(RUNTIME_CACHE);
+    cache.put(request, response.clone());
+    return response;
+  })());
+});
 
   if (request.destination === 'image' || request.destination === 'video') {
     event.respondWith(
