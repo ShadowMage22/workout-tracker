@@ -1,5 +1,6 @@
-const CACHE_NAME = 'workout-tracker-v11'; // bump when you deploy
-const RUNTIME_CACHE = 'workout-tracker-runtime-v1';
+const CACHE_NAME = 'workout-tracker-v12'; // bump when you deploy
+const RUNTIME_CACHE = 'workout-tracker-runtime-v2';
+const RUNTIME_CACHE_LIMIT = 60;
 
 const urlsToCache = [
   './',
@@ -22,6 +23,15 @@ function shouldHandleAppShellAsset(request) {
   return url.origin === self.location.origin
     && APP_SHELL_PATHS.has(url.pathname)
     && APP_SHELL_DESTINATIONS.has(request.destination);
+}
+
+async function trimCache(cacheName, maxEntries) {
+  const cache = await caches.open(cacheName);
+  const keys = await cache.keys();
+  if (keys.length <= maxEntries) return;
+  const excess = keys.length - maxEntries;
+  const deletions = keys.slice(0, excess).map(key => cache.delete(key));
+  await Promise.all(deletions);
 }
 
 // Install: precache shell
@@ -84,20 +94,22 @@ self.addEventListener('fetch', (event) => {
   // Let cross-origin requests pass through untouched
   if (!sameOrigin) return;
 
-  // 2) Media: CACHE-FIRST (then update runtime cache on miss)
+  // 2) Media: STALE-WHILE-REVALIDATE (cache on demand)
   if (request.destination === 'image' || request.destination === 'video') {
     event.respondWith((async () => {
-      const cached = await caches.match(request);
-      if (cached) return cached;
+      const cache = await caches.open(RUNTIME_CACHE);
+      const cached = await cache.match(request);
+      const fetchPromise = fetch(request)
+        .then(async (response) => {
+          if (response && response.ok) {
+            await cache.put(request, response.clone());
+            await trimCache(RUNTIME_CACHE, RUNTIME_CACHE_LIMIT);
+          }
+          return response;
+        })
+        .catch(() => null);
 
-      try {
-        const response = await fetch(request);
-        const cache = await caches.open(RUNTIME_CACHE);
-        await cache.put(request, response.clone());
-        return response;
-      } catch (e) {
-        return Response.error();
-      }
+      return cached || (await fetchPromise) || Response.error();
     })());
     return;
   }
