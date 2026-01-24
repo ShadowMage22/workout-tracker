@@ -1,4 +1,4 @@
-const CACHE_NAME = 'workout-tracker-v8';  // ← Increment this each major update
+const CACHE_NAME = 'workout-tracker-v9';  // ← Increment this each major update
 const RUNTIME_CACHE = 'workout-tracker-runtime-v1';
 const urlsToCache = [
   './',
@@ -10,6 +10,16 @@ const urlsToCache = [
   './icon-512.png'
 ];
 const OFFLINE_FALLBACK_URL = './index.html';
+const APP_SHELL_DESTINATIONS = new Set(['document', 'style', 'script', 'manifest']);
+const APP_SHELL_PATHS = new Set(urlsToCache.map(url => new URL(url, self.location).pathname));
+
+function shouldHandleAppShell(request) {
+  if (request.mode === 'navigate') return true;
+  const url = new URL(request.url);
+  return url.origin === self.location.origin
+    && APP_SHELL_PATHS.has(url.pathname)
+    && APP_SHELL_DESTINATIONS.has(request.destination);
+}
 
 // Install event - cache files
 self.addEventListener('install', event => {
@@ -18,7 +28,7 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('[Service Worker] Caching app shell');
-        return cache.addAll(urlsToCache);
+        return cache.addAll(urlsToCache.map(url => new Request(url, { cache: 'reload' })));
       })
       .then(() => self.skipWaiting())  // Force immediate activation
   );
@@ -41,12 +51,18 @@ self.addEventListener('activate', event => {
   );
 });
 
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 // Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', event => {
   const { request } = event;
   if (request.method !== 'GET') return;
 
-  if (request.mode === 'navigate') {
+  if (shouldHandleAppShell(request)) {
     event.respondWith(
       fetch(request)
         .then(response => {
