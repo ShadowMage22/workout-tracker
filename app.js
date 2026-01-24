@@ -480,6 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initConnectivityStatus();
   initCrossTabSync();
   initActiveTabTracking();
+  initRestTimer();
 
   // ---------- Public API ----------
   window.clearChecks = function(dayId) {
@@ -883,6 +884,137 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     showStatusMessage('Another tab is active. Switch to it to make edits.', 4000);
     return false;
+  }
+
+  function initRestTimer() {
+    const restDurationSelect = document.getElementById('restDuration');
+    const restStatus = document.getElementById('restStatus');
+    const restTimeDisplay = document.getElementById('restTimeDisplay');
+    const restPill = document.getElementById('restPill');
+    const startButton = document.getElementById('startRestTimer');
+    const stopButton = document.getElementById('stopRestTimer');
+    const notifyButton = document.getElementById('enableRestNotifications');
+
+    if (!restDurationSelect || !restStatus || !restTimeDisplay || !restPill || !startButton || !stopButton || !notifyButton) {
+      return;
+    }
+
+    let intervalId = null;
+    let endTime = null;
+
+    const formatMs = (ms) => {
+      const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
+
+    const setPillState = (state) => {
+      restPill.classList.remove('running', 'done');
+      if (state === 'running') restPill.classList.add('running');
+      if (state === 'done') restPill.classList.add('done');
+      restPill.textContent = state === 'running' ? 'Running' : state === 'done' ? 'Done' : 'Ready';
+    };
+
+    const updateButtons = (isRunning) => {
+      startButton.disabled = isRunning;
+      stopButton.disabled = !isRunning;
+      restDurationSelect.disabled = isRunning;
+    };
+
+    const renderTime = () => {
+      if (!endTime) {
+        const durationMs = Number(restDurationSelect.value || 60) * 1000;
+        restTimeDisplay.textContent = formatMs(durationMs);
+        return;
+      }
+      const remainingMs = endTime - Date.now();
+      restTimeDisplay.textContent = formatMs(remainingMs);
+    };
+
+    const finishTimer = ({ completed = false } = {}) => {
+      if (intervalId) {
+        window.clearInterval(intervalId);
+        intervalId = null;
+      }
+      endTime = null;
+      updateButtons(false);
+      setPillState(completed ? 'done' : 'ready');
+      restStatus.textContent = completed
+        ? 'Rest complete. Ready for your next set or session.'
+        : 'Rest timer stopped.';
+      renderTime();
+    };
+
+    const maybeNotify = () => {
+      if (!('Notification' in window)) return;
+      if (Notification.permission !== 'granted') return;
+      new Notification('Rest finished', {
+        body: 'Time to start your next set or move to the next exercise.',
+        tag: 'rest-timer'
+      });
+    };
+
+    const tick = () => {
+      if (!endTime) return;
+      const remainingMs = endTime - Date.now();
+      if (remainingMs <= 0) {
+        finishTimer({ completed: true });
+        maybeNotify();
+        return;
+      }
+      restStatus.textContent = `Resting… ${formatMs(remainingMs)} remaining.`;
+      renderTime();
+    };
+
+    const startTimer = async () => {
+      const durationMs = Number(restDurationSelect.value || 60) * 1000;
+      if (!durationMs) return;
+      if ('Notification' in window && Notification.permission === 'default') {
+        await requestNotificationPermission();
+      }
+      if (intervalId) window.clearInterval(intervalId);
+      endTime = Date.now() + durationMs;
+      setPillState('running');
+      updateButtons(true);
+      restStatus.textContent = 'Resting…';
+      renderTime();
+      intervalId = window.setInterval(tick, 500);
+    };
+
+    const requestNotificationPermission = async () => {
+      if (!('Notification' in window)) {
+        restStatus.textContent = 'Notifications are not supported in this browser.';
+        notifyButton.disabled = true;
+        return;
+      }
+      if (Notification.permission === 'granted') {
+        restStatus.textContent = 'Notifications are enabled for rest alerts.';
+        notifyButton.disabled = true;
+        return;
+      }
+      const result = await Notification.requestPermission();
+      if (result === 'granted') {
+        restStatus.textContent = 'Notifications enabled. You will get a rest alert.';
+        notifyButton.disabled = true;
+      } else {
+        restStatus.textContent = 'Notifications blocked. Enable them in your browser settings to get rest alerts.';
+      }
+    };
+
+    restDurationSelect.addEventListener('change', () => {
+      if (!endTime) renderTime();
+    });
+    startButton.addEventListener('click', startTimer);
+    stopButton.addEventListener('click', () => finishTimer());
+    notifyButton.addEventListener('click', requestNotificationPermission);
+
+    if ('Notification' in window && Notification.permission === 'granted') {
+      notifyButton.disabled = true;
+      restStatus.textContent = 'Notifications are enabled for rest alerts.';
+    }
+    setPillState('ready');
+    renderTime();
   }
 
   function assignStableIds() {

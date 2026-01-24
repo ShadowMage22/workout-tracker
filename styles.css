@@ -30,6 +30,20 @@ h3 { font-size: 1rem; margin-bottom: 6px; }
   justify-content: center;
   margin: 10px 0 16px;
 }
+.primary-button {
+  background: #222;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.primary-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
 .ghost-button {
   background: #fff;
   border: 1px solid #ddd;
@@ -42,6 +56,79 @@ h3 { font-size: 1rem; margin-bottom: 6px; }
 .ghost-button:hover {
   background: #f6f6f6;
   border-color: #ccc;
+}
+.ghost-button:disabled,
+.primary-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.rest-timer {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  margin-bottom: 16px;
+}
+.rest-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.rest-pill {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e8f0ff;
+  color: #20427a;
+  border: 1px solid rgba(32, 66, 122, 0.2);
+}
+.rest-pill.running {
+  background: #fff4e5;
+  color: #7a4a00;
+  border-color: rgba(122, 74, 0, 0.25);
+}
+.rest-pill.done {
+  background: #e7f7ef;
+  color: #1c6b3b;
+  border-color: rgba(28, 107, 59, 0.2);
+}
+.rest-status {
+  margin: 6px 0 12px;
+  font-size: 0.85rem;
+  color: #555;
+}
+.rest-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.rest-controls label {
+  font-size: 0.8rem;
+  color: #444;
+}
+.rest-controls select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.85rem;
+}
+.rest-time {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-left: auto;
+  color: #222;
+}
+.rest-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
 }
 
 .install-prompt {
