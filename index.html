@@ -32,6 +32,30 @@
   <button class="ghost-button" type="button" onclick="resetApp()">Reset App / End Session</button>
 </div>
 
+<section class="rest-timer" aria-live="polite">
+  <div class="rest-header">
+    <h2>Rest Timer</h2>
+    <span class="rest-pill" id="restPill">Ready</span>
+  </div>
+  <p class="rest-status" id="restStatus">Finish your workout, then start a rest timer to recover.</p>
+  <div class="rest-controls">
+    <label for="restDuration">Duration</label>
+    <select id="restDuration">
+      <option value="30">0:30</option>
+      <option value="60" selected>1:00</option>
+      <option value="90">1:30</option>
+      <option value="120">2:00</option>
+      <option value="180">3:00</option>
+    </select>
+    <div class="rest-time" id="restTimeDisplay">01:00</div>
+  </div>
+  <div class="rest-actions">
+    <button class="primary-button" type="button" id="startRestTimer">Start Rest</button>
+    <button class="ghost-button" type="button" id="stopRestTimer" disabled>Stop</button>
+    <button class="ghost-button" type="button" id="enableRestNotifications">Enable notifications</button>
+  </div>
+</section>
+
 <div class="tabs">
   <button type="button" class="tab active" data-day="push">Push</button>
   <button type="button" class="tab" data-day="pull">Pull</button>
