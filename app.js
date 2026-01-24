@@ -420,6 +420,7 @@ window.showDay = function showDay(dayId, tabBtn) {
 
   day.classList.add('active');
   if (tabBtn && tabBtn.classList) tabBtn.classList.add('active');
+  if (typeof window.loadActiveDayMedia === 'function') window.loadActiveDayMedia();
 };
 
 // ---- Tab navigation (resilient, no inline onclick required) ----
@@ -438,6 +439,7 @@ window.showDay = function showDay(dayId, tabBtn) {
     const btn = document.querySelector(`.tab[data-day="${CSS.escape(dayId)}"]`);
     if (btn) btn.classList.add('active');
   }
+  if (typeof window.loadActiveDayMedia === 'function') window.loadActiveDayMedia();
 };
 
 // Event delegation: works even if inline handlers fail
@@ -473,7 +475,7 @@ document.addEventListener('DOMContentLoaded', () => {
   enhanceAccessibility();
   assignStableIds();
   applyMediaFromKeys();
-  prefetchMediaAssets();
+  initLazyMedia();
   applyStateToUI();
   initConnectivityStatus();
   initCrossTabSync();
@@ -568,7 +570,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     clearMissingMedia(visual);
     img.onerror = () => showMissingMedia(visual, img);
-    img.src = previewSrc;
+    img.dataset.src = previewSrc;
+    img.removeAttribute('src');
+    img.classList.add('lazy-media');
 
     if (altText) {
       img.alt = altText;
@@ -987,22 +991,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function prefetchMediaAssets() {
-    const sources = new Set();
+  function initLazyMedia() {
+    const pending = new Set();
 
-    Object.values(exerciseMedia).forEach(media => {
-      if (!media) return;
-      if (media.preview) sources.add(media.preview);
-      if (media.img) sources.add(media.img);
-      if (media.imgFull) sources.add(media.imgFull);
+    const loadImage = (img) => {
+      if (!img || !img.dataset || !img.dataset.src) return;
+      if (img.dataset.loaded === 'true') return;
+      img.src = img.dataset.src;
+      img.dataset.loaded = 'true';
+      img.classList.remove('lazy-media');
+      pending.delete(img);
+    };
+
+    const observer = 'IntersectionObserver' in window
+      ? new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            loadImage(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '120px 0px' })
+      : null;
+
+    document.querySelectorAll('.exercise-visual img').forEach(img => {
+      if (!img.dataset || !img.dataset.src) return;
+      pending.add(img);
+      if (observer) observer.observe(img);
+      else loadImage(img);
     });
 
-    sources.forEach(src => {
-      if (!src || /^https?:/i.test(src)) return;
-      if (isVideoSource(src)) return;
-      const img = new Image();
-      img.decoding = 'async';
-      img.src = src;
+    window.loadActiveDayMedia = function loadActiveDayMedia() {
+      const activeDay = document.querySelector('.day.active');
+      if (!activeDay) return;
+      activeDay.querySelectorAll('img[data-src]').forEach(loadImage);
+    };
+
+    window.addEventListener('load', () => {
+      if (window.loadActiveDayMedia) window.loadActiveDayMedia();
     });
   }
 
