@@ -32,6 +32,44 @@
   <button class="ghost-button" type="button" onclick="resetApp()">Reset App / End Session</button>
 </div>
 
+<section class="rest-timer" aria-live="polite">
+  <div class="rest-header">
+    <h2>Rest Timer</h2>
+    <span class="rest-pill" id="restPill">Ready</span>
+  </div>
+  <p class="rest-status" id="restStatus">Finish your workout, then start a rest timer to recover.</p>
+  <div class="rest-controls">
+    <label for="restDuration">Duration</label>
+    <select id="restDuration">
+      <option value="30">0:30</option>
+      <option value="60" selected>1:00</option>
+      <option value="90">1:30</option>
+      <option value="120">2:00</option>
+      <option value="180">3:00</option>
+    </select>
+    <div class="rest-time" id="restTimeDisplay">01:00</div>
+  </div>
+  <div class="rest-actions">
+    <button class="primary-button" type="button" id="startRestTimer">Start Rest</button>
+    <button class="ghost-button" type="button" id="stopRestTimer" disabled>Stop</button>
+    <button class="ghost-button" type="button" id="enableRestNotifications">Enable notifications</button>
+  </div>
+</section>
+
+<section class="history-panel" aria-live="polite">
+  <div class="history-header">
+    <h2>History & Progress</h2>
+    <label for="historyDayFilter">Day</label>
+    <select id="historyDayFilter">
+      <option value="push">Push</option>
+      <option value="pull">Pull</option>
+      <option value="legs">Legs</option>
+    </select>
+  </div>
+  <p class="history-subtitle">Log your sets after each workout to see daily progress over time.</p>
+  <div class="history-list" id="historyList"></div>
+</section>
+
 <div class="tabs">
   <button type="button" class="tab active" data-day="push">Push</button>
   <button type="button" class="tab" data-day="pull">Pull</button>
@@ -169,6 +207,7 @@
     </ul>
   </div>
 
+  <button class="primary-button save-session" type="button" data-day="push">Save Push Session</button>
   <button class="clear" onclick="clearChecks('push')">Clear Push Day</button>
 </div>
 
@@ -303,6 +342,7 @@
     </ul>
   </div>
 
+  <button class="primary-button save-session" type="button" data-day="pull">Save Pull Session</button>
   <button class="clear" onclick="clearChecks('pull')">Clear Pull Day</button>
 </div>
 
@@ -437,6 +477,7 @@
     </ul>
   </div>
 
+  <button class="primary-button save-session" type="button" data-day="legs">Save Legs Session</button>
   <button class="clear" onclick="clearChecks('legs')">Clear Legs Day</button>
 </div>
 

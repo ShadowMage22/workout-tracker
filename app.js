@@ -420,6 +420,8 @@ window.showDay = function showDay(dayId, tabBtn) {
 
   day.classList.add('active');
   if (tabBtn && tabBtn.classList) tabBtn.classList.add('active');
+  if (typeof window.loadActiveDayMedia === 'function') window.loadActiveDayMedia();
+  if (typeof window.updateHistoryDay === 'function') window.updateHistoryDay(dayId);
 };
 
 // ---- Tab navigation (resilient, no inline onclick required) ----
@@ -438,6 +440,8 @@ window.showDay = function showDay(dayId, tabBtn) {
     const btn = document.querySelector(`.tab[data-day="${CSS.escape(dayId)}"]`);
     if (btn) btn.classList.add('active');
   }
+  if (typeof window.loadActiveDayMedia === 'function') window.loadActiveDayMedia();
+  if (typeof window.updateHistoryDay === 'function') window.updateHistoryDay(dayId);
 };
 
 // Event delegation: works even if inline handlers fail
@@ -455,6 +459,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const PROGRAM_VERSION = '2026-01-v2.2';
   const ACTIVE_TAB_KEY = 'workoutTrackerActiveTab';
   const ACTIVE_TAB_TTL_MS = 12000;
+  const HISTORY_DB = 'workoutTrackerHistory';
+  const HISTORY_STORE = 'sessions';
   const TAB_ID = (window.crypto && window.crypto.randomUUID)
     ? window.crypto.randomUUID()
     : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -462,6 +468,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const statusBanner = document.getElementById('statusBanner');
   const readOnlyBanner = document.getElementById('readOnlyBanner');
   const offlineBanner = document.getElementById('offlineBanner');
+  const historyDayFilter = document.getElementById('historyDayFilter');
+  const historyList = document.getElementById('historyList');
 
   // In-memory working state (persisted to localStorage)
   let state = loadState();
@@ -469,15 +477,19 @@ document.addEventListener('DOMContentLoaded', () => {
   let isApplyingExternalState = false;
   let isReadOnly = false;
   let statusTimeoutId = null;
+  let historyDbPromise = null;
 
   enhanceAccessibility();
   assignStableIds();
   applyMediaFromKeys();
-  prefetchMediaAssets();
+  initLazyMedia();
   applyStateToUI();
   initConnectivityStatus();
   initCrossTabSync();
   initActiveTabTracking();
+  initRestTimer();
+  initSetTracking();
+  initHistoryPanel();
 
   // ---------- Public API ----------
   window.clearChecks = function(dayId) {
@@ -507,6 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     state = defaultState();
     persistState({ broadcast: true });
+    clearHistoryDb();
 
     if (typeof window.clearCacheAndReload === 'function') {
       window.clearCacheAndReload();
@@ -568,7 +581,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     clearMissingMedia(visual);
     img.onerror = () => showMissingMedia(visual, img);
-    img.src = previewSrc;
+    img.dataset.src = previewSrc;
+    img.removeAttribute('src');
+    img.classList.add('lazy-media');
 
     if (altText) {
       img.alt = altText;
@@ -881,6 +896,365 @@ document.addEventListener('DOMContentLoaded', () => {
     return false;
   }
 
+  function initRestTimer() {
+    const restDurationSelect = document.getElementById('restDuration');
+    const restStatus = document.getElementById('restStatus');
+    const restTimeDisplay = document.getElementById('restTimeDisplay');
+    const restPill = document.getElementById('restPill');
+    const startButton = document.getElementById('startRestTimer');
+    const stopButton = document.getElementById('stopRestTimer');
+    const notifyButton = document.getElementById('enableRestNotifications');
+
+    if (!restDurationSelect || !restStatus || !restTimeDisplay || !restPill || !startButton || !stopButton || !notifyButton) {
+      return;
+    }
+
+    let intervalId = null;
+    let endTime = null;
+
+    const formatMs = (ms) => {
+      const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
+
+    const setPillState = (state) => {
+      restPill.classList.remove('running', 'done');
+      if (state === 'running') restPill.classList.add('running');
+      if (state === 'done') restPill.classList.add('done');
+      restPill.textContent = state === 'running' ? 'Running' : state === 'done' ? 'Done' : 'Ready';
+    };
+
+    const updateButtons = (isRunning) => {
+      startButton.disabled = isRunning;
+      stopButton.disabled = !isRunning;
+      restDurationSelect.disabled = isRunning;
+    };
+
+    const renderTime = () => {
+      if (!endTime) {
+        const durationMs = Number(restDurationSelect.value || 60) * 1000;
+        restTimeDisplay.textContent = formatMs(durationMs);
+        return;
+      }
+      const remainingMs = endTime - Date.now();
+      restTimeDisplay.textContent = formatMs(remainingMs);
+    };
+
+    const finishTimer = ({ completed = false } = {}) => {
+      if (intervalId) {
+        window.clearInterval(intervalId);
+        intervalId = null;
+      }
+      endTime = null;
+      updateButtons(false);
+      setPillState(completed ? 'done' : 'ready');
+      restStatus.textContent = completed
+        ? 'Rest complete. Ready for your next set or session.'
+        : 'Rest timer stopped.';
+      renderTime();
+    };
+
+    const maybeNotify = () => {
+      if (!('Notification' in window)) return;
+      if (Notification.permission !== 'granted') return;
+      new Notification('Rest finished', {
+        body: 'Time to start your next set or move to the next exercise.',
+        tag: 'rest-timer'
+      });
+    };
+
+    const tick = () => {
+      if (!endTime) return;
+      const remainingMs = endTime - Date.now();
+      if (remainingMs <= 0) {
+        finishTimer({ completed: true });
+        maybeNotify();
+        return;
+      }
+      restStatus.textContent = `Resting… ${formatMs(remainingMs)} remaining.`;
+      renderTime();
+    };
+
+    const startTimer = async () => {
+      const durationMs = Number(restDurationSelect.value || 60) * 1000;
+      if (!durationMs) return;
+      if ('Notification' in window && Notification.permission === 'default') {
+        await requestNotificationPermission();
+      }
+      if (intervalId) window.clearInterval(intervalId);
+      endTime = Date.now() + durationMs;
+      setPillState('running');
+      updateButtons(true);
+      restStatus.textContent = 'Resting…';
+      renderTime();
+      intervalId = window.setInterval(tick, 500);
+    };
+
+    const requestNotificationPermission = async () => {
+      if (!('Notification' in window)) {
+        restStatus.textContent = 'Notifications are not supported in this browser.';
+        notifyButton.disabled = true;
+        return;
+      }
+      if (Notification.permission === 'granted') {
+        restStatus.textContent = 'Notifications are enabled for rest alerts.';
+        notifyButton.disabled = true;
+        return;
+      }
+      const result = await Notification.requestPermission();
+      if (result === 'granted') {
+        restStatus.textContent = 'Notifications enabled. You will get a rest alert.';
+        notifyButton.disabled = true;
+      } else {
+        restStatus.textContent = 'Notifications blocked. Enable them in your browser settings to get rest alerts.';
+      }
+    };
+
+    restDurationSelect.addEventListener('change', () => {
+      if (!endTime) renderTime();
+    });
+    startButton.addEventListener('click', startTimer);
+    stopButton.addEventListener('click', () => finishTimer());
+    notifyButton.addEventListener('click', requestNotificationPermission);
+
+    if ('Notification' in window && Notification.permission === 'granted') {
+      notifyButton.disabled = true;
+      restStatus.textContent = 'Notifications are enabled for rest alerts.';
+    }
+    setPillState('ready');
+    renderTime();
+  }
+
+  function initSetTracking() {
+    document.querySelectorAll('li[data-exercise-id]').forEach(li => {
+      if (li.querySelector('.set-tracker')) return;
+      const tracker = document.createElement('div');
+      tracker.className = 'set-tracker';
+      tracker.innerHTML = `
+        <h4>Log sets (reps / weight)</h4>
+        <div class="set-rows"></div>
+        <div class="set-actions">
+          <button type="button" class="add-set">Add set</button>
+          <button type="button" class="clear-sets">Clear sets</button>
+        </div>
+      `;
+      li.appendChild(tracker);
+
+      const rows = tracker.querySelector('.set-rows');
+      addSetRow(rows);
+
+      tracker.querySelector('.add-set').addEventListener('click', () => addSetRow(rows));
+      tracker.querySelector('.clear-sets').addEventListener('click', () => {
+        rows.innerHTML = '';
+        addSetRow(rows);
+      });
+      rows.addEventListener('click', (event) => {
+        const btn = event.target.closest('.remove-set');
+        if (!btn) return;
+        const row = btn.closest('.set-row');
+        if (row) row.remove();
+        if (!rows.querySelector('.set-row')) addSetRow(rows);
+      });
+    });
+
+    document.querySelectorAll('.save-session').forEach(button => {
+      button.addEventListener('click', () => {
+        const dayId = button.dataset.day;
+        if (!dayId) return;
+        saveSession(dayId);
+      });
+    });
+  }
+
+  function addSetRow(container) {
+    if (!container) return;
+    const row = document.createElement('div');
+    row.className = 'set-row';
+    row.innerHTML = `
+      <input type="number" min="0" inputmode="numeric" class="set-reps" placeholder="Reps" aria-label="Reps" />
+      <input type="number" min="0" step="0.5" inputmode="decimal" class="set-weight" placeholder="Weight" aria-label="Weight" />
+      <button type="button" class="remove-set" aria-label="Remove set">×</button>
+    `;
+    container.appendChild(row);
+  }
+
+  function initHistoryPanel() {
+    if (!historyDayFilter || !historyList) return;
+    const activeDay = document.querySelector('.day.active');
+    if (activeDay && activeDay.id) {
+      historyDayFilter.value = activeDay.id;
+    }
+    historyDayFilter.addEventListener('change', () => {
+      renderHistory(historyDayFilter.value);
+    });
+    renderHistory(historyDayFilter.value || 'push');
+    window.updateHistoryDay = (dayId) => {
+      if (!historyDayFilter) return;
+      historyDayFilter.value = dayId;
+      renderHistory(dayId);
+    };
+  }
+
+  function getHistoryDb() {
+    if (!('indexedDB' in window)) return Promise.reject(new Error('IndexedDB unavailable'));
+    if (!historyDbPromise) {
+      historyDbPromise = new Promise((resolve, reject) => {
+        const request = indexedDB.open(HISTORY_DB, 1);
+        request.onupgradeneeded = (event) => {
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains(HISTORY_STORE)) {
+            const store = db.createObjectStore(HISTORY_STORE, { keyPath: 'id' });
+            store.createIndex('by-day', 'dayId', { unique: false });
+            store.createIndex('by-date', 'dateTs', { unique: false });
+          }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+    return historyDbPromise;
+  }
+
+  function saveSession(dayId) {
+    const day = document.getElementById(dayId);
+    if (!day) return;
+    const exerciseEntries = [];
+    day.querySelectorAll('li[data-exercise-id]').forEach(li => {
+      const name = li.querySelector('.exercise-name')?.textContent?.trim();
+      const sets = Array.from(li.querySelectorAll('.set-row')).map(row => {
+        const reps = Number(row.querySelector('.set-reps')?.value || 0);
+        const weight = Number(row.querySelector('.set-weight')?.value || 0);
+        if (!reps && !weight) return null;
+        return {
+          reps: reps || 0,
+          weight: weight || 0
+        };
+      }).filter(Boolean);
+      if (sets.length > 0) {
+        exerciseEntries.push({
+          exerciseId: li.dataset.exerciseId,
+          name: name || 'Exercise',
+          sets
+        });
+      }
+    });
+
+    if (exerciseEntries.length === 0) {
+      showStatusMessage('Add reps and weight for at least one set before saving.', 4000);
+      return;
+    }
+
+    const now = new Date();
+    const session = {
+      id: (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      dayId,
+      date: now.toISOString(),
+      dateTs: now.getTime(),
+      exercises: exerciseEntries
+    };
+
+    getHistoryDb()
+      .then(db => new Promise((resolve, reject) => {
+        const tx = db.transaction(HISTORY_STORE, 'readwrite');
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+        tx.objectStore(HISTORY_STORE).add(session);
+      }))
+      .then(() => {
+        showStatusMessage('Session saved to history.', 4000);
+        clearSetInputs(dayId);
+        renderHistory(historyDayFilter ? historyDayFilter.value : dayId);
+      })
+      .catch(() => {
+        showStatusMessage('Could not save session. Check storage permissions.', 5000);
+      });
+  }
+
+  function clearSetInputs(dayId) {
+    const day = document.getElementById(dayId);
+    if (!day) return;
+    day.querySelectorAll('.set-rows').forEach(rows => {
+      rows.innerHTML = '';
+      addSetRow(rows);
+    });
+  }
+
+  function renderHistory(dayId) {
+    if (!historyList) return;
+    if (!('indexedDB' in window)) {
+      historyList.innerHTML = '<div class="history-card">IndexedDB is unavailable in this browser.</div>';
+      return;
+    }
+
+    getHistoryDb()
+      .then(db => new Promise((resolve, reject) => {
+        const tx = db.transaction(HISTORY_STORE, 'readonly');
+        const store = tx.objectStore(HISTORY_STORE);
+        const index = store.index('by-day');
+        const request = index.getAll(IDBKeyRange.only(dayId));
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => reject(request.error);
+      }))
+      .then(sessions => {
+        const sorted = sessions.sort((a, b) => b.dateTs - a.dateTs);
+        if (sorted.length === 0) {
+          historyList.innerHTML = '<div class="history-card">No sessions logged yet for this day.</div>';
+          return;
+        }
+        historyList.innerHTML = '';
+        sorted.forEach(session => {
+          const totalSets = session.exercises.reduce((sum, ex) => sum + ex.sets.length, 0);
+          const totals = session.exercises.reduce((acc, ex) => {
+            ex.sets.forEach(set => {
+              acc.reps += set.reps || 0;
+              acc.volume += (set.reps || 0) * (set.weight || 0);
+            });
+            return acc;
+          }, { reps: 0, volume: 0 });
+          const card = document.createElement('div');
+          card.className = 'history-card';
+          const dateLabel = new Date(session.date).toLocaleString([], {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+          card.innerHTML = `
+            <h3>${dateLabel}</h3>
+            <div class="history-summary">${totalSets} sets • ${totals.reps} reps • ${totals.volume.toFixed(0)} total volume</div>
+          `;
+          session.exercises.forEach(exercise => {
+            const exerciseEl = document.createElement('div');
+            exerciseEl.className = 'history-exercise';
+            const setsLabel = exercise.sets.map(set => `${set.reps}×${set.weight}`).join(', ');
+            exerciseEl.textContent = `${exercise.name}: ${setsLabel}`;
+            card.appendChild(exerciseEl);
+          });
+          historyList.appendChild(card);
+        });
+      })
+      .catch(() => {
+        historyList.innerHTML = '<div class="history-card">Unable to load history right now.</div>';
+      });
+  }
+
+  function clearHistoryDb() {
+    if (!('indexedDB' in window)) return;
+    getHistoryDb()
+      .then(db => new Promise((resolve, reject) => {
+        const tx = db.transaction(HISTORY_STORE, 'readwrite');
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+        tx.objectStore(HISTORY_STORE).clear();
+      }))
+      .catch(() => {
+        // ignore
+      });
+  }
+
   function assignStableIds() {
     document.querySelectorAll('.day').forEach(day => {
       const dayId = day.id || 'day';
@@ -987,22 +1361,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function prefetchMediaAssets() {
-    const sources = new Set();
+  function initLazyMedia() {
+    const pending = new Set();
 
-    Object.values(exerciseMedia).forEach(media => {
-      if (!media) return;
-      if (media.preview) sources.add(media.preview);
-      if (media.img) sources.add(media.img);
-      if (media.imgFull) sources.add(media.imgFull);
+    const loadImage = (img) => {
+      if (!img || !img.dataset || !img.dataset.src) return;
+      if (img.dataset.loaded === 'true') return;
+      img.src = img.dataset.src;
+      img.dataset.loaded = 'true';
+      img.classList.remove('lazy-media');
+      pending.delete(img);
+    };
+
+    const observer = 'IntersectionObserver' in window
+      ? new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            loadImage(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '120px 0px' })
+      : null;
+
+    document.querySelectorAll('.exercise-visual img').forEach(img => {
+      if (!img.dataset || !img.dataset.src) return;
+      pending.add(img);
+      if (observer) observer.observe(img);
+      else loadImage(img);
     });
 
-    sources.forEach(src => {
-      if (!src || /^https?:/i.test(src)) return;
-      if (isVideoSource(src)) return;
-      const img = new Image();
-      img.decoding = 'async';
-      img.src = src;
+    window.loadActiveDayMedia = function loadActiveDayMedia() {
+      const activeDay = document.querySelector('.day.active');
+      if (!activeDay) return;
+      activeDay.querySelectorAll('img[data-src]').forEach(loadImage);
+    };
+
+    window.addEventListener('load', () => {
+      if (window.loadActiveDayMedia) window.loadActiveDayMedia();
     });
   }
 
