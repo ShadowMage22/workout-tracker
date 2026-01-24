@@ -451,20 +451,37 @@ document.addEventListener('click', (e) => {
 
 document.addEventListener('DOMContentLoaded', () => {
   const STORAGE_KEY = 'workoutTrackerState';
-  const STATE_VERSION = 1;
+  const STATE_VERSION = 2;
   const PROGRAM_VERSION = '2026-01-v2.2';
+  const ACTIVE_TAB_KEY = 'workoutTrackerActiveTab';
+  const ACTIVE_TAB_TTL_MS = 12000;
+  const TAB_ID = (window.crypto && window.crypto.randomUUID)
+    ? window.crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const channel = 'BroadcastChannel' in window ? new BroadcastChannel('workout-tracker') : null;
+  const statusBanner = document.getElementById('statusBanner');
+  const readOnlyBanner = document.getElementById('readOnlyBanner');
+  const offlineBanner = document.getElementById('offlineBanner');
 
   // In-memory working state (persisted to localStorage)
   let state = loadState();
+  let isHydratingState = false;
+  let isApplyingExternalState = false;
+  let isReadOnly = false;
+  let statusTimeoutId = null;
 
   enhanceAccessibility();
   assignStableIds();
   applyMediaFromKeys();
   prefetchMediaAssets();
   applyStateToUI();
+  initConnectivityStatus();
+  initCrossTabSync();
+  initActiveTabTracking();
 
   // ---------- Public API ----------
   window.clearChecks = function(dayId) {
+    if (!ensureEditable()) return;
     const container = document.getElementById(dayId);
     if (!container) return;
 
@@ -475,6 +492,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     persistState();
+  };
+
+  window.resetApp = function() {
+    const shouldReset = window.confirm('Reset the app and clear your saved progress? This cannot be undone.');
+    if (!shouldReset) return;
+
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(ACTIVE_TAB_KEY);
+    } catch (_) {
+      // ignore
+    }
+
+    state = defaultState();
+    persistState({ broadcast: true });
+
+    if (typeof window.clearCacheAndReload === 'function') {
+      window.clearCacheAndReload();
+      return;
+    }
+
+    window.location.reload();
   };
 
   window.expandSVG = function(el) {
@@ -569,6 +608,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.selectVariant = function(option) {
+    if (!ensureEditable({ allowIfReadOnly: isHydratingState || isApplyingExternalState })) return;
     const container = option.closest('.exercise-variants');
     const exerciseItem = option.closest('li');
     if (!container || !exerciseItem) return;
@@ -613,7 +653,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const exerciseId = exerciseItem.dataset.exerciseId;
     if (exerciseId && mediaKey) {
       state.selections[exerciseId] = mediaKey;
-      persistState();
+      if (!isHydratingState && !isApplyingExternalState) {
+        persistState();
+      }
     }
 
     container.classList.remove('active');
@@ -626,6 +668,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target && e.target.type === 'checkbox') {
       const checkId = e.target.dataset.checkId;
       if (!checkId) return;
+      if (!ensureEditable()) {
+        e.target.checked = !!state.checkmarks[checkId];
+        return;
+      }
       if (e.target.checked) state.checkmarks[checkId] = true;
       else delete state.checkmarks[checkId];
       persistState();
@@ -638,7 +684,9 @@ document.addEventListener('DOMContentLoaded', () => {
       stateVersion: STATE_VERSION,
       programVersion: PROGRAM_VERSION,
       checkmarks: {},
-      selections: {}
+      selections: {},
+      lastUpdated: 0,
+      lastUpdatedBy: null
     };
   }
 
@@ -649,26 +697,188 @@ document.addEventListener('DOMContentLoaded', () => {
       const parsed = JSON.parse(raw);
 
       if (!parsed || typeof parsed !== 'object') return defaultState();
-      if (parsed.stateVersion !== STATE_VERSION) return defaultState();
-      if (parsed.programVersion !== PROGRAM_VERSION) return defaultState();
+      if (parsed.stateVersion !== STATE_VERSION || parsed.programVersion !== PROGRAM_VERSION) {
+        return migrateState(parsed);
+      }
 
-      return {
-        stateVersion: STATE_VERSION,
-        programVersion: PROGRAM_VERSION,
-        checkmarks: parsed.checkmarks && typeof parsed.checkmarks === 'object' ? parsed.checkmarks : {},
-        selections: parsed.selections && typeof parsed.selections === 'object' ? parsed.selections : {}
-      };
+      return normalizeState(parsed);
     } catch (_) {
       return defaultState();
     }
   }
 
-  function persistState() {
+  function persistState({ broadcast = true } = {}) {
     try {
+      state.lastUpdated = Date.now();
+      state.lastUpdatedBy = TAB_ID;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      if (broadcast && channel) {
+        channel.postMessage({ type: 'state-update', state });
+      }
     } catch (_) {
       // Ignore storage errors (private mode, quota, etc.)
     }
+  }
+
+  function normalizeState(parsed) {
+    return {
+      stateVersion: STATE_VERSION,
+      programVersion: PROGRAM_VERSION,
+      checkmarks: parsed.checkmarks && typeof parsed.checkmarks === 'object' ? parsed.checkmarks : {},
+      selections: parsed.selections && typeof parsed.selections === 'object' ? parsed.selections : {},
+      lastUpdated: typeof parsed.lastUpdated === 'number' ? parsed.lastUpdated : 0,
+      lastUpdatedBy: parsed.lastUpdatedBy || null
+    };
+  }
+
+  function migrateState(parsed) {
+    const migrated = normalizeState(parsed || {});
+    showStatusMessage('We updated your program version. Your last saved selections were kept.', 6000);
+    return migrated;
+  }
+
+  function showStatusMessage(message, timeoutMs = 4000) {
+    if (!statusBanner) return;
+    statusBanner.textContent = message;
+    statusBanner.classList.add('show');
+    if (statusTimeoutId) {
+      window.clearTimeout(statusTimeoutId);
+      statusTimeoutId = null;
+    }
+    if (timeoutMs > 0) {
+      statusTimeoutId = window.setTimeout(() => {
+        statusBanner.classList.remove('show');
+        statusTimeoutId = null;
+      }, timeoutMs);
+    }
+  }
+
+  function setBannerVisibility(banner, shouldShow, message) {
+    if (!banner) return;
+    if (message) banner.textContent = message;
+    banner.classList.toggle('show', shouldShow);
+  }
+
+  function initConnectivityStatus() {
+    if (!offlineBanner) return;
+    const update = () => {
+      setBannerVisibility(offlineBanner, !navigator.onLine);
+    };
+    window.addEventListener('online', update);
+    window.addEventListener('offline', update);
+    update();
+  }
+
+  function initCrossTabSync() {
+    window.addEventListener('storage', (event) => {
+      if (event.key === STORAGE_KEY && event.newValue) {
+        try {
+          const incoming = JSON.parse(event.newValue);
+          applyIncomingState(incoming, 'storage');
+        } catch (_) {
+          // ignore malformed payload
+        }
+      }
+      if (event.key === STORAGE_KEY && event.newValue === null) {
+        state = defaultState();
+        applyStateToUI();
+        showStatusMessage('This session was reset in another tab.');
+      }
+      if (event.key === ACTIVE_TAB_KEY) {
+        updateReadOnlyStatus();
+      }
+    });
+
+    if (channel) {
+      channel.addEventListener('message', (event) => {
+        const payload = event.data;
+        if (payload && payload.type === 'state-update') {
+          applyIncomingState(payload.state, 'broadcast');
+        }
+      });
+    }
+  }
+
+  function applyIncomingState(incoming, source) {
+    const normalized = normalizeState(incoming || {});
+    if (normalized.lastUpdatedBy === TAB_ID) return;
+    if (normalized.lastUpdated <= state.lastUpdated) return;
+    isApplyingExternalState = true;
+    state = normalized;
+    applyStateToUI();
+    isApplyingExternalState = false;
+    showStatusMessage(`Updated from another tab (${source}).`);
+  }
+
+  function initActiveTabTracking() {
+    const heartbeat = () => {
+      if (document.visibilityState !== 'visible') return;
+      claimActiveTab();
+    };
+    window.addEventListener('focus', heartbeat);
+    window.addEventListener('visibilitychange', heartbeat);
+    window.addEventListener('pageshow', heartbeat);
+    window.setInterval(heartbeat, ACTIVE_TAB_TTL_MS / 2);
+    updateReadOnlyStatus();
+    claimActiveTab();
+  }
+
+  function getActiveTabRecord() {
+    try {
+      return JSON.parse(localStorage.getItem(ACTIVE_TAB_KEY));
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function isAnotherTabActive() {
+    const record = getActiveTabRecord();
+    if (!record || !record.tabId || !record.lastActive) return false;
+    if (record.tabId === TAB_ID) return false;
+    return Date.now() - record.lastActive < ACTIVE_TAB_TTL_MS;
+  }
+
+  function claimActiveTab(force = false) {
+    if (!force && isAnotherTabActive()) {
+      setReadOnly(true);
+      return false;
+    }
+    try {
+      localStorage.setItem(ACTIVE_TAB_KEY, JSON.stringify({
+        tabId: TAB_ID,
+        lastActive: Date.now()
+      }));
+    } catch (_) {
+      // ignore
+    }
+    setReadOnly(false);
+    return true;
+  }
+
+  function setReadOnly(value) {
+    isReadOnly = value;
+    const message = isReadOnly
+      ? 'Read-only: another tab is actively editing this workout.'
+      : '';
+    setBannerVisibility(readOnlyBanner, isReadOnly, message);
+  }
+
+  function updateReadOnlyStatus() {
+    if (isAnotherTabActive()) {
+      setReadOnly(true);
+    } else {
+      setReadOnly(false);
+    }
+  }
+
+  function ensureEditable({ allowIfReadOnly = false } = {}) {
+    if (allowIfReadOnly) return true;
+    if (!isReadOnly) {
+      claimActiveTab();
+      return true;
+    }
+    showStatusMessage('Another tab is active. Switch to it to make edits.', 4000);
+    return false;
   }
 
   function assignStableIds() {
@@ -797,6 +1007,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function applyStateToUI() {
+    isHydratingState = true;
     const escapeCssValue = window.CSS && CSS.escape
       ? CSS.escape
       : (value) => String(value).replace(/["\\]/g, '\\$&');
@@ -821,5 +1032,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.selectVariant(option);
       }
     });
+    isHydratingState = false;
   }
 });

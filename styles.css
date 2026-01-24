@@ -9,6 +9,41 @@ h1 { font-size: 1.4rem; margin-bottom: 8px; }
 h2 { font-size: 1.2rem; margin-top: 0; }
 h3 { font-size: 1rem; margin-bottom: 6px; }
 
+.status-banner {
+  display: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  background: #e8f0ff;
+  color: #20427a;
+  border: 1px solid rgba(32, 66, 122, 0.2);
+}
+.status-banner.show { display: block; }
+.status-banner.warning {
+  background: #fff4e5;
+  color: #7a4a00;
+  border-color: rgba(122, 74, 0, 0.2);
+}
+.app-controls {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0 16px;
+}
+.ghost-button {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.ghost-button:hover {
+  background: #f6f6f6;
+  border-color: #ccc;
+}
+
 .install-prompt {
   background: #4a6fd6;
   color: white;
