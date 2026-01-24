@@ -1394,7 +1394,16 @@ document.addEventListener('DOMContentLoaded', () => {
     window.loadActiveDayMedia = function loadActiveDayMedia() {
       const activeDay = document.querySelector('.day.active');
       if (!activeDay) return;
-      activeDay.querySelectorAll('img[data-src]').forEach(loadImage);
+      activeDay.querySelectorAll('.exercise-visual').forEach(visual => {
+        const img = visual.querySelector('img');
+        if (!img) return;
+        if (!img.dataset || !img.dataset.src) {
+          const mediaKey = visual.dataset.mediaKey;
+          const media = mediaKey ? exerciseMedia[mediaKey] : null;
+          applyMediaToVisual(visual, img, media, img.alt || 'Exercise demonstration');
+        }
+        if (img.dataset && img.dataset.src) loadImage(img);
+      });
     };
 
     window.addEventListener('load', () => {
