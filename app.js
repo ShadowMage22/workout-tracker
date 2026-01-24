@@ -409,6 +409,44 @@ function hideInstallPrompt() {
   window.clearCacheAndReload = clearCacheAndReload;
 })();
 
+// Make tab switching resilient (exists even if later init code throws)
+window.showDay = function showDay(dayId, tabBtn) {
+  const day = document.getElementById(dayId);
+  if (!day) return;
+
+  document.querySelectorAll('.day').forEach(d => d.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
+  day.classList.add('active');
+  if (tabBtn && tabBtn.classList) tabBtn.classList.add('active');
+};
+
+// ---- Tab navigation (resilient, no inline onclick required) ----
+window.showDay = function showDay(dayId, tabBtn) {
+  const day = document.getElementById(dayId);
+  if (!day) return;
+
+  document.querySelectorAll('.day').forEach(d => d.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
+  day.classList.add('active');
+
+  if (tabBtn && tabBtn.classList) {
+    tabBtn.classList.add('active');
+  } else {
+    const btn = document.querySelector(`.tab[data-day="${CSS.escape(dayId)}"]`);
+    if (btn) btn.classList.add('active');
+  }
+};
+
+// Event delegation: works even if inline handlers fail
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.tab[data-day]');
+  if (!btn) return;
+
+  e.preventDefault();
+  window.showDay(btn.dataset.day, btn);
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   const STORAGE_KEY = 'workoutTrackerState';
@@ -424,15 +462,6 @@ document.addEventListener('DOMContentLoaded', () => {
   applyStateToUI();
 
   // ---------- Public API ----------
-  window.showDay = function(dayId, tabBtn) {
-    const day = document.getElementById(dayId);
-    if (!day || !tabBtn) return;
-    document.querySelectorAll('.day').forEach(d => d.classList.remove('active'));
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    day.classList.add('active');
-    tabBtn.classList.add('active');
-  };
-
   window.clearChecks = function(dayId) {
     const container = document.getElementById(dayId);
     if (!container) return;
