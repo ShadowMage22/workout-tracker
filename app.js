@@ -3,235 +3,236 @@ let deferredPrompt;
 // Centralized exercise media database
 const exerciseMedia = {
   // PUSH
-  "flat-bench-press": {
-    video: "https://www.youtube.com/watch?v=gRVjAtPip0Y",
-    img: "https://i.ytimg.com/vi/gRVjAtPip0Y/mqdefault.jpg",
-    imgFull: "./media/push/Bench-Press.mp4"
+  "dumbbell-bench-press": {
+    video: "https://www.youtube.com/watch?v=VmB1G1K7v94",
+    img: "./media/push/dumbbell-bench-press-chest.gif",
+    imgFull: "./media/push/dumbbell-bench-press-chest.gif"
   },
   "push-ups": {
-    video: "https://www.youtube.com/watch?v=_l3ySVKYVJ8",
-    img: "https://i.ytimg.com/vi/_l3ySVKYVJ8/mqdefault.jpg",
-    imgFull: "./media/push/pushup.mp4"
+    video: "https://www.youtube.com/watch?v=IODxDxX7oi4",
+    img: "./media/push/push-up.gif",
+    imgFull: "./media/push/push-up.gif"
   },
-  "chest-fly": {
+  "dumbbell-chest-fly": {
     video: "https://www.youtube.com/watch?v=eozdVDA78K0",
-    img: "https://i.ytimg.com/vi/eozdVDA78K0/mqdefault.jpg",
-    imgFull: "./media/push/chest-fly.mp4"
+    img: "./media/push/dumbbell-chest-fly.gif",
+    imgFull: "./media/push/dumbbell-chest-fly.gif"
   },
-  "overhead-press": {
-    video: "https://www.youtube.com/watch?v=qEwKCR5JCog",
-    img: "https://i.ytimg.com/vi/qEwKCR5JCog/mqdefault.jpg",
-    imgFull: "./media/push/overhead-press.mp4"
+  "dumbbell-standing-overhead-press": {
+    video: "https://www.youtube.com/watch?v=M2rwvNhTOu0",
+    img: "./media/push/dumbbell-standing-overhead-press.gif",
+    imgFull: "./media/push/dumbbell-standing-overhead-press.gif"
   },
-  "arnold-press": {
-    video: "https://www.youtube.com/watch?v=vj2w851ZHRM",
-    img: "https://i.ytimg.com/vi/vj2w851ZHRM/mqdefault.jpg",
-    imgFull: "./media/push/arnold-press.mp4"
+  "single-arm-arnold-press": {
+    video: "https://www.youtube.com/watch?v=6Z15_WdXmVw",
+    img: "./media/push/single-arm-arnold-press.gif",
+    imgFull: "./media/push/single-arm-arnold-press.gif"
   },
-  "landmine-press": {
-    video: "https://www.youtube.com/watch?v=G0ZxJwTny3U",
-    img: "https://i.ytimg.com/vi/G0ZxJwTny3U/mqdefault.jpg",
-    imgFull: "https://img.youtube.com/vi/G0ZxJwTny3U/hqdefault.jpg"
+  "half-kneeling-dumbbell-press": {
+    video: "https://youtu.be/-7zgcCU2kW4?si=_TqOC3qwyKUH2kbN",
+    img: "./media/push/half-kneeling-dumbbell-press.gif",
+    imgFull: "./media/push/half-kneeling-dumbbell-press.gif"
   },
-  "incline-press": {
+  "dumbbell-incline-press": {
     video: "https://www.youtube.com/watch?v=8iPEnn-ltC8",
-    img: "https://i.ytimg.com/vi/8iPEnn-ltC8/mqdefault.jpg",
+    img: "./media/push/dumbbell-incline-chest-press.gif",
     imgFull: "./media/push/dumbbell-incline-chest-press.gif"
   },
-  "incline-fly": {
-    video: "https://www.youtube.com/watch?v=3xKsdFfbYTM",
-    img: "https://i.ytimg.com/vi/3xKsdFfbYTM/mqdefault.jpg",
+  "dumbbell-incline-fly": {
+    video: "https://youtu.be/JSDpq14vCZ8?si=W7ZUxeZlYktHgisS",
+    img: "./media/push/dumbbell-incline-fly.gif",
     imgFull: "./media/push/dumbbell-incline-fly.gif"
   },
   "cable-fly": {
     video: "https://www.youtube.com/watch?v=taI4XduLpTk",
-    img: "https://i.ytimg.com/vi/taI4XduLpTk/mqdefault.jpg",
+    img: "./media/push/low-cable-chest-flys.gif",
     imgFull: "./media/push/low-cable-chest-flys.gif"
   },
   "tricep-pushdown": {
-    video: "https://www.youtube.com/watch?v=2-LqU9xeYVY",
-    img: "https://i.ytimg.com/vi/2-LqU9xeYVY/mqdefault.jpg",
+    video: "https://www.youtube.com/watch?v=2-LAMcpzODU",
+    img: "./media/push/tricep-pushdown.gif",
     imgFull: "./media/push/tricep-pushdown.gif"
   },
   "overhead-tricep-ext": {
-    video: "https://www.youtube.com/watch?v=GzmlxvSFE7A",
-    img: "https://i.ytimg.com/vi/GzmlxvSFE7A/mqdefault.jpg",
+    video: "https://www.youtube.com/watch?v=YbX7Wd8jQ-Q",
+    img: "./media/push/overhead-tricep-extension.gif",
     imgFull: "./media/push/overhead-tricep-extension.gif"
   },
   "close-grip-pushup": {
-    video: "https://www.youtube.com/watch?v=IODxDxX7oi4",
-    img: "https://i.ytimg.com/vi/IODxDxX7oi4/mqdefault.jpg",
+    video: "https://www.youtube.com/watch?v=nTJQJzGkGTg",
+    img: "./media/push/close-grip-push-up.gif",
     imgFull: "./media/push/close-grip-push-up.gif"
   },
   "plank": {
-    video: "https://www.youtube.com/watch?v=pSHjTRCQxIw",
-    img: "https://i.ytimg.com/vi/pSHjTRCQxIw/mqdefault.jpg",
+    video: "https://www.youtube.com/watch?v=ASdvN_XEl_c",
+    img: "./media/push/plank.gif",
     imgFull: "./media/push/plank.gif"
   },
   "mountain-climbers": {
     video: "https://www.youtube.com/watch?v=nmwgirgXLYM",
-    img: "https://i.ytimg.com/vi/nmwgirgXLYM/mqdefault.jpg",
+    img: "./media/push/mountain-climbers.gif",
     imgFull: "./media/push/mountain-climbers.gif"
   },
-  "ab-wheel": {
-    video: "https://www.youtube.com/watch?v=F2D08SHuZco",
-    img: "https://i.ytimg.com/vi/F2D08SHuZco/mqdefault.jpg",
-    imgFull: "./media/push/ab-wheel-rollout.mp4"
+  "plank-walk-out": {
+    video: "https://youtu.be/nYSYZgGVETI?si=AlMJAoUGONAYAiO8",
+    img: "./media/push/plank-walk-outs.gif",
+    imgFull: "./media/push/plank-walk-outs.gif"
   },
 
   // PULL
   "cable-row": {
-    video: "https://www.youtube.com/watch?v=7BkgqzC6WsM",
-    img: "https://i.ytimg.com/vi/7BkgqzC6WsM/mqdefault.jpg",
-    imgFull: "https://img.youtube.com/vi/7BkgqzC6WsM/hqdefault.jpg"
+    video: "https://www.youtube.com/watch?v=GZbfZ033f74",
+    img: "./media/pull/seated-cable-row.gif",
+    imgFull: "./media/pull/seated-cable-row.gif"
   },
   "dumbbell-row": {
-    video: "https://www.youtube.com/watch?v=gfUg6qWohTk",
-    img: "https://i.ytimg.com/vi/gfUg6qWohTk/mqdefault.jpg",
-    imgFull: "./media/pull/Dumbbell-Row.gif"
+    video: "https://www.youtube.com/watch?v=roCP6wCXPqo",
+    img: "./media/pull/dumbbell-row.gif",
+    imgFull: "./media/pull/dumbbell-row.gif"
   },
-  "barbell-row": {
-    video: "https://www.youtube.com/watch?v=vT2GjY_Umpw",
-    img: "https://i.ytimg.com/vi/vT2GjY_Umpw/mqdefault.jpg",
-    imgFull: "https://img.youtube.com/vi/vT2GjY_Umpw/hqdefault.jpg"
+  "bent-over-dumbbell-row": {
+    video: "https://youtu.be/ZXpZu_fmheU?si=q4ykfTgMqL-PY26Q",
+    img: "./media/pull/bent-over-dumbbell-row.gif",
+    imgFull: "./media/pull/bent-over-dumbbell-row.gif"
   },
   "lat-pulldown": {
-    video: "https://www.youtube.com/watch?v=SALxEARiMkw",
-    img: "https://i.ytimg.com/vi/SALxEARiMkw/mqdefault.jpg",
-    imgFull: "./media/pull/Lat-Pulldown.gif"
+    video: "https://www.youtube.com/watch?v=CAwf7n6Luuc",
+    img: "./media/pull/lat-pulldown.gif",
+    imgFull: "./media/pull/lat-pulldown.gif"
   },
-  "pull-ups": {
-    video: "https://www.youtube.com/watch?v=eGo4IYlbE5g",
-    img: "https://i.ytimg.com/vi/eGo4IYlbE5g/mqdefault.jpg",
-    imgFull: "https://img.youtube.com/vi/eGo4IYlbE5g/hqdefault.jpg"
+  "lat-pushdowns": {
+    video: "https://youtu.be/AjCCGN2tU3Q?si=UNlUSJYcKhDqUeBJ",
+    img: "./media/pull/lat-pushdown.gif",
+    imgFull: "./media/pull/lat-pushdown.gif"
   },
   "straight-arm-pulldown": {
-    video: "https://www.youtube.com/watch?v=ko0bgiRn0uQ",
-    img: "https://i.ytimg.com/vi/ko0bgiRn0uQ/mqdefault.jpg",
-    imgFull: "./media/pull/Stratight-Arm-Pulldown.gif"
+    video: "https://www.youtube.com/watch?v=kiuVA0gs3EI",
+    img: "./media/pull/straight-arm-pulldown.gif",
+    imgFull: "./media/pull/straight-arm-pulldown.gif"
   },
   "face-pulls": {
-    video: "https://www.youtube.com/watch?v=dT1L1dRX494",
-    img: "https://i.ytimg.com/vi/dT1L1dRX494/mqdefault.jpg",
-    imgFull: "./media/pull/Face-pull.gif"
+    video: "https://www.youtube.com/watch?v=rep-qVOkqgk",
+    img: "./media/pull/face-pull.gif",
+    imgFull: "./media/pull/face-pull.gif"
   },
   "reverse-fly": {
-    video: "https://www.youtube.com/watch?v=KlQf6K-1Bfc",
-    img: "https://i.ytimg.com/vi/KlQf6K-1Bfc/mqdefault.jpg",
-    imgFull: "./media/pull/Dumbbell-Reverse-Fly.gif"
+    video: "https://www.youtube.com/watch?v=ea-H-QB1ZNg",
+    img: "./media/pull/dumbbell-reverse-fly.gif",
+    imgFull: "./media/pull/dumbbell-reverse-fly.gif"
   },
-  "upright-row": {
-    video: "https://www.youtube.com/watch?v=7F1KhyI36zI",
-    img: "https://i.ytimg.com/vi/7F1KhyI36zI/mqdefault.jpg",
-    imgFull: "https://img.youtube.com/vi/7F1KhyI36zI/hqdefault.jpg"
+  "lateral-raise": {
+    video: "https://youtu.be/XPPfnSEATJA?si=pgWmQMf6D7r3SvKl",
+    img: "./media/pull/lateral-raise.gif",
+    imgFull: "./media/pull/lateral-raise.gif"
   },
   "bicep-curls": {
-    video: "https://www.youtube.com/watch?v=NFzTWp2qpiE",
-    img: "https://i.ytimg.com/vi/NFzTWp2qpiE/mqdefault.jpg",
-    imgFull: "https://img.youtube.com/vi/NFzTWp2qpiE/hqdefault.jpg"
+    video: "https://www.youtube.com/watch?v=ykJmrZ5v0Oo",
+    img: "./media/pull/bicep-curls.gif",
+    imgFull: "./media/pull/bicep-curls.gif"
   },
   "hammer-curls": {
     video: "https://www.youtube.com/watch?v=zC3nLlEvin4",
-    img: "https://i.ytimg.com/vi/zC3nLlEvin4/mqdefault.jpg",
-    imgFull: "https://img.youtube.com/vi/zC3nLlEvin4/hqdefault.jpg"
+    img: "./media/pull/hammer-curls.gif",
+    imgFull: "./media/pull/hammer-curls.gif"
   },
   "cable-curls": {
-    video: "https://www.youtube.com/watch?v=2bxX2cFHtos",
-    img: "https://i.ytimg.com/vi/2bxX2cFHtos/mqdefault.jpg",
+    video: "https://www.youtube.com/watch?v=Jvj2wV0vOYU",
+    img: "./media/pull/cable-curls.gif",
     imgFull: "./media/pull/cable-curls.gif"
   },
   "dead-bug": {
-    video: "https://www.youtube.com/watch?v=GZD20NNrE0E",
-    img: "https://i.ytimg.com/vi/GZD20NNrE0E/mqdefault.jpg",
+    video: "https://www.youtube.com/watch?v=4XLEnwUr1d8",
+    img: "./media/pull/dead-bug.gif",
     imgFull: "./media/pull/dead-bug.gif"
   },
   "bird-dog": {
-    video: "https://www.youtube.com/watch?v=vzYZ9hE2XjM",
-    img: "https://i.ytimg.com/vi/vzYZ9hE2XjM/mqdefault.jpg",
-    imgFull: "./media/pull/Birddog.gif"
+    video: "https://www.youtube.com/watch?v=wiFNA3sqjCA",
+    img: "./media/pull/bird-dog.gif",
+    imgFull: "./media/pull/bird-dog.gif"
   },
   "hollow-body": {
-    video: "https://www.youtube.com/watch?v=Kd7gKchqR0g",
-    img: "https://i.ytimg.com/vi/Kd7gKchqR0g/mqdefault.jpg",
-    imgFull: "./media/pull/lying-body-hold.gif"
+    video: "https://www.youtube.com/watch?v=LlDNef_Ztsc",
+    img: "./media/pull/hollow-body.gif",
+    imgFull: "./media/pull/hollow-body.gif"
   },
 
   // LEGS
   "goblet-squat": {
     video: "https://www.youtube.com/watch?v=MeIiIdhvXT4",
-    img: "https://i.ytimg.com/vi/MeIiIdhvXT4/mqdefault.jpg",
+    img: "./media/legs/goblet-squat.gif",
     imgFull: "./media/legs/goblet-squat.gif"
   },
-  "back-squat": {
-    video: "https://www.youtube.com/watch?v=aclHkVaku9U",
-    img: "https://i.ytimg.com/vi/aclHkVaku9U/mqdefault.jpg",
-    imgFull: "https://img.youtube.com/vi/aclHkVaku9U/hqdefault.jpg"
+  "dumbbell-sumo-squat": {
+    video: "https://youtu.be/vBA3vyOxJv0?si=KkbO15q1OnN3FkgL",
+    img: "./media/legs/dumbbell-sumo-squat.gif",
+    imgFull: "./media/legs/dumbbell-sumo-squat.gif"
   },
-  "leg-press": {
-    video: "https://www.youtube.com/watch?v=IZxyjW7MPJQ",
-    img: "https://i.ytimg.com/vi/IZxyjW7MPJQ/mqdefault.jpg",
-    imgFull: "https://img.youtube.com/vi/IZxyjW7MPJQ/hqdefault.jpg"
+  "dumbbell-front-squat": {
+    video: "https://youtu.be/OtOayZUX370?si=eCqK1mUaTS6ORHdR",
+    img: "./media/legs/dumbbell-front-squat.gif",
+    imgFull: "./media/legs/dumbbell-front-squat.gif"
   },
-  "rdl": {
-    video: "https://www.youtube.com/watch?v=2SHsk9AzdjA",
-    img: "https://i.ytimg.com/vi/2SHsk9AzdjA/mqdefault.jpg",
-    imgFull: "https://img.youtube.com/vi/2SHsk9AzdjA/hqdefault.jpg"
+  "dumbbell-rdl": {
+    video: "https://youtu.be/OtOayZUX370?si=eCqK1mUaTS6ORHdR",
+    img: "./media/legs/dumbbell-rdl.gif",
+    imgFull: "./media/legs/dumbbell-rdl.gif"
   },
   "leg-curl": {
-    video: "https://www.youtube.com/watch?v=1Tq3QdYUuHs",
-    img: "https://i.ytimg.com/vi/1Tq3QdYUuHs/mqdefault.jpg",
+    video: "https://www.youtube.com/watch?v=ELOCsoDSmrg",
+    img: "./media/legs/seated-leg-curl.gif",
     imgFull: "./media/legs/seated-leg-curl.gif"
   },
-  "good-mornings": {
-    video: "https://www.youtube.com/watch?v=W8PPpF2ZJYc",
-    img: "https://i.ytimg.com/vi/W8PPpF2ZJYc/mqdefault.jpg",
-    imgFull: "https://img.youtube.com/vi/W8PPpF2ZJYc/hqdefault.jpg"
+  "single-leg-rdl": {
+    video: "https://youtu.be/lI8-igvsnVQ?si=QrNcX5IRgI73QEoW",
+    img: "./media/legs/single-leg-rdl.gif",
+    imgFull: "./media/legs/single-leg-rdl.gif"
   },
   "bulgarian-split-squat": {
     video: "https://www.youtube.com/watch?v=2C-uNgKwPLE",
-    img: "https://i.ytimg.com/vi/2C-uNgKwPLE/mqdefault.jpg",
-    imgFull: "./media/legs/Bodyweight-Bulgarian-Split-Squat.gif"
+    img: "./media/legs/bodyweight-bulgarian-split-squat.gif",
+    imgFull: "./media/legs/bodyweight-bulgarian-split-squat.gif"
   },
   "walking-lunges": {
-    video: "https://www.youtube.com/watch?v=QOVaHwm-QHQ",
-    img: "https://i.ytimg.com/vi/QOVaHwm-QHQ/mqdefault.jpg",
-    imgFull: "./media/legs/Walking-Lunges.gif"
+    video: "https://www.youtube.com/watch?v=L8fvypPrzzs",
+    img: "./media/legs/walking-lunges.gif",
+    imgFull: "./media/legs/walking-lunges.gif"
   },
   "step-ups": {
     video: "https://www.youtube.com/watch?v=dQqApCGd5Ss",
-    img: "https://i.ytimg.com/vi/dQqApCGd5Ss/mqdefault.jpg",
+    img: "./media/legs/step-ups.gif",
     imgFull: "./media/legs/step-ups.gif"
   },
   "calf-raises": {
-    video: "https://www.youtube.com/watch?v=-M4-G9pK8pE",
-    img: "https://i.ytimg.com/vi/-M4-G9pK8pE/mqdefault.jpg",
+    video: "https://www.youtube.com/watch?v=gwLzBJYoWlI",
+    img: "./media/legs/standing-calf-raise.gif",
     imgFull: "./media/legs/standing-calf-raise.gif"
   },
-  "seated-calf-raise": {
-    video: "https://www.youtube.com/watch?v=YMmgqO8Jo-Y",
-    img: "https://i.ytimg.com/vi/YMmgqO8Jo-Y/mqdefault.jpg",
+  "seated-calf": {
+    video: "https://www.youtube.com/watch?v=JbyjNymZOt0",
+    img: "./media/legs/seated-calf-raise-dumbbell.gif",
     imgFull: "./media/legs/seated-calf-raise-dumbbell.gif"
   },
-  "single-calf": {
-    video: "https://www.youtube.com/watch?v=ElcvJ0kjt6c",
-    img: "https://i.ytimg.com/vi/ElcvJ0kjt6c/mqdefault.jpg",
-    imgFull: "https://img.youtube.com/vi/ElcvJ0kjt6c/hqdefault.jpg"
+  "single-leg-calf-raise": {
+    video: "https://youtu.be/hXB5YxfeoDo?si=vYZ7k46MiXknlXOi",
+    img: "./media/legs/single-leg-calf-raise.gif",
+    imgFull: "./media/legs/single-leg-calf-raise.gif"
   },
   "side-plank": {
     video: "https://www.youtube.com/watch?v=K2VljzCC16g",
-    img: "https://i.ytimg.com/vi/K2VljzCC16g/mqdefault.jpg",
+    img: "./media/legs/side-plank.gif",
     imgFull: "./media/legs/side-plank.gif"
   },
   "pallof-press": {
-    video: "https://www.youtube.com/watch?v=Ex7kQRyWbEk",
-    img: "https://i.ytimg.com/vi/Ex7kQRyWbEk/mqdefault.jpg",
+    video: "https://www.youtube.com/watch?v=AH_QZLm_0-s",
+    img: "./media/legs/pallof-press.gif",
     imgFull: "./media/legs/pallof-press.gif"
   },
   "russian-twists": {
     video: "https://www.youtube.com/watch?v=wkD8rjkodUI",
-    img: "https://i.ytimg.com/vi/wkD8rjkodUI/mqdefault.jpg",
+    img: "./media/legs/russian-twist.gif",
     imgFull: "./media/legs/russian-twist.gif"
-  }
+  },
+
 };
 
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -451,7 +452,7 @@ document.addEventListener('click', (e) => {
 document.addEventListener('DOMContentLoaded', () => {
   const STORAGE_KEY = 'workoutTrackerState';
   const STATE_VERSION = 1;
-  const PROGRAM_VERSION = '2026-01-v2.1';
+  const PROGRAM_VERSION = '2026-01-v2.2';
 
   // In-memory working state (persisted to localStorage)
   let state = loadState();
