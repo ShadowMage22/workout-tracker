@@ -690,6 +690,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.target.checked) state.checkmarks[checkId] = true;
       else delete state.checkmarks[checkId];
       persistState();
+
+      if (e.target.checked) {
+        const exerciseItem = e.target.closest('li');
+        if (exerciseItem && exerciseItem.dataset.exerciseId && typeof window.startRestTimer === 'function') {
+          window.startRestTimer({ allowPrompt: false });
+        }
+      }
     }
   });
 
@@ -977,10 +984,11 @@ document.addEventListener('DOMContentLoaded', () => {
       renderTime();
     };
 
-    const startTimer = async () => {
+    const startTimer = async ({ allowPrompt = true } = {}) => {
+      if (endTime) return;
       const durationMs = Number(restDurationSelect.value || 60) * 1000;
       if (!durationMs) return;
-      if ('Notification' in window && Notification.permission === 'default') {
+      if (allowPrompt && 'Notification' in window && Notification.permission === 'default') {
         await requestNotificationPermission();
       }
       if (intervalId) window.clearInterval(intervalId);
@@ -1015,7 +1023,7 @@ document.addEventListener('DOMContentLoaded', () => {
     restDurationSelect.addEventListener('change', () => {
       if (!endTime) renderTime();
     });
-    startButton.addEventListener('click', startTimer);
+    startButton.addEventListener('click', () => startTimer());
     stopButton.addEventListener('click', () => finishTimer());
     notifyButton.addEventListener('click', requestNotificationPermission);
 
@@ -1025,6 +1033,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     setPillState('ready');
     renderTime();
+    window.startRestTimer = (options = {}) => startTimer(options);
   }
 
   function initSetTracking() {
@@ -1070,11 +1079,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function addSetRow(container) {
     if (!container) return;
+    const repsOptions = Array.from({ length: 20 }, (_, idx) => idx + 1);
+    const weightOptions = Array.from({ length: 81 }, (_, idx) => Number((idx * 2.5).toFixed(1)));
     const row = document.createElement('div');
     row.className = 'set-row';
     row.innerHTML = `
-      <input type="number" min="0" inputmode="numeric" class="set-reps" placeholder="Reps" aria-label="Reps" />
-      <input type="number" min="0" step="0.5" inputmode="decimal" class="set-weight" placeholder="Weight" aria-label="Weight" />
+      <select class="set-reps" aria-label="Reps">
+        <option value="" selected disabled>Reps</option>
+        ${repsOptions.map(value => `<option value="${value}">${value}</option>`).join('')}
+      </select>
+      <select class="set-weight" aria-label="Weight">
+        <option value="" selected disabled>Weight</option>
+        ${weightOptions.map(value => `<option value="${value}">${value}</option>`).join('')}
+      </select>
       <button type="button" class="remove-set" aria-label="Remove set">×</button>
     `;
     container.appendChild(row);

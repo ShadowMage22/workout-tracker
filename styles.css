@@ -353,17 +353,18 @@ button.clear { width: 100%; padding: 10px; font-size: 0.95rem; border: none; bor
 }
 .set-row {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+  grid-template-columns: minmax(64px, 90px) minmax(74px, 110px) auto;
   gap: 8px;
   margin-bottom: 6px;
   align-items: center;
 }
-.set-row input {
+.set-row select {
   width: 100%;
   padding: 6px 8px;
   border-radius: 8px;
   border: 1px solid #ddd;
   font-size: 0.8rem;
+  background: #fff;
 }
 .set-row button {
   border: none;
