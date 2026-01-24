@@ -256,35 +256,159 @@ function hideInstallPrompt() {
   document.getElementById('installPrompt').classList.remove('show');
 }
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').then(registration => {
+// ---- PWA: Service Worker registration + Update UX + Hard Reset ----
+(function initPwa() {
+  if (!('serviceWorker' in navigator)) return;
+
+  let refreshing = false;
+
+  window.addEventListener('load', async () => {
+    try {
+      // IMPORTANT for GitHub Pages subpaths: use ./sw.js and scope './'
+      const registration = await navigator.serviceWorker.register('./sw.js', { scope: './' });
+
+      // If a SW is already waiting (e.g., user opened after you deployed), prompt immediately
       if (registration.waiting) {
-        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+        showUpdateBanner(registration);
       }
 
+      // When an update is found, wait until it installs, then prompt the user
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
         if (!newWorker) return;
 
         newWorker.addEventListener('statechange', () => {
           if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            registration.waiting?.postMessage({ type: 'SKIP_WAITING' });
+            // New version ready, old still controlling
+            showUpdateBanner(registration);
           }
         });
       });
-    }).catch(() => {
-      console.log('Service worker registration failed');
-    });
+
+      // Optionally: proactively check for updates shortly after load
+      // (helps when browser doesn't recheck often)
+      setTimeout(() => registration.update().catch(() => {}), 3000);
+    } catch (err) {
+      console.log('Service worker registration failed', err);
+    }
   });
 
-  let refreshing = false;
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (refreshing) return;
     refreshing = true;
     window.location.reload();
   });
-}
+
+  function showUpdateBanner(registration) {
+    if (document.getElementById('pwaUpdateBanner')) return;
+
+    const banner = document.createElement('div');
+    banner.id = 'pwaUpdateBanner';
+    banner.style.cssText = `
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      z-index: 9999;
+      background: #222;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.95rem;
+    `;
+
+    const msg = document.createElement('span');
+    msg.textContent = 'Update available. Refresh to load the latest version.';
+
+    const actions = document.createElement('div');
+    actions.style.cssText = 'display:flex; gap:8px;';
+
+    const clearBtn = document.createElement('button');
+    clearBtn.textContent = 'Clear Cache';
+    clearBtn.style.cssText = `
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+    `;
+    clearBtn.addEventListener('click', () => {
+      clearCacheAndReload();
+    });
+
+    const refreshBtn = document.createElement('button');
+    refreshBtn.textContent = 'Refresh';
+    refreshBtn.style.cssText = `
+      background: #fff;
+      color: #111;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-weight: 600;
+      cursor: pointer;
+    `;
+    refreshBtn.addEventListener('click', () => {
+      // If a SW is waiting, tell it to activate now.
+      if (registration.waiting) {
+        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+      } else {
+        window.location.reload();
+      }
+    });
+
+    const laterBtn = document.createElement('button');
+    laterBtn.textContent = 'Later';
+    laterBtn.style.cssText = `
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+    `;
+    laterBtn.addEventListener('click', () => banner.remove());
+
+    actions.appendChild(laterBtn);
+    actions.appendChild(clearBtn);
+    actions.appendChild(refreshBtn);
+
+    banner.appendChild(msg);
+    banner.appendChild(actions);
+
+    document.body.appendChild(banner);
+  }
+
+  // Hard reset utility: unregister SWs + delete caches + cache-busted reload
+  async function clearCacheAndReload() {
+    try {
+      // Unregister service workers
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r => r.unregister()));
+
+      // Clear Cache Storage
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+      }
+    } catch (_) {
+      // ignore
+    } finally {
+      const url = new URL(window.location.href);
+      url.searchParams.set('cachebust', Date.now().toString());
+      window.location.replace(url.toString());
+    }
+  }
+
+  // Expose for optional manual UI wiring elsewhere
+  window.clearCacheAndReload = clearCacheAndReload;
+})();
+
 
 document.addEventListener('DOMContentLoaded', () => {
   const STORAGE_KEY = 'workoutTrackerState';
