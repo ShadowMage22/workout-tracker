@@ -189,8 +189,8 @@ const exerciseMedia = {
   },
   "bulgarian-split-squat": {
     video: "https://www.youtube.com/watch?v=2C-uNgKwPLE",
-    img: "./media/legs/bodyweight-bulgarian-split-squat.gif",
-    imgFull: "./media/legs/bodyweight-bulgarian-split-squat.gif"
+    img: "./media/legs/bulgarian-split-squat.gif",
+    imgFull: "./media/legs/bulgarian-split-squat.gif"
   },
   "walking-lunges": {
     video: "https://www.youtube.com/watch?v=L8fvypPrzzs",
@@ -495,6 +495,53 @@ document.addEventListener('DOMContentLoaded', () => {
     return media.img || null;
   }
 
+  function showMissingMedia(visual, img) {
+    if (!visual) return;
+    if (img) img.removeAttribute('src');
+    if (!visual.querySelector('.placeholder')) {
+      const placeholder = document.createElement('span');
+      placeholder.className = 'placeholder';
+      placeholder.textContent = '🖼️';
+      visual.appendChild(placeholder);
+    }
+  }
+
+  function clearMissingMedia(visual) {
+    if (!visual) return;
+    const placeholder = visual.querySelector('.placeholder');
+    if (placeholder) placeholder.remove();
+  }
+
+  function applyMediaToVisual(visual, img, media, altText) {
+    if (!visual || !img) return;
+
+    if (!media) {
+      showMissingMedia(visual, img);
+      return;
+    }
+
+    const previewSrc = getPreviewImage(media);
+    if (!previewSrc) {
+      showMissingMedia(visual, img);
+      return;
+    }
+
+    clearMissingMedia(visual);
+    img.onerror = () => showMissingMedia(visual, img);
+    img.src = previewSrc;
+
+    if (altText) {
+      img.alt = altText;
+      visual.setAttribute('aria-label', altText);
+    }
+
+    if (media.imgFull) {
+      visual.onclick = (e) => expandMedia(e, media.imgFull, img.alt || altText);
+    } else {
+      visual.removeAttribute('onclick');
+    }
+  }
+
   window.expandMedia = function(event, url, altText = 'Exercise demonstration') {
     event.stopPropagation();
     const overlay = document.getElementById('svgOverlay');
@@ -558,17 +605,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (media) {
       if (videoLink && media.video) videoLink.href = media.video;
-      const previewSrc = getPreviewImage(media);
-      if (imgEl && previewSrc) {
-        imgEl.src = previewSrc;
-        imgEl.alt = option.dataset.name || imgEl.alt;
-        if (visualEl && imgEl.alt) {
-          visualEl.setAttribute('aria-label', imgEl.alt);
-        }
-      }
-      if (visualEl && media.imgFull) {
-        visualEl.onclick = (e) => expandMedia(e, media.imgFull, imgEl ? imgEl.alt : undefined);
-      }
+      applyMediaToVisual(visualEl, imgEl, media, option.dataset.name || (imgEl ? imgEl.alt : 'Exercise demonstration'));
     }
 
     // Persist selection by stable exercise id
@@ -724,15 +761,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize all exercise visuals from centralized media
     document.querySelectorAll('.exercise-visual').forEach(visual => {
       const mediaKey = visual.dataset.mediaKey;
-      if (!mediaKey || !exerciseMedia[mediaKey]) return;
+      if (!mediaKey) return;
 
       const media = exerciseMedia[mediaKey];
       const img = visual.querySelector('img');
-      const previewSrc = getPreviewImage(media);
-      if (img && previewSrc) img.src = previewSrc;
-      if (media.imgFull) {
-        visual.onclick = (e) => expandMedia(e, media.imgFull, img ? img.alt : undefined);
-      }
+      applyMediaToVisual(visual, img, media, img ? img.alt : 'Exercise demonstration');
     });
 
     // Initialize all video links from centralized media
