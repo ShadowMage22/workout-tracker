@@ -56,6 +56,20 @@
   </div>
 </section>
 
+<section class="history-panel" aria-live="polite">
+  <div class="history-header">
+    <h2>History & Progress</h2>
+    <label for="historyDayFilter">Day</label>
+    <select id="historyDayFilter">
+      <option value="push">Push</option>
+      <option value="pull">Pull</option>
+      <option value="legs">Legs</option>
+    </select>
+  </div>
+  <p class="history-subtitle">Log your sets after each workout to see daily progress over time.</p>
+  <div class="history-list" id="historyList"></div>
+</section>
+
 <div class="tabs">
   <button type="button" class="tab active" data-day="push">Push</button>
   <button type="button" class="tab" data-day="pull">Pull</button>
@@ -193,6 +207,7 @@
     </ul>
   </div>
 
+  <button class="primary-button save-session" type="button" data-day="push">Save Push Session</button>
   <button class="clear" onclick="clearChecks('push')">Clear Push Day</button>
 </div>
 
@@ -327,6 +342,7 @@
     </ul>
   </div>
 
+  <button class="primary-button save-session" type="button" data-day="pull">Save Pull Session</button>
   <button class="clear" onclick="clearChecks('pull')">Clear Pull Day</button>
 </div>
 
@@ -461,6 +477,7 @@
     </ul>
   </div>
 
+  <button class="primary-button save-session" type="button" data-day="legs">Save Legs Session</button>
   <button class="clear" onclick="clearChecks('legs')">Clear Legs Day</button>
 </div>
 
