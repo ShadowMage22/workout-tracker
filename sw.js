@@ -1,4 +1,4 @@
-const CACHE_NAME = 'workout-tracker-v7';  // ← Increment this each major update
+const CACHE_NAME = 'workout-tracker-v8';  // ← Increment this each major update
 const RUNTIME_CACHE = 'workout-tracker-runtime-v1';
 const urlsToCache = [
   './',
