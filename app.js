@@ -568,6 +568,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function applyStateToUI() {
+    const escapeCssValue = window.CSS && CSS.escape
+      ? CSS.escape
+      : (value) => String(value).replace(/["\\]/g, '\\$&');
+
     // Apply checkmarks
     document.querySelectorAll('input[type="checkbox"]').forEach(c => {
       const checkId = c.dataset.checkId;
@@ -582,7 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const selectedKey = state.selections[exerciseId];
       if (!selectedKey) return;
 
-      const option = li.querySelector(`.variant-option[data-media-key="${CSS.escape(selectedKey)}"]`);
+      const option = li.querySelector(`.variant-option[data-media-key="${escapeCssValue(selectedKey)}"]`);
       if (option) {
         // Update selection styling + UI media
         window.selectVariant(option);
