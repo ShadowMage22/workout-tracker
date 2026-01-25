@@ -173,7 +173,7 @@ const exerciseMedia = {
     imgFull: "./media/legs/dumbbell-front-squat.gif"
   },
   "dumbbell-rdl": {
-    video: "https://youtu.be/OtOayZUX370?si=eCqK1mUaTS6ORHdR",
+    video: "https://www.youtube.com/watch?v=aa57T45iFSE&t=9s",
     img: "./media/legs/dumbbell-rdl.gif",
     imgFull: "./media/legs/dumbbell-rdl.gif"
   },
@@ -419,8 +419,19 @@ window.showDay = function showDay(dayId, tabBtn) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
 
   day.classList.add('active');
-  if (tabBtn && tabBtn.classList) tabBtn.classList.add('active');
-  if (typeof window.loadActiveDayMedia === 'function') window.loadActiveDayMedia();
+
+  if (tabBtn && tabBtn.classList) {
+    tabBtn.classList.add('active');
+  } else {
+    const btn = document.querySelector(`.tab[data-day="${CSS.escape(dayId)}"]`);
+    if (btn) btn.classList.add('active');
+  }
+  
+  // Force load media for the newly active tab
+  if (typeof window.loadActiveDayMedia === 'function') {
+    setTimeout(() => window.loadActiveDayMedia(), 50); // Small delay to ensure DOM is ready
+  }
+  
   if (typeof window.updateHistoryDay === 'function') window.updateHistoryDay(dayId);
 };
 
