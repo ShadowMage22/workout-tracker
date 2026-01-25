@@ -426,14 +426,6 @@ window.showDay = function showDay(dayId, tabBtn) {
     const btn = document.querySelector(`.tab[data-day="${CSS.escape(dayId)}"]`);
     if (btn) btn.classList.add('active');
   }
-  
-  // Force load media for the newly active tab
-  if (typeof window.loadActiveDayMedia === 'function') {
-    setTimeout(() => window.loadActiveDayMedia(), 50); // Small delay to ensure DOM is ready
-  }
-  
-  if (typeof window.updateHistoryDay === 'function') window.updateHistoryDay(dayId);
-};
 
 // ---- Tab navigation (resilient, no inline onclick required) ----
 window.showDay = function showDay(dayId, tabBtn) {
