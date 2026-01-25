@@ -571,6 +571,9 @@ document.addEventListener('DOMContentLoaded', () => {
     img.dataset.src = previewSrc;
     img.removeAttribute('src');
     img.classList.add('lazy-media');
+    if (typeof window.registerLazyMedia === 'function') {
+      window.registerLazyMedia(img);
+    }
 
     if (altText) {
       img.alt = altText;
@@ -1367,6 +1370,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function initLazyMedia() {
     const pending = new Set();
+    const hasRects = (img) => img && img.getClientRects && img.getClientRects().length > 0;
 
     const loadImage = (img) => {
       if (!img || !img.dataset || !img.dataset.src) return;
@@ -1375,6 +1379,7 @@ document.addEventListener('DOMContentLoaded', () => {
       img.dataset.loaded = 'true';
       img.classList.remove('lazy-media');
       pending.delete(img);
+      if (observer) observer.unobserve(img);
     };
 
     const observer = 'IntersectionObserver' in window
@@ -1388,11 +1393,20 @@ document.addEventListener('DOMContentLoaded', () => {
       }, { rootMargin: '120px 0px' })
       : null;
 
-    document.querySelectorAll('.exercise-visual img').forEach(img => {
-      if (!img.dataset || !img.dataset.src) return;
+    const registerLazyMedia = (img) => {
+      if (!img || !img.dataset || !img.dataset.src) return;
       pending.add(img);
-      if (observer) observer.observe(img);
-      else loadImage(img);
+      if (observer && hasRects(img)) {
+        observer.observe(img);
+      } else {
+        loadImage(img);
+      }
+    };
+
+    window.registerLazyMedia = registerLazyMedia;
+
+    document.querySelectorAll('.exercise-visual img').forEach(img => {
+      registerLazyMedia(img);
     });
 
     window.loadActiveDayMedia = function loadActiveDayMedia() {
