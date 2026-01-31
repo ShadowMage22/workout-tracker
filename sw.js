@@ -1,4 +1,4 @@
-const CACHE_NAME = 'workout-tracker-v13'; // bump when you deploy
+const CACHE_NAME = 'workout-tracker-v14'; // bump when you deploy
 const RUNTIME_CACHE = 'workout-tracker-runtime-v2';
 const RUNTIME_CACHE_LIMIT = 60;
 
