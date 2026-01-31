@@ -1,4 +1,33 @@
 let deferredPrompt;
+const installPromptEl = document.getElementById('installPrompt');
+const installButton = document.getElementById('installButton');
+const iosInstallHint = document.getElementById('iosInstallHint');
+
+function isIosSafari() {
+  const ua = navigator.userAgent;
+  const isIosDevice = /iPad|iPhone|iPod/i.test(ua) || (ua.includes('Mac') && 'ontouchend' in document);
+  const isSafari = /Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS|Chrome/i.test(ua);
+  return isIosDevice && isSafari;
+}
+
+function isStandaloneMode() {
+  return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+}
+
+function showInstallPrompt() {
+  if (!installPromptEl) return;
+  installPromptEl.classList.add('show');
+}
+
+function showIosInstallHint() {
+  if (iosInstallHint) iosInstallHint.hidden = false;
+  if (installButton) {
+    installButton.disabled = true;
+    installButton.hidden = true;
+    installButton.setAttribute('aria-hidden', 'true');
+  }
+  showInstallPrompt();
+}
 
 // Centralized exercise media database
 const exerciseMedia = {
@@ -236,14 +265,17 @@ const exerciseMedia = {
 };
 
 window.addEventListener('beforeinstallprompt', (e) => {
+  if (isIosSafari()) return;
   e.preventDefault();
   deferredPrompt = e;
-  document.getElementById('installPrompt').classList.add('show');
+  showInstallPrompt();
 });
 
 function installApp() {
-  const promptEl = document.getElementById('installPrompt');
-  promptEl.classList.remove('show');
+  if (isIosSafari()) return;
+  if (installPromptEl) {
+    installPromptEl.classList.remove('show');
+  }
 
   if (deferredPrompt) {
     deferredPrompt.prompt();
@@ -254,8 +286,16 @@ function installApp() {
 }
 
 function hideInstallPrompt() {
-  document.getElementById('installPrompt').classList.remove('show');
+  if (installPromptEl) {
+    installPromptEl.classList.remove('show');
+  }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (isIosSafari() && !isStandaloneMode()) {
+    showIosInstallHint();
+  }
+});
 
 // ---- PWA: Service Worker registration + Update UX + Hard Reset ----
 (function initPwa() {

@@ -15,8 +15,11 @@
 
 <div class="install-prompt" id="installPrompt">
   <button class="close-install" onclick="hideInstallPrompt()">&times;</button>
-  <span>Install this app for easy access</span>
-  <button onclick="installApp()">Install</button>
+  <div class="install-text">
+    <span>Install this app for easy access. The Install button works in browsers that support the install prompt.</span>
+    <span class="ios-install-hint" id="iosInstallHint" hidden>On iOS Safari: tap Share → Add to Home Screen.</span>
+  </div>
+  <button id="installButton" onclick="installApp()">Install</button>
 </div>
 
 <div class="status-banner info" id="statusBanner" role="status" aria-live="polite"></div>

@@ -315,8 +315,19 @@ button.clear:focus-visible {
   display: none;
   align-items: center;
   gap: var(--space-2);
+  flex-wrap: wrap;
 }
 .install-prompt.show { display: flex; }
+.install-prompt .install-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 240px;
+}
+.install-prompt .ios-install-hint {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
 .install-prompt button {
   background: white;
   color: var(--color-primary);
