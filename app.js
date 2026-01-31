@@ -509,6 +509,9 @@ const renderWorkoutUI = (data = {}) => {
       if (section.type === 'strength') {
         (section.exercises || []).forEach(exercise => {
           const listItem = document.createElement('li');
+          if (exercise.instructions && exercise.instructions.sets) {
+            listItem.dataset.recommendedSets = exercise.instructions.sets;
+          }
 
           const exerciseWrap = document.createElement('div');
           exerciseWrap.className = 'exercise';
@@ -572,6 +575,9 @@ const renderWorkoutUI = (data = {}) => {
             option.setAttribute('onclick', 'selectVariant(this)');
             option.dataset.name = variant.displayName || variant.label || '';
             option.dataset.instructions = buildInstructionString(variant.instructions);
+            if (variant.instructions && variant.instructions.sets) {
+              option.dataset.recommendedSets = variant.instructions.sets;
+            }
             if (variant.mediaKey) option.dataset.mediaKey = variant.mediaKey;
 
             const labelText = document.createTextNode(variant.label || '');
@@ -862,6 +868,9 @@ document.addEventListener('DOMContentLoaded', () => {
         .join('<br>');
       instructionsEl.innerHTML = normalized;
     }
+    if (option.dataset.recommendedSets) {
+      exerciseItem.dataset.recommendedSets = option.dataset.recommendedSets;
+    }
 
     // Update media key on the exercise (single source of truth)
     if (visualEl && mediaKey) visualEl.dataset.mediaKey = mediaKey;
@@ -884,6 +893,12 @@ document.addEventListener('DOMContentLoaded', () => {
     container.classList.remove('active');
     container.querySelectorAll('.variant-option').forEach(v => v.classList.remove('selected'));
     option.classList.add('selected');
+
+    const rows = exerciseItem.querySelector('.set-rows');
+    if (rows && !rowsHaveValues(rows) && (!exerciseId || !state.sets[exerciseId])) {
+      populateRecommendedRows(rows);
+      updateSetStateFromRows(rows);
+    }
   };
 
   // ---------- Event Wiring ----------
@@ -1249,6 +1264,52 @@ document.addEventListener('DOMContentLoaded', () => {
     window.startRestTimer = (options = {}) => startTimer(options);
   }
 
+  function parseRecommendedSets(setsText) {
+    if (!setsText || typeof setsText !== 'string') return null;
+    const match = setsText.match(/(\d+)\s*[x×]\s*(\d+)(?:\s*[-–]\s*(\d+))?/i);
+    if (!match) return null;
+    const setCount = Number(match[1] || 0);
+    const repsValue = Number(match[2] || 0);
+    if (!setCount || !repsValue) return null;
+    return { setCount, repsValue };
+  }
+
+  function getRecommendedSetRows(exerciseItem) {
+    const recommendation = parseRecommendedSets(exerciseItem?.dataset?.recommendedSets || '');
+    if (!recommendation) return [];
+    return Array.from({ length: recommendation.setCount }, () => ({
+      reps: recommendation.repsValue
+    }));
+  }
+
+  function populateRecommendedRows(rows) {
+    if (!rows) return;
+    const exerciseItem = rows.closest('li[data-exercise-id]');
+    const recommended = getRecommendedSetRows(exerciseItem);
+    rows.innerHTML = '';
+    if (recommended.length > 0) {
+      recommended.forEach(setData => addSetRow(rows, setData));
+    } else {
+      addSetRow(rows);
+    }
+  }
+
+  function readWeightValue(weightSelect) {
+    const rawValue = weightSelect?.value;
+    if (!rawValue) return 0;
+    if (rawValue === 'BW') return 'BW';
+    const parsed = Number(rawValue);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  function rowsHaveValues(rows) {
+    return Array.from(rows?.querySelectorAll('.set-row') || []).some(row => {
+      const repsValue = Number(row.querySelector('.set-reps')?.value || 0);
+      const weightValue = readWeightValue(row.querySelector('.set-weight'));
+      return repsValue > 0 || weightValue === 'BW' || weightValue > 0;
+    });
+  }
+
   function initSetTracking() {
     document.querySelectorAll('li[data-exercise-id]').forEach(li => {
       if (li.querySelector('.set-tracker')) return;
@@ -1265,7 +1326,7 @@ document.addEventListener('DOMContentLoaded', () => {
       li.appendChild(tracker);
 
       const rows = tracker.querySelector('.set-rows');
-      addSetRow(rows);
+      populateRecommendedRows(rows);
 
       tracker.querySelector('.add-set').addEventListener('click', () => {
         if (!ensureEditable()) return;
@@ -1273,8 +1334,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       tracker.querySelector('.clear-sets').addEventListener('click', () => {
         if (!ensureEditable()) return;
-        rows.innerHTML = '';
-        addSetRow(rows);
+        populateRecommendedRows(rows);
         updateSetStateFromRows(rows);
       });
       rows.addEventListener('change', (event) => {
@@ -1308,7 +1368,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function addSetRow(container, setData = {}) {
     if (!container) return;
     const repsOptions = Array.from({ length: 20 }, (_, idx) => idx + 1);
-    const weightOptions = Array.from({ length: 81 }, (_, idx) => Number((idx * 2.5).toFixed(1)));
+    const weightOptions = ['BW', ...Array.from({ length: 81 }, (_, idx) => Number((idx * 2.5).toFixed(1)))];
     const row = document.createElement('div');
     row.className = 'set-row';
     row.innerHTML = `
@@ -1318,7 +1378,9 @@ document.addEventListener('DOMContentLoaded', () => {
       </select>
       <select class="set-weight" aria-label="Weight">
         <option value="" selected disabled>Weight</option>
-        ${weightOptions.map(value => `<option value="${value}">${value}</option>`).join('')}
+        ${weightOptions.map(value => value === 'BW'
+    ? '<option value="BW">Bodyweight</option>'
+    : `<option value="${value}">${value}</option>`).join('')}
       </select>
       <button type="button" class="remove-set" aria-label="Remove set">×</button>
     `;
@@ -1328,7 +1390,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const repsSelect = row.querySelector('.set-reps');
       if (repsSelect) repsSelect.value = String(setData.reps);
     }
-    if (typeof setData.weight === 'number' && setData.weight > 0) {
+    if (setData.weight === 'BW') {
+      const weightSelect = row.querySelector('.set-weight');
+      if (weightSelect) weightSelect.value = 'BW';
+    } else if (typeof setData.weight === 'number' && setData.weight > 0) {
       const weightSelect = row.querySelector('.set-weight');
       if (weightSelect) weightSelect.value = String(setData.weight);
     }
@@ -1339,8 +1404,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!exerciseId) return;
     const sets = Array.from(rows.querySelectorAll('.set-row')).map(row => {
       const repsValue = Number(row.querySelector('.set-reps')?.value || 0);
-      const weightValue = Number(row.querySelector('.set-weight')?.value || 0);
-      if (!repsValue && !weightValue) return null;
+      const weightValue = readWeightValue(row.querySelector('.set-weight'));
+      const hasWeight = weightValue === 'BW' || weightValue > 0;
+      if (!repsValue && !hasWeight) return null;
       return {
         reps: repsValue || 0,
         weight: weightValue || 0
@@ -1403,8 +1469,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const name = li.querySelector('.exercise-name')?.textContent?.trim();
       const sets = Array.from(li.querySelectorAll('.set-row')).map(row => {
         const reps = Number(row.querySelector('.set-reps')?.value || 0);
-        const weight = Number(row.querySelector('.set-weight')?.value || 0);
-        if (!reps && !weight) return null;
+        const weight = readWeightValue(row.querySelector('.set-weight'));
+        const hasWeight = weight === 'BW' || weight > 0;
+        if (!reps && !hasWeight) return null;
         return {
           reps: reps || 0,
           weight: weight || 0
@@ -1454,8 +1521,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const day = document.getElementById(dayId);
     if (!day) return;
     day.querySelectorAll('.set-rows').forEach(rows => {
-      rows.innerHTML = '';
-      addSetRow(rows);
+      populateRecommendedRows(rows);
     });
     resetSetStateForDay(dayId);
     persistState();
@@ -1489,7 +1555,8 @@ document.addEventListener('DOMContentLoaded', () => {
           const totals = session.exercises.reduce((acc, ex) => {
             ex.sets.forEach(set => {
               acc.reps += set.reps || 0;
-              acc.volume += (set.reps || 0) * (set.weight || 0);
+              const weightValue = typeof set.weight === 'number' ? set.weight : 0;
+              acc.volume += (set.reps || 0) * weightValue;
             });
             return acc;
           }, { reps: 0, volume: 0 });
@@ -1509,7 +1576,10 @@ document.addEventListener('DOMContentLoaded', () => {
           session.exercises.forEach(exercise => {
             const exerciseEl = document.createElement('div');
             exerciseEl.className = 'history-exercise';
-            const setsLabel = exercise.sets.map(set => `${set.reps}×${set.weight}`).join(', ');
+            const setsLabel = exercise.sets.map(set => {
+              const weightLabel = set.weight === 'BW' ? 'BW' : set.weight;
+              return `${set.reps}×${weightLabel}`;
+            }).join(', ');
             exerciseEl.textContent = `${exercise.name}: ${setsLabel}`;
             card.appendChild(exerciseEl);
           });
@@ -1734,13 +1804,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!rows) return;
       const exerciseId = li.dataset.exerciseId;
       const storedSets = exerciseId ? state.sets[exerciseId] : null;
-      rows.innerHTML = '';
       if (Array.isArray(storedSets) && storedSets.length > 0) {
+        rows.innerHTML = '';
         storedSets.forEach(set => {
           addSetRow(rows, set);
         });
       } else {
-        addSetRow(rows);
+        populateRecommendedRows(rows);
       }
     });
     isHydratingState = false;
