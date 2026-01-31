@@ -682,6 +682,17 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   initApp();
+  enhanceAccessibility();
+  assignStableIds();
+  applyMediaFromKeys();
+  initLazyMedia();
+  initConnectivityStatus();
+  initCrossTabSync();
+  initActiveTabTracking();
+  initRestTimer();
+  initSetTracking();
+  initHistoryPanel();
+  applyStateToUI();
 
   // ---------- Public API ----------
   window.clearChecks = function(dayId) {
@@ -695,6 +706,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (checkId) delete state.checkmarks[checkId];
     });
 
+    resetSetStateForDay(dayId);
     persistState();
   };
 
@@ -901,6 +913,7 @@ document.addEventListener('DOMContentLoaded', () => {
       stateVersion: STATE_VERSION,
       programVersion: PROGRAM_VERSION,
       checkmarks: {},
+      sets: {},
       selections: {},
       lastUpdated: 0,
       lastUpdatedBy: null
@@ -942,6 +955,7 @@ document.addEventListener('DOMContentLoaded', () => {
       stateVersion: STATE_VERSION,
       programVersion: PROGRAM_VERSION,
       checkmarks: parsed.checkmarks && typeof parsed.checkmarks === 'object' ? parsed.checkmarks : {},
+      sets: parsed.sets && typeof parsed.sets === 'object' ? parsed.sets : {},
       selections: parsed.selections && typeof parsed.selections === 'object' ? parsed.selections : {},
       lastUpdated: typeof parsed.lastUpdated === 'number' ? parsed.lastUpdated : 0,
       lastUpdatedBy: parsed.lastUpdatedBy || null
@@ -1249,17 +1263,32 @@ document.addEventListener('DOMContentLoaded', () => {
       const rows = tracker.querySelector('.set-rows');
       addSetRow(rows);
 
-      tracker.querySelector('.add-set').addEventListener('click', () => addSetRow(rows));
+      tracker.querySelector('.add-set').addEventListener('click', () => {
+        if (!ensureEditable()) return;
+        addSetRow(rows);
+      });
       tracker.querySelector('.clear-sets').addEventListener('click', () => {
+        if (!ensureEditable()) return;
         rows.innerHTML = '';
         addSetRow(rows);
+        updateSetStateFromRows(rows);
+      });
+      rows.addEventListener('change', (event) => {
+        if (!event.target.matches('.set-reps, .set-weight')) return;
+        if (!ensureEditable()) {
+          applyStateToUI();
+          return;
+        }
+        updateSetStateFromRows(rows);
       });
       rows.addEventListener('click', (event) => {
         const btn = event.target.closest('.remove-set');
         if (!btn) return;
+        if (!ensureEditable()) return;
         const row = btn.closest('.set-row');
         if (row) row.remove();
         if (!rows.querySelector('.set-row')) addSetRow(rows);
+        updateSetStateFromRows(rows);
       });
     });
 
@@ -1272,7 +1301,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function addSetRow(container) {
+  function addSetRow(container, setData = {}) {
     if (!container) return;
     const repsOptions = Array.from({ length: 20 }, (_, idx) => idx + 1);
     const weightOptions = Array.from({ length: 81 }, (_, idx) => Number((idx * 2.5).toFixed(1)));
@@ -1290,6 +1319,39 @@ document.addEventListener('DOMContentLoaded', () => {
       <button type="button" class="remove-set" aria-label="Remove set">×</button>
     `;
     container.appendChild(row);
+
+    if (typeof setData.reps === 'number' && setData.reps > 0) {
+      const repsSelect = row.querySelector('.set-reps');
+      if (repsSelect) repsSelect.value = String(setData.reps);
+    }
+    if (typeof setData.weight === 'number' && setData.weight > 0) {
+      const weightSelect = row.querySelector('.set-weight');
+      if (weightSelect) weightSelect.value = String(setData.weight);
+    }
+  }
+
+  function updateSetStateFromRows(rows) {
+    const exerciseId = rows?.closest('li[data-exercise-id]')?.dataset.exerciseId;
+    if (!exerciseId) return;
+    const sets = Array.from(rows.querySelectorAll('.set-row')).map(row => {
+      const repsValue = Number(row.querySelector('.set-reps')?.value || 0);
+      const weightValue = Number(row.querySelector('.set-weight')?.value || 0);
+      if (!repsValue && !weightValue) return null;
+      return {
+        reps: repsValue || 0,
+        weight: weightValue || 0
+      };
+    }).filter(Boolean);
+
+    if (sets.length > 0) {
+      state.sets[exerciseId] = sets;
+    } else {
+      delete state.sets[exerciseId];
+    }
+
+    if (!isHydratingState && !isApplyingExternalState) {
+      persistState();
+    }
   }
 
   function initHistoryPanel() {
@@ -1391,6 +1453,8 @@ document.addEventListener('DOMContentLoaded', () => {
       rows.innerHTML = '';
       addSetRow(rows);
     });
+    resetSetStateForDay(dayId);
+    persistState();
   }
 
   function renderHistory(dayId) {
@@ -1660,6 +1724,32 @@ document.addEventListener('DOMContentLoaded', () => {
         window.selectVariant(option);
       }
     });
+
+    document.querySelectorAll('li[data-exercise-id]').forEach(li => {
+      const rows = li.querySelector('.set-rows');
+      if (!rows) return;
+      const exerciseId = li.dataset.exerciseId;
+      const storedSets = exerciseId ? state.sets[exerciseId] : null;
+      rows.innerHTML = '';
+      if (Array.isArray(storedSets) && storedSets.length > 0) {
+        storedSets.forEach(set => {
+          addSetRow(rows, set);
+        });
+      } else {
+        addSetRow(rows);
+      }
+    });
     isHydratingState = false;
+  }
+
+  function resetSetStateForDay(dayId) {
+    const day = document.getElementById(dayId);
+    if (!day) return;
+    day.querySelectorAll('li[data-exercise-id]').forEach(li => {
+      const exerciseId = li.dataset.exerciseId;
+      if (exerciseId && state.sets[exerciseId]) {
+        delete state.sets[exerciseId];
+      }
+    });
   }
 });
