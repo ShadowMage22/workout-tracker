@@ -630,7 +630,9 @@ button.clear { width: 100%; padding: var(--space-2); font-size: 0.95rem; border:
 .overlay img {
   width: 90vw;
   max-width: 400px;
+  max-height: 80vh;
   height: auto;
+  object-fit: contain;
   background: var(--color-surface);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
@@ -638,7 +640,9 @@ button.clear { width: 100%; padding: var(--space-2); font-size: 0.95rem; border:
 .overlay video {
   width: 90vw;
   max-width: 400px;
+  max-height: 80vh;
   height: auto;
+  object-fit: contain;
   background: #fff;
   border-radius: 16px;
   padding: 16px;
