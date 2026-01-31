@@ -440,6 +440,196 @@ document.addEventListener('click', (e) => {
   window.showDay(btn.dataset.day, btn);
 });
 
+const WORKOUT_DATA_URL = './data/workouts.json';
+
+const escapeHtml = (value) => String(value)
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/\"/g, '&quot;')
+  .replace(/'/g, '&#39;');
+
+const buildInstructionString = (instructions = {}) => {
+  const parts = [
+    `Sets/Reps: ${instructions.sets || ''}`,
+    `Rest: ${instructions.rest || ''}`,
+    `Time: ${instructions.time || ''}`,
+    `Targets: ${instructions.targets || ''}`
+  ];
+  if (instructions.notes) {
+    parts.push(instructions.notes);
+  }
+  return parts.join(' | ');
+};
+
+const buildInstructionHtml = (instructions = {}) => {
+  const safe = {
+    sets: escapeHtml(instructions.sets || ''),
+    rest: escapeHtml(instructions.rest || ''),
+    time: escapeHtml(instructions.time || ''),
+    targets: escapeHtml(instructions.targets || ''),
+    notes: instructions.notes ? escapeHtml(instructions.notes) : ''
+  };
+  let html = `<strong>Sets/Reps:</strong> ${safe.sets}<br>` +
+    `<strong>Rest:</strong> ${safe.rest}<br>` +
+    `<strong>Time:</strong> ${safe.time}<br>` +
+    `<strong>Targets:</strong> ${safe.targets}`;
+  if (safe.notes) {
+    html += `<br>${safe.notes}`;
+  }
+  return html;
+};
+
+const renderWorkoutUI = (data = {}) => {
+  if (!data || !Array.isArray(data.days)) return;
+
+  data.days.forEach(day => {
+    if (!day || !day.id) return;
+    const container = document.getElementById(day.id);
+    if (!container) return;
+    container.innerHTML = '';
+
+    const heading = document.createElement('h2');
+    heading.textContent = day.title || '';
+    container.appendChild(heading);
+
+    (day.sections || []).forEach(section => {
+      if (!section) return;
+      const sectionEl = document.createElement('div');
+      sectionEl.className = 'section';
+      if (section.type === 'warmup') sectionEl.classList.add('warmup');
+      if (section.type === 'cooldown') sectionEl.classList.add('cooldown');
+
+      const title = document.createElement('h3');
+      title.textContent = section.title || '';
+      sectionEl.appendChild(title);
+
+      const list = document.createElement('ul');
+
+      if (section.type === 'strength') {
+        (section.exercises || []).forEach(exercise => {
+          const listItem = document.createElement('li');
+
+          const exerciseWrap = document.createElement('div');
+          exerciseWrap.className = 'exercise';
+
+          const label = document.createElement('label');
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          label.appendChild(checkbox);
+          exerciseWrap.appendChild(label);
+
+          const visual = document.createElement('div');
+          visual.className = 'exercise-visual';
+          if (exercise.mediaKey) visual.dataset.mediaKey = exercise.mediaKey;
+          visual.setAttribute('onclick', 'expandMedia(event, \'\')');
+
+          const img = document.createElement('img');
+          img.src = '';
+          img.alt = exercise.name || exercise.displayName || 'Exercise demonstration';
+          visual.appendChild(img);
+
+          const expandHint = document.createElement('div');
+          expandHint.className = 'expand-hint';
+          expandHint.textContent = '🔍';
+          visual.appendChild(expandHint);
+          exerciseWrap.appendChild(visual);
+
+          const name = document.createElement('span');
+          name.className = 'exercise-name';
+          name.textContent = exercise.displayName || exercise.name || '';
+          exerciseWrap.appendChild(name);
+
+          listItem.appendChild(exerciseWrap);
+
+          const instructionsEl = document.createElement('div');
+          instructionsEl.className = 'instructions';
+          instructionsEl.innerHTML = buildInstructionHtml(exercise.instructions);
+          listItem.appendChild(instructionsEl);
+
+          const videoLink = document.createElement('a');
+          videoLink.href = '#';
+          if (exercise.mediaKey) videoLink.dataset.mediaKey = exercise.mediaKey;
+          videoLink.target = '_blank';
+          videoLink.rel = 'noopener noreferrer';
+          videoLink.className = 'video-link';
+          videoLink.textContent = 'Watch Form Tutorial';
+          listItem.appendChild(videoLink);
+
+          const variantsToggle = document.createElement('div');
+          variantsToggle.className = 'variants-toggle';
+          variantsToggle.textContent = 'Change exercise (same muscles)';
+          variantsToggle.setAttribute('onclick', 'toggleVariants(this)');
+          listItem.appendChild(variantsToggle);
+
+          const variantsList = document.createElement('div');
+          variantsList.className = 'exercise-variants';
+
+          (exercise.variants || []).forEach((variant, index) => {
+            const option = document.createElement('div');
+            option.className = 'variant-option';
+            if (index === 0) option.classList.add('selected');
+            option.setAttribute('onclick', 'selectVariant(this)');
+            option.dataset.name = variant.displayName || variant.label || '';
+            option.dataset.instructions = buildInstructionString(variant.instructions);
+            if (variant.mediaKey) option.dataset.mediaKey = variant.mediaKey;
+
+            const labelText = document.createTextNode(variant.label || '');
+            option.appendChild(labelText);
+            if (variant.muscles) {
+              const muscles = document.createElement('span');
+              muscles.textContent = `(${variant.muscles})`;
+              option.appendChild(document.createTextNode(' '));
+              option.appendChild(muscles);
+            }
+            variantsList.appendChild(option);
+          });
+
+          listItem.appendChild(variantsList);
+          list.appendChild(listItem);
+        });
+      } else {
+        (section.items || []).forEach(item => {
+          const listItem = document.createElement('li');
+          const label = document.createElement('label');
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          const span = document.createElement('span');
+          span.textContent = item;
+          label.appendChild(checkbox);
+          label.appendChild(span);
+          listItem.appendChild(label);
+          list.appendChild(listItem);
+        });
+      }
+
+      sectionEl.appendChild(list);
+      container.appendChild(sectionEl);
+    });
+
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'primary-button save-session';
+    saveBtn.type = 'button';
+    saveBtn.dataset.day = day.id;
+    saveBtn.textContent = day.saveLabel || 'Save Session';
+    container.appendChild(saveBtn);
+
+    const clearBtn = document.createElement('button');
+    clearBtn.className = 'clear';
+    clearBtn.setAttribute('onclick', `clearChecks('${day.id}')`);
+    clearBtn.textContent = day.clearLabel || 'Clear Day';
+    container.appendChild(clearBtn);
+  });
+};
+
+const loadWorkoutData = async () => {
+  const response = await fetch(WORKOUT_DATA_URL);
+  if (!response.ok) {
+    throw new Error(`Failed to load workout data (${response.status})`);
+  }
+  return response.json();
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   const STORAGE_KEY = 'workoutTrackerState';
   const STATE_VERSION = 2;
@@ -466,6 +656,32 @@ document.addEventListener('DOMContentLoaded', () => {
   let statusTimeoutId = null;
   let historyDbPromise = null;
 
+  const initApp = async () => {
+    try {
+      const data = await loadWorkoutData();
+      renderWorkoutUI(data);
+    } catch (error) {
+      if (statusBanner) {
+        statusBanner.textContent = 'Unable to load workout data. Please refresh or check your connection.';
+        statusBanner.classList.add('show', 'warning');
+      }
+      console.error(error);
+    }
+
+    enhanceAccessibility();
+    assignStableIds();
+    applyMediaFromKeys();
+    initLazyMedia();
+    applyStateToUI();
+    initConnectivityStatus();
+    initCrossTabSync();
+    initActiveTabTracking();
+    initRestTimer();
+    initSetTracking();
+    initHistoryPanel();
+  };
+
+  initApp();
   enhanceAccessibility();
   assignStableIds();
   applyMediaFromKeys();

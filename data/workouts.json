@@ -1,0 +1,895 @@
+{
+  "days": [
+    {
+      "id": "push",
+      "title": "Push Day",
+      "saveLabel": "Save Push Session",
+      "clearLabel": "Clear Push Day",
+      "sections": [
+        {
+          "type": "warmup",
+          "title": "Warm-Up (8 minutes)",
+          "items": [
+            "Light cardio (walk/bike) — 2 min",
+            "Arm circles + band pull-aparts — 3 min",
+            "Warm-up sets for first two lifts — 3 min"
+          ]
+        },
+        {
+          "type": "strength",
+          "title": "Strength + Core (≈35 minutes)",
+          "exercises": [
+            {
+              "name": "Dumbbell Bench Press",
+              "displayName": "Dumbbell Bench Press — 3×8–10",
+              "mediaKey": "dumbbell-bench-press",
+              "instructions": {
+                "sets": "3×8–10",
+                "rest": "60–90 sec",
+                "time": "~6–7 min",
+                "targets": "chest, shoulders, triceps",
+                "notes": "Press smoothly; keep wrists stacked and shoulder blades set."
+              },
+              "variants": [
+                {
+                  "label": "Dumbbell Bench Press",
+                  "displayName": "Dumbbell Bench Press — 3×8–10",
+                  "muscles": "chest, shoulders, triceps",
+                  "mediaKey": "dumbbell-bench-press",
+                  "instructions": {
+                    "sets": "3×8–10",
+                    "rest": "60–90 sec",
+                    "time": "~6–7 min",
+                    "targets": "chest, shoulders, triceps",
+                    "notes": "Press smoothly; keep wrists stacked and shoulder blades set."
+                  }
+                },
+                {
+                  "label": "Push-Ups",
+                  "displayName": "Push-Ups — 3×10–15",
+                  "muscles": "chest, shoulders, triceps",
+                  "mediaKey": "push-ups",
+                  "instructions": {
+                    "sets": "3×10–15",
+                    "rest": "60 sec",
+                    "time": "~6 min",
+                    "targets": "chest, shoulders, triceps",
+                    "notes": "Brace your core; lower under control and press to full lockout."
+                  }
+                },
+                {
+                  "label": "Dumbbell Chest Fly",
+                  "displayName": "Dumbbell Chest Fly — 3×10–12",
+                  "muscles": "chest, shoulders",
+                  "mediaKey": "dumbbell-chest-fly",
+                  "instructions": {
+                    "sets": "3×10–12",
+                    "rest": "60 sec",
+                    "time": "~6 min",
+                    "targets": "chest, shoulders",
+                    "notes": "Keep a slight elbow bend; open to a stretch and squeeze at the top."
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Dumbbell Standing Overhead Press",
+              "displayName": "Dumbbell Standing Overhead Press — 3×8–10",
+              "mediaKey": "dumbbell-standing-overhead-press",
+              "instructions": {
+                "sets": "3×8–10",
+                "rest": "60–90 sec",
+                "time": "~6–7 min",
+                "targets": "chest, shoulders, triceps",
+                "notes": "Press smoothly; keep wrists stacked and shoulder blades set."
+              },
+              "variants": [
+                {
+                  "label": "Dumbbell Standing Overhead Press",
+                  "displayName": "Dumbbell Standing Overhead Press — 3×8–10",
+                  "muscles": "chest, shoulders, triceps",
+                  "mediaKey": "dumbbell-standing-overhead-press",
+                  "instructions": {
+                    "sets": "3×8–10",
+                    "rest": "60–90 sec",
+                    "time": "~6–7 min",
+                    "targets": "chest, shoulders, triceps",
+                    "notes": "Press smoothly; keep wrists stacked and shoulder blades set."
+                  }
+                },
+                {
+                  "label": "Single Arm Arnold Press",
+                  "displayName": "Single Arm Arnold Press — 3×8–10",
+                  "muscles": "chest, shoulders, triceps",
+                  "mediaKey": "single-arm-arnold-press",
+                  "instructions": {
+                    "sets": "3×8–10",
+                    "rest": "60–90 sec",
+                    "time": "~6–7 min",
+                    "targets": "chest, shoulders, triceps",
+                    "notes": "Press smoothly; keep wrists stacked and shoulder blades set."
+                  }
+                },
+                {
+                  "label": "Half-Kneeling Dumbbell Press",
+                  "displayName": "Half-Kneeling Dumbbell Press — 3×8–10",
+                  "muscles": "chest, shoulders, triceps",
+                  "mediaKey": "half-kneeling-dumbbell-press",
+                  "instructions": {
+                    "sets": "3×8–10",
+                    "rest": "60–90 sec",
+                    "time": "~6–7 min",
+                    "targets": "chest, shoulders, triceps",
+                    "notes": "Press smoothly; keep wrists stacked and shoulder blades set."
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Incline Press",
+              "displayName": "Incline Press — 3×10",
+              "mediaKey": "dumbbell-incline-press",
+              "instructions": {
+                "sets": "3×10",
+                "rest": "60–90 sec",
+                "time": "~6–7 min",
+                "targets": "chest, shoulders, triceps",
+                "notes": "Press smoothly; keep wrists stacked and shoulder blades set."
+              },
+              "variants": [
+                {
+                  "label": "Incline Press",
+                  "displayName": "Incline Press — 3×10",
+                  "muscles": "chest, shoulders, triceps",
+                  "mediaKey": "dumbbell-incline-press",
+                  "instructions": {
+                    "sets": "3×10",
+                    "rest": "60–90 sec",
+                    "time": "~6–7 min",
+                    "targets": "chest, shoulders, triceps",
+                    "notes": "Press smoothly; keep wrists stacked and shoulder blades set."
+                  }
+                },
+                {
+                  "label": "Incline Fly",
+                  "displayName": "Incline Fly — 3×10–12",
+                  "muscles": "chest, shoulders",
+                  "mediaKey": "dumbbell-incline-fly",
+                  "instructions": {
+                    "sets": "3×10–12",
+                    "rest": "60 sec",
+                    "time": "~6 min",
+                    "targets": "chest, shoulders",
+                    "notes": "Keep a slight elbow bend; open to a stretch and squeeze at the top."
+                  }
+                },
+                {
+                  "label": "Low Cable Fly",
+                  "displayName": "Low Cable Fly — 3×12",
+                  "muscles": "chest, shoulders",
+                  "mediaKey": "cable-fly",
+                  "instructions": {
+                    "sets": "3×12",
+                    "rest": "60 sec",
+                    "time": "~6 min",
+                    "targets": "chest, shoulders",
+                    "notes": "Keep a slight elbow bend; open to a stretch and squeeze at the top."
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Tricep Pushdown",
+              "displayName": "Tricep Pushdown — 3×10–12",
+              "mediaKey": "tricep-pushdown",
+              "instructions": {
+                "sets": "3×10–12",
+                "rest": "45–60 sec",
+                "time": "~5–6 min",
+                "targets": "triceps",
+                "notes": "Keep elbows pinned; extend fully with control."
+              },
+              "variants": [
+                {
+                  "label": "Tricep Pushdown",
+                  "displayName": "Tricep Pushdown — 3×10–12",
+                  "muscles": "triceps",
+                  "mediaKey": "tricep-pushdown",
+                  "instructions": {
+                    "sets": "3×10–12",
+                    "rest": "45–60 sec",
+                    "time": "~5–6 min",
+                    "targets": "triceps",
+                    "notes": "Keep elbows pinned; extend fully with control."
+                  }
+                },
+                {
+                  "label": "Overhead Tricep Ext",
+                  "displayName": "Overhead Tricep Ext — 3×10–12",
+                  "muscles": "triceps",
+                  "mediaKey": "overhead-tricep-ext",
+                  "instructions": {
+                    "sets": "3×10–12",
+                    "rest": "45–60 sec",
+                    "time": "~5–6 min",
+                    "targets": "triceps",
+                    "notes": "Keep elbows pinned; extend fully with control."
+                  }
+                },
+                {
+                  "label": "Close-Grip Pushups",
+                  "displayName": "Close-Grip Pushups — 3×10–12",
+                  "muscles": "full body",
+                  "mediaKey": "close-grip-pushup",
+                  "instructions": {
+                    "sets": "3×10–12",
+                    "rest": "45–60 sec",
+                    "time": "~5–6 min",
+                    "targets": "full body",
+                    "notes": "Use controlled tempo and full range of motion."
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Plank",
+              "displayName": "Plank",
+              "mediaKey": "plank",
+              "instructions": {
+                "sets": "",
+                "rest": "30 sec",
+                "time": "~4 min",
+                "targets": "full body",
+                "notes": "Use controlled tempo and full range of motion."
+              },
+              "variants": [
+                {
+                  "label": "Plank",
+                  "displayName": "Plank",
+                  "muscles": "full body",
+                  "mediaKey": "plank",
+                  "instructions": {
+                    "sets": "",
+                    "rest": "30 sec",
+                    "time": "~4 min",
+                    "targets": "full body",
+                    "notes": "Use controlled tempo and full range of motion."
+                  }
+                },
+                {
+                  "label": "Mountain Climbers",
+                  "displayName": "Mountain Climbers",
+                  "muscles": "full body",
+                  "mediaKey": "mountain-climbers",
+                  "instructions": {
+                    "sets": "",
+                    "rest": "30 sec",
+                    "time": "~4 min",
+                    "targets": "full body",
+                    "notes": "Use controlled tempo and full range of motion."
+                  }
+                },
+                {
+                  "label": "Plank Walk Out",
+                  "displayName": "Plank Walk Out",
+                  "muscles": "full body",
+                  "mediaKey": "plank-walk-out",
+                  "instructions": {
+                    "sets": "",
+                    "rest": "30 sec",
+                    "time": "~4 min",
+                    "targets": "full body",
+                    "notes": "Use controlled tempo and full range of motion."
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "cooldown",
+          "title": "Cooldown (5 minutes)",
+          "items": [
+            "Chest stretch — 30s/side",
+            "Shoulder stretch — 30s/side",
+            "Breathing — 1–2 min"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pull",
+      "title": "Pull Day",
+      "saveLabel": "Save Pull Session",
+      "clearLabel": "Clear Pull Day",
+      "sections": [
+        {
+          "type": "warmup",
+          "title": "Warm-Up (8 minutes)",
+          "items": [
+            "Light cardio (walk/row/bike) — 2 min",
+            "Band pull-aparts + arm circles — 3 min",
+            "Warm-up sets for first two lifts — 3 min"
+          ]
+        },
+        {
+          "type": "strength",
+          "title": "Strength + Core (≈35 minutes)",
+          "exercises": [
+            {
+              "name": "Seated Cable Row",
+              "displayName": "Seated Cable Row — 3×8–10",
+              "mediaKey": "cable-row",
+              "instructions": {
+                "sets": "3×8–10",
+                "rest": "60–90 sec",
+                "time": "~6–7 min",
+                "targets": "back, biceps",
+                "notes": "Pull elbows toward hips; pause briefly and control the return."
+              },
+              "variants": [
+                {
+                  "label": "Seated Cable Row",
+                  "displayName": "Seated Cable Row — 3×8–10",
+                  "muscles": "back, biceps",
+                  "mediaKey": "cable-row",
+                  "instructions": {
+                    "sets": "3×8–10",
+                    "rest": "60–90 sec",
+                    "time": "~6–7 min",
+                    "targets": "back, biceps",
+                    "notes": "Pull elbows toward hips; pause briefly and control the return."
+                  }
+                },
+                {
+                  "label": "Dumbbell Row",
+                  "displayName": "Dumbbell Row — 3×8–10/side",
+                  "muscles": "back, biceps",
+                  "mediaKey": "dumbbell-row",
+                  "instructions": {
+                    "sets": "3×8–10/side",
+                    "rest": "60–90 sec",
+                    "time": "~6–7 min",
+                    "targets": "back, biceps",
+                    "notes": "Pull elbows toward hips; pause briefly and control the return."
+                  }
+                },
+                {
+                  "label": "Bent Over Dumbbell Row",
+                  "displayName": "Bent Over Dumbbell Row — 3×8–10",
+                  "muscles": "back, biceps",
+                  "mediaKey": "bent-over-dumbbell-row",
+                  "instructions": {
+                    "sets": "3×8–10",
+                    "rest": "60–90 sec",
+                    "time": "~6–7 min",
+                    "targets": "back, biceps",
+                    "notes": "Pull elbows toward hips; pause briefly and control the return."
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Lat Pulldown",
+              "displayName": "Lat Pulldown — 3×8–10",
+              "mediaKey": "lat-pulldown",
+              "instructions": {
+                "sets": "3×8–10",
+                "rest": "60–90 sec",
+                "time": "~6–7 min",
+                "targets": "back, biceps",
+                "notes": "Depress shoulders; pull to the intended line and control the eccentric."
+              },
+              "variants": [
+                {
+                  "label": "Lat Pulldown",
+                  "displayName": "Lat Pulldown — 3×8–10",
+                  "muscles": "back, biceps",
+                  "mediaKey": "lat-pulldown",
+                  "instructions": {
+                    "sets": "3×8–10",
+                    "rest": "60–90 sec",
+                    "time": "~6–7 min",
+                    "targets": "back, biceps",
+                    "notes": "Depress shoulders; pull to the intended line and control the eccentric."
+                  }
+                },
+                {
+                  "label": "Lat Pushdowns",
+                  "displayName": "Lat Pushdowns — 3×5–8",
+                  "muscles": "back, biceps",
+                  "mediaKey": "lat-pushdowns",
+                  "instructions": {
+                    "sets": "3×5–8",
+                    "rest": "90 sec",
+                    "time": "~6–7 min",
+                    "targets": "back, biceps",
+                    "notes": "Depress shoulders; pull to the intended line and control the eccentric."
+                  }
+                },
+                {
+                  "label": "Straight-Arm Pulldown",
+                  "displayName": "Straight-Arm Pulldown — 3×10–12",
+                  "muscles": "back, biceps",
+                  "mediaKey": "straight-arm-pulldown",
+                  "instructions": {
+                    "sets": "3×10–12",
+                    "rest": "60 sec",
+                    "time": "~6 min",
+                    "targets": "back, biceps",
+                    "notes": "Depress shoulders; pull to the intended line and control the eccentric."
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Face Pulls",
+              "displayName": "Face Pulls — 3×12–15",
+              "mediaKey": "face-pulls",
+              "instructions": {
+                "sets": "3×12–15",
+                "rest": "45–60 sec",
+                "time": "~5–6 min",
+                "targets": "back, biceps, rear delts, upper back",
+                "notes": "Pull toward eyes; rotate thumbs back and squeeze shoulder blades."
+              },
+              "variants": [
+                {
+                  "label": "Face Pulls",
+                  "displayName": "Face Pulls — 3×12–15",
+                  "muscles": "back, biceps, rear delts, upper back",
+                  "mediaKey": "face-pulls",
+                  "instructions": {
+                    "sets": "3×12–15",
+                    "rest": "45–60 sec",
+                    "time": "~5–6 min",
+                    "targets": "back, biceps, rear delts, upper back",
+                    "notes": "Pull toward eyes; rotate thumbs back and squeeze shoulder blades."
+                  }
+                },
+                {
+                  "label": "Reverse Fly",
+                  "displayName": "Reverse Fly — 3×12–15",
+                  "muscles": "chest, shoulders",
+                  "mediaKey": "reverse-fly",
+                  "instructions": {
+                    "sets": "3×12–15",
+                    "rest": "45–60 sec",
+                    "time": "~5–6 min",
+                    "targets": "chest, shoulders",
+                    "notes": "Keep a slight elbow bend; open to a stretch and squeeze at the top."
+                  }
+                },
+                {
+                  "label": "Lateral Raises",
+                  "displayName": "Lateral Raises — 3×10–12",
+                  "muscles": "shoulders, back, biceps",
+                  "mediaKey": "lateral-raise",
+                  "instructions": {
+                    "sets": "3×10–12",
+                    "rest": "60 sec",
+                    "time": "~5–6 min",
+                    "targets": "shoulders, back, biceps",
+                    "notes": "Depress shoulders; pull to the intended line and control the eccentric."
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Bicep Curls",
+              "displayName": "Bicep Curls — 3×10–12",
+              "mediaKey": "bicep-curls",
+              "instructions": {
+                "sets": "3×10–12",
+                "rest": "45–60 sec",
+                "time": "~5–6 min",
+                "targets": "biceps",
+                "notes": "Keep elbows close; curl without swinging and lower slowly."
+              },
+              "variants": [
+                {
+                  "label": "Bicep Curls",
+                  "displayName": "Bicep Curls — 3×10–12",
+                  "muscles": "biceps",
+                  "mediaKey": "bicep-curls",
+                  "instructions": {
+                    "sets": "3×10–12",
+                    "rest": "45–60 sec",
+                    "time": "~5–6 min",
+                    "targets": "biceps",
+                    "notes": "Keep elbows close; curl without swinging and lower slowly."
+                  }
+                },
+                {
+                  "label": "Hammer Curls",
+                  "displayName": "Hammer Curls — 3×10–12",
+                  "muscles": "biceps",
+                  "mediaKey": "hammer-curls",
+                  "instructions": {
+                    "sets": "3×10–12",
+                    "rest": "45–60 sec",
+                    "time": "~5–6 min",
+                    "targets": "biceps",
+                    "notes": "Keep elbows close; curl without swinging and lower slowly."
+                  }
+                },
+                {
+                  "label": "Cable Curls",
+                  "displayName": "Cable Curls — 3×10–12",
+                  "muscles": "biceps",
+                  "mediaKey": "cable-curls",
+                  "instructions": {
+                    "sets": "3×10–12",
+                    "rest": "45–60 sec",
+                    "time": "~5–6 min",
+                    "targets": "biceps",
+                    "notes": "Keep elbows close; curl without swinging and lower slowly."
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Dead Bug",
+              "displayName": "Dead Bug",
+              "mediaKey": "dead-bug",
+              "instructions": {
+                "sets": "",
+                "rest": "30 sec",
+                "time": "~4 min",
+                "targets": "full body",
+                "notes": "Use controlled tempo and full range of motion."
+              },
+              "variants": [
+                {
+                  "label": "Dead Bug",
+                  "displayName": "Dead Bug",
+                  "muscles": "full body",
+                  "mediaKey": "dead-bug",
+                  "instructions": {
+                    "sets": "",
+                    "rest": "30 sec",
+                    "time": "~4 min",
+                    "targets": "full body",
+                    "notes": "Use controlled tempo and full range of motion."
+                  }
+                },
+                {
+                  "label": "Bird Dog",
+                  "displayName": "Bird Dog",
+                  "muscles": "full body",
+                  "mediaKey": "bird-dog",
+                  "instructions": {
+                    "sets": "",
+                    "rest": "30 sec",
+                    "time": "~4 min",
+                    "targets": "full body",
+                    "notes": "Use controlled tempo and full range of motion."
+                  }
+                },
+                {
+                  "label": "Hollow Body Hold",
+                  "displayName": "Hollow Body Hold",
+                  "muscles": "full body",
+                  "mediaKey": "hollow-body",
+                  "instructions": {
+                    "sets": "",
+                    "rest": "30 sec",
+                    "time": "~4 min",
+                    "targets": "full body",
+                    "notes": "Use controlled tempo and full range of motion."
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "cooldown",
+          "title": "Cooldown (5 minutes)",
+          "items": [
+            "Lat stretch — 30s/side",
+            "Upper-back stretch — 30s",
+            "Breathing — 1–2 min"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "legs",
+      "title": "Legs Day",
+      "saveLabel": "Save Legs Session",
+      "clearLabel": "Clear Legs Day",
+      "sections": [
+        {
+          "type": "warmup",
+          "title": "Warm-Up (8 minutes)",
+          "items": [
+            "Light cardio (walk/bike) — 2 min",
+            "Hip circles + leg swings — 3 min",
+            "Warm-up sets for first two lifts — 3 min"
+          ]
+        },
+        {
+          "type": "strength",
+          "title": "Strength + Core (≈35 minutes)",
+          "exercises": [
+            {
+              "name": "Goblet Squat",
+              "displayName": "Goblet Squat — 3×8–10",
+              "mediaKey": "goblet-squat",
+              "instructions": {
+                "sets": "3×8–10",
+                "rest": "60–90 sec",
+                "time": "~6–7 min",
+                "targets": "quads, glutes",
+                "notes": "Keep knees tracking toes; stay tall and control depth."
+              },
+              "variants": [
+                {
+                  "label": "Goblet Squat",
+                  "displayName": "Goblet Squat — 3×8–10",
+                  "muscles": "quads, glutes",
+                  "mediaKey": "goblet-squat",
+                  "instructions": {
+                    "sets": "3×8–10",
+                    "rest": "60–90 sec",
+                    "time": "~6–7 min",
+                    "targets": "quads, glutes",
+                    "notes": "Keep knees tracking toes; stay tall and control depth."
+                  }
+                },
+                {
+                  "label": "Dumbbell Sumo Squat",
+                  "displayName": "Dumbbell Sumo Squat — 3×8–10",
+                  "muscles": "quads, glutes",
+                  "mediaKey": "dumbbell-sumo-squat",
+                  "instructions": {
+                    "sets": "3×8–10",
+                    "rest": "90 sec",
+                    "time": "~7 min",
+                    "targets": "quads, glutes",
+                    "notes": "Keep knees tracking toes; stay tall and control depth."
+                  }
+                },
+                {
+                  "label": "Dumbbell Front Squat",
+                  "displayName": "Dumbbell Front Squat — 3×10–12",
+                  "muscles": "quads, glutes",
+                  "mediaKey": "dumbbell-front-squat",
+                  "instructions": {
+                    "sets": "3×10–12",
+                    "rest": "60–90 sec",
+                    "time": "~6–7 min",
+                    "targets": "quads, glutes",
+                    "notes": "Keep knees tracking toes; stay tall and control depth."
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Dumbbell Romanian Deadlift",
+              "displayName": "Dumbbell Romanian Deadlift — 3×8–10",
+              "mediaKey": "dumbbell-rdl",
+              "instructions": {
+                "sets": "3×8–10",
+                "rest": "60–90 sec",
+                "time": "~6–7 min",
+                "targets": "hamstrings, glutes, back",
+                "notes": "Hinge at hips; keep a neutral spine and drive hips through."
+              },
+              "variants": [
+                {
+                  "label": "Dumbbell Romanian Deadlift",
+                  "displayName": "Dumbbell Romanian Deadlift — 3×8–10",
+                  "muscles": "hamstrings, glutes, back",
+                  "mediaKey": "dumbbell-rdl",
+                  "instructions": {
+                    "sets": "3×8–10",
+                    "rest": "60–90 sec",
+                    "time": "~6–7 min",
+                    "targets": "hamstrings, glutes, back",
+                    "notes": "Hinge at hips; keep a neutral spine and drive hips through."
+                  }
+                },
+                {
+                  "label": "Leg Curl",
+                  "displayName": "Leg Curl — 3×10–12",
+                  "muscles": "biceps",
+                  "mediaKey": "leg-curl",
+                  "instructions": {
+                    "sets": "3×10–12",
+                    "rest": "60 sec",
+                    "time": "~6 min",
+                    "targets": "biceps",
+                    "notes": "Keep elbows close; curl without swinging and lower slowly."
+                  }
+                },
+                {
+                  "label": "Single-Leg RDL",
+                  "displayName": "Single-Leg RDL — 3×10",
+                  "muscles": "hamstrings, glutes, back",
+                  "mediaKey": "single-leg-rdl",
+                  "instructions": {
+                    "sets": "3×10",
+                    "rest": "60–90 sec",
+                    "time": "~6 min",
+                    "targets": "hamstrings, glutes, back",
+                    "notes": "Hinge at hips; keep a neutral spine and drive hips through."
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Bulgarian Split Squat",
+              "displayName": "Bulgarian Split Squat — 3×8/side",
+              "mediaKey": "bulgarian-split-squat",
+              "instructions": {
+                "sets": "3×8/side",
+                "rest": "60–90 sec",
+                "time": "~7–8 min",
+                "targets": "quads, glutes",
+                "notes": "Keep knees tracking toes; stay tall and control depth."
+              },
+              "variants": [
+                {
+                  "label": "Bulgarian Split Squat",
+                  "displayName": "Bulgarian Split Squat — 3×8/side",
+                  "muscles": "quads, glutes",
+                  "mediaKey": "bulgarian-split-squat",
+                  "instructions": {
+                    "sets": "3×8/side",
+                    "rest": "60–90 sec",
+                    "time": "~7–8 min",
+                    "targets": "quads, glutes",
+                    "notes": "Keep knees tracking toes; stay tall and control depth."
+                  }
+                },
+                {
+                  "label": "Walking Lunges",
+                  "displayName": "Walking Lunges — 3×10/side",
+                  "muscles": "quads, glutes",
+                  "mediaKey": "walking-lunges",
+                  "instructions": {
+                    "sets": "3×10/side",
+                    "rest": "60 sec",
+                    "time": "~6–7 min",
+                    "targets": "quads, glutes",
+                    "notes": "Keep knees tracking toes; stay tall and control depth."
+                  }
+                },
+                {
+                  "label": "Step-Ups",
+                  "displayName": "Step-Ups — 3×10/side",
+                  "muscles": "quads, glutes",
+                  "mediaKey": "step-ups",
+                  "instructions": {
+                    "sets": "3×10/side",
+                    "rest": "60 sec",
+                    "time": "~6–7 min",
+                    "targets": "quads, glutes",
+                    "notes": "Keep knees tracking toes; stay tall and control depth."
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Calf Raises",
+              "displayName": "Calf Raises — 3×12–15",
+              "mediaKey": "calf-raises",
+              "instructions": {
+                "sets": "3×12–15",
+                "rest": "45–60 sec",
+                "time": "~5–6 min",
+                "targets": "calves",
+                "notes": "Pause at the top; lower to a full stretch under control."
+              },
+              "variants": [
+                {
+                  "label": "Calf Raises",
+                  "displayName": "Calf Raises — 3×12–15",
+                  "muscles": "calves",
+                  "mediaKey": "calf-raises",
+                  "instructions": {
+                    "sets": "3×12–15",
+                    "rest": "45–60 sec",
+                    "time": "~5–6 min",
+                    "targets": "calves",
+                    "notes": "Pause at the top; lower to a full stretch under control."
+                  }
+                },
+                {
+                  "label": "Seated Calf Raise",
+                  "displayName": "Seated Calf Raise — 3×15–20",
+                  "muscles": "calves",
+                  "mediaKey": "seated-calf",
+                  "instructions": {
+                    "sets": "3×15–20",
+                    "rest": "45 sec",
+                    "time": "~5 min",
+                    "targets": "calves",
+                    "notes": "Pause at the top; lower to a full stretch under control."
+                  }
+                },
+                {
+                  "label": "Single-Leg Calf Raise",
+                  "displayName": "Single-Leg Calf Raise — 3×10–12/side",
+                  "muscles": "calves",
+                  "mediaKey": "single-leg-calf-raise",
+                  "instructions": {
+                    "sets": "3×10–12/side",
+                    "rest": "45 sec",
+                    "time": "~6 min",
+                    "targets": "calves",
+                    "notes": "Pause at the top; lower to a full stretch under control."
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Side Plank",
+              "displayName": "Side Plank",
+              "mediaKey": "side-plank",
+              "instructions": {
+                "sets": "",
+                "rest": "30 sec",
+                "time": "~4 min",
+                "targets": "full body",
+                "notes": "Use controlled tempo and full range of motion."
+              },
+              "variants": [
+                {
+                  "label": "Side Plank",
+                  "displayName": "Side Plank",
+                  "muscles": "full body",
+                  "mediaKey": "side-plank",
+                  "instructions": {
+                    "sets": "",
+                    "rest": "30 sec",
+                    "time": "~4 min",
+                    "targets": "full body",
+                    "notes": "Use controlled tempo and full range of motion."
+                  }
+                },
+                {
+                  "label": "Pallof Press",
+                  "displayName": "Pallof Press",
+                  "muscles": "chest, shoulders, triceps",
+                  "mediaKey": "pallof-press",
+                  "instructions": {
+                    "sets": "",
+                    "rest": "30 sec",
+                    "time": "~4 min",
+                    "targets": "chest, shoulders, triceps",
+                    "notes": "Press smoothly; keep wrists stacked and shoulder blades set."
+                  }
+                },
+                {
+                  "label": "Russian Twists",
+                  "displayName": "Russian Twists",
+                  "muscles": "full body",
+                  "mediaKey": "russian-twists",
+                  "instructions": {
+                    "sets": "",
+                    "rest": "30 sec",
+                    "time": "~4 min",
+                    "targets": "full body",
+                    "notes": "Use controlled tempo and full range of motion."
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "cooldown",
+          "title": "Cooldown (5 minutes)",
+          "items": [
+            "Hamstring stretch — 30s/side",
+            "Quad stretch — 30s/side",
+            "Breathing — 1–2 min"
+          ]
+        }
+      ]
+    }
+  ]
+}
