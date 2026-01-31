@@ -490,6 +490,32 @@ document.addEventListener('click', (e) => {
   window.showDay(btn.dataset.day, btn);
 });
 
+document.addEventListener('click', (event) => {
+  const toggle = event.target.closest('.variants-toggle');
+  if (toggle) {
+    event.preventDefault();
+    window.toggleVariants(toggle);
+    return;
+  }
+
+  const option = event.target.closest('.variant-option');
+  if (option) {
+    event.preventDefault();
+    window.selectVariant(option);
+    return;
+  }
+
+  const visual = event.target.closest('.exercise-visual');
+  if (visual) {
+    const mediaKey = visual.dataset.mediaKey;
+    const media = mediaKey ? exerciseMedia[mediaKey] : null;
+    const url = visual.dataset.fullSrc || (media ? (media.imgFull || media.img) : null);
+    if (!url) return;
+    const img = visual.querySelector('img');
+    window.expandMedia(event, url, img?.alt || 'Exercise demonstration');
+  }
+});
+
 const WORKOUT_DATA_URL = './data/workouts.json';
 
 const escapeHtml = (value) => String(value)
@@ -610,7 +636,6 @@ const renderWorkoutUI = (data = {}) => {
           const visual = document.createElement('div');
           visual.className = 'exercise-visual';
           if (exercise.mediaKey) visual.dataset.mediaKey = exercise.mediaKey;
-          visual.setAttribute('onclick', 'expandMedia(event, \'\')');
 
           const img = document.createElement('img');
           img.src = '';
@@ -658,7 +683,6 @@ const renderWorkoutUI = (data = {}) => {
           const variantsToggle = document.createElement('div');
           variantsToggle.className = 'variants-toggle';
           variantsToggle.textContent = 'Change exercise (same muscles)';
-          variantsToggle.setAttribute('onclick', 'toggleVariants(this)');
           listItem.appendChild(variantsToggle);
 
           const variantsList = document.createElement('div');
@@ -668,7 +692,6 @@ const renderWorkoutUI = (data = {}) => {
             const option = document.createElement('div');
             option.className = 'variant-option';
             if (index === 0) option.classList.add('selected');
-            option.setAttribute('onclick', 'selectVariant(this)');
             option.dataset.name = variant.displayName || variant.label || '';
             option.dataset.instructions = buildInstructionString(variant.instructions);
             if (variant.instructions && variant.instructions.sets) {
@@ -909,14 +932,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (media.imgFull) {
-      visual.onclick = (e) => expandMedia(e, media.imgFull, img.alt || altText);
+      visual.dataset.fullSrc = media.imgFull;
     } else {
-      visual.removeAttribute('onclick');
+      delete visual.dataset.fullSrc;
     }
   }
 
   window.expandMedia = function(event, url, altText = 'Exercise demonstration') {
-    event.stopPropagation();
+    if (event && event.stopPropagation) {
+      event.stopPropagation();
+    }
     const overlay = document.getElementById('svgOverlay');
     const container = document.getElementById('overlayContent');
     if (!overlay || !container || !url) return;
