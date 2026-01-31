@@ -436,6 +436,9 @@ window.showDay = function showDay(dayId, tabBtn) {
   if (typeof window.updateHistoryDay === 'function' && WORKOUT_DAY_IDS.includes(dayId)) {
     window.updateHistoryDay(dayId);
   }
+  if (typeof window.applyProgressionHintsForDay === 'function' && WORKOUT_DAY_IDS.includes(dayId)) {
+    window.applyProgressionHintsForDay(dayId);
+  }
 };
 
 // Event delegation: works even if inline handlers fail
@@ -463,9 +466,6 @@ const buildInstructionString = (instructions = {}) => {
     `Time: ${instructions.time || ''}`,
     `Targets: ${instructions.targets || ''}`
   ];
-  if (instructions.notes) {
-    parts.push(instructions.notes);
-  }
   return parts.join(' | ');
 };
 
@@ -481,10 +481,30 @@ const buildInstructionHtml = (instructions = {}) => {
     `<strong>Rest:</strong> ${safe.rest}<br>` +
     `<strong>Time:</strong> ${safe.time}<br>` +
     `<strong>Targets:</strong> ${safe.targets}`;
-  if (safe.notes) {
-    html += `<br>${safe.notes}`;
-  }
   return html;
+};
+
+const setCoachTip = (element, noteText) => {
+  if (!element) return;
+  const trimmed = (noteText || '').trim();
+  if (!trimmed) {
+    element.textContent = '';
+    element.classList.remove('show');
+    return;
+  }
+  element.textContent = `Coach tip: ${trimmed}`;
+  element.classList.add('show');
+};
+
+const parseDurationFromTitle = (title = '', sectionType = '') => {
+  const match = String(title).match(/(\d+)\s*min/i);
+  if (match) {
+    const minutes = Number(match[1]);
+    if (Number.isFinite(minutes) && minutes > 0) return minutes * 60;
+  }
+  if (sectionType === 'warmup') return 8 * 60;
+  if (sectionType === 'cooldown') return 5 * 60;
+  return 6 * 60;
 };
 
 const renderWorkoutUI = (data = {}) => {
@@ -510,6 +530,24 @@ const renderWorkoutUI = (data = {}) => {
       const title = document.createElement('h3');
       title.textContent = section.title || '';
       sectionEl.appendChild(title);
+
+      if (section.type === 'warmup' || section.type === 'cooldown') {
+        const timerWrap = document.createElement('div');
+        timerWrap.className = 'section-timer';
+        timerWrap.dataset.sectionType = section.type;
+        timerWrap.dataset.duration = parseDurationFromTitle(section.title, section.type).toString();
+        timerWrap.innerHTML = `
+          <div>
+            <span class="timer-label">${section.type === 'warmup' ? 'Warm-up timer' : 'Cooldown timer'}</span>
+            <span class="timer-display">00:00</span>
+          </div>
+          <div class="timer-actions">
+            <button type="button" class="ghost-button start-timer">Start</button>
+            <button type="button" class="ghost-button stop-timer" disabled>Stop</button>
+          </div>
+        `;
+        sectionEl.appendChild(timerWrap);
+      }
 
       const list = document.createElement('ul');
 
@@ -557,6 +595,17 @@ const renderWorkoutUI = (data = {}) => {
           instructionsEl.innerHTML = buildInstructionHtml(exercise.instructions);
           listItem.appendChild(instructionsEl);
 
+          listItem.dataset.coaching = exercise.instructions?.notes || '';
+          const coachTip = document.createElement('div');
+          coachTip.className = 'coach-tip';
+          setCoachTip(coachTip, exercise.instructions?.notes);
+          listItem.appendChild(coachTip);
+
+          const progressionHint = document.createElement('div');
+          progressionHint.className = 'progression-hint';
+          progressionHint.textContent = 'Log a session to get progression tips.';
+          listItem.appendChild(progressionHint);
+
           const videoLink = document.createElement('a');
           videoLink.href = '#';
           if (exercise.mediaKey) videoLink.dataset.mediaKey = exercise.mediaKey;
@@ -585,6 +634,7 @@ const renderWorkoutUI = (data = {}) => {
             if (variant.instructions && variant.instructions.sets) {
               option.dataset.recommendedSets = variant.instructions.sets;
             }
+            option.dataset.coaching = variant.instructions?.notes || '';
             if (variant.mediaKey) option.dataset.mediaKey = variant.mediaKey;
 
             const labelText = document.createTextNode(variant.label || '');
@@ -658,6 +708,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const statusBanner = document.getElementById('statusBanner');
   const readOnlyBanner = document.getElementById('readOnlyBanner');
   const offlineBanner = document.getElementById('offlineBanner');
+  const syncStatus = document.getElementById('syncStatus');
   const historyDayFilter = document.getElementById('historyDayFilter');
   const historyList = document.getElementById('historyList');
 
@@ -668,6 +719,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let isReadOnly = false;
   let statusTimeoutId = null;
   let historyDbPromise = null;
+  let lastSavedAt = null;
+  const sectionTimerState = new WeakMap();
 
   const initApp = async () => {
     try {
@@ -690,8 +743,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initCrossTabSync();
     initActiveTabTracking();
     initRestTimer();
+    initSectionTimers();
     initSetTracking();
     initHistoryPanel();
+    applyProgressionHintsForDay(document.querySelector('.day.active')?.id || WORKOUT_DAY_IDS[0]);
   };
 
   initApp();
@@ -703,9 +758,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initCrossTabSync();
   initActiveTabTracking();
   initRestTimer();
+  initSectionTimers();
   initSetTracking();
   initHistoryPanel();
   applyStateToUI();
+  applyProgressionHintsForDay(document.querySelector('.day.active')?.id || WORKOUT_DAY_IDS[0]);
 
   // ---------- Public API ----------
   window.clearChecks = function(dayId) {
@@ -851,6 +908,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const nameEl = exerciseItem.querySelector('.exercise-name');
     const instructionsEl = exerciseItem.querySelector('.instructions');
+    const coachTip = exerciseItem.querySelector('.coach-tip');
     const videoLink = exerciseItem.querySelector('.video-link');
     const visualEl = exerciseItem.querySelector('.exercise-visual');
     const imgEl = visualEl ? visualEl.querySelector('img') : null;
@@ -874,6 +932,12 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .join('<br>');
       instructionsEl.innerHTML = normalized;
+    }
+    if (coachTip) {
+      setCoachTip(coachTip, option.dataset.coaching || '');
+      if (option.dataset.coaching) {
+        exerciseItem.dataset.coaching = option.dataset.coaching;
+      }
     }
     if (option.dataset.recommendedSets) {
       exerciseItem.dataset.recommendedSets = option.dataset.recommendedSets;
@@ -930,6 +994,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  document.addEventListener('click', (event) => {
+    const startBtn = event.target.closest('.section-timer .start-timer');
+    if (startBtn) {
+      event.preventDefault();
+      startSectionTimer(startBtn.closest('.section-timer'));
+      return;
+    }
+    const stopBtn = event.target.closest('.section-timer .stop-timer');
+    if (stopBtn) {
+      event.preventDefault();
+      stopSectionTimer(stopBtn.closest('.section-timer'));
+    }
+  });
+
   // ---------- State + Media ----------
   function defaultState() {
     return {
@@ -965,6 +1043,8 @@ document.addEventListener('DOMContentLoaded', () => {
       state.lastUpdated = Date.now();
       state.lastUpdatedBy = TAB_ID;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      lastSavedAt = state.lastUpdated;
+      updateSyncStatus();
       if (broadcast && channel) {
         channel.postMessage({ type: 'state-update', state });
       }
@@ -1007,6 +1087,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function formatTimer(ms) {
+    const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+
+  function updateSyncStatus({ message, state } = {}) {
+    if (!syncStatus) return;
+    const online = navigator.onLine;
+    const statusText = message || (online ? 'Online • All changes saved' : 'Offline • Saved locally');
+    syncStatus.textContent = statusText;
+    syncStatus.dataset.state = state || (online ? 'online' : 'offline');
+    if (lastSavedAt) {
+      syncStatus.dataset.updated = new Date(lastSavedAt).toISOString();
+    }
+  }
+
   function setBannerVisibility(banner, shouldShow, message) {
     if (!banner) return;
     if (message) banner.textContent = message;
@@ -1017,6 +1115,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!offlineBanner) return;
     const update = () => {
       setBannerVisibility(offlineBanner, !navigator.onLine);
+      updateSyncStatus();
     };
     window.addEventListener('online', update);
     window.addEventListener('offline', update);
@@ -1298,21 +1397,72 @@ document.addEventListener('DOMContentLoaded', () => {
     window.startRestTimer = (options = {}) => startTimer(options);
   }
 
+  function initSectionTimers() {
+    document.querySelectorAll('.section-timer').forEach(timer => {
+      if (timer.dataset.initialized === 'true') return;
+      timer.dataset.initialized = 'true';
+      const durationSeconds = Number(timer.dataset.duration || 0);
+      const display = timer.querySelector('.timer-display');
+      if (display) {
+        display.textContent = formatTimer(durationSeconds * 1000);
+      }
+    });
+  }
+
+  function startSectionTimer(timerEl) {
+    if (!timerEl) return;
+    if (sectionTimerState.has(timerEl)) return;
+    const durationSeconds = Number(timerEl.dataset.duration || 0);
+    if (!durationSeconds) return;
+    const display = timerEl.querySelector('.timer-display');
+    const startButton = timerEl.querySelector('.start-timer');
+    const stopButton = timerEl.querySelector('.stop-timer');
+    const endTime = Date.now() + durationSeconds * 1000;
+    const intervalId = window.setInterval(() => {
+      const remaining = endTime - Date.now();
+      if (display) display.textContent = formatTimer(remaining);
+      if (remaining <= 0) {
+        stopSectionTimer(timerEl, { completed: true });
+      }
+    }, 500);
+    sectionTimerState.set(timerEl, { intervalId, endTime });
+    if (startButton) startButton.disabled = true;
+    if (stopButton) stopButton.disabled = false;
+  }
+
+  function stopSectionTimer(timerEl, { completed = false } = {}) {
+    const state = sectionTimerState.get(timerEl);
+    if (state?.intervalId) {
+      window.clearInterval(state.intervalId);
+    }
+    sectionTimerState.delete(timerEl);
+    const durationSeconds = Number(timerEl?.dataset?.duration || 0);
+    const display = timerEl?.querySelector('.timer-display');
+    if (display) {
+      display.textContent = formatTimer(completed ? 0 : durationSeconds * 1000);
+    }
+    const startButton = timerEl?.querySelector('.start-timer');
+    const stopButton = timerEl?.querySelector('.stop-timer');
+    if (startButton) startButton.disabled = false;
+    if (stopButton) stopButton.disabled = true;
+  }
+
   function parseRecommendedSets(setsText) {
     if (!setsText || typeof setsText !== 'string') return null;
     const match = setsText.match(/(\d+)\s*[x×]\s*(\d+)(?:\s*[-–]\s*(\d+))?/i);
     if (!match) return null;
     const setCount = Number(match[1] || 0);
-    const repsValue = Number(match[2] || 0);
-    if (!setCount || !repsValue) return null;
-    return { setCount, repsValue };
+    const minReps = Number(match[2] || 0);
+    const maxReps = Number(match[3] || match[2] || 0);
+    if (!setCount || !minReps) return null;
+    return { setCount, minReps, maxReps };
   }
 
   function getRecommendedSetRows(exerciseItem) {
     const recommendation = parseRecommendedSets(exerciseItem?.dataset?.recommendedSets || '');
     if (!recommendation) return [];
     return Array.from({ length: recommendation.setCount }, () => ({
-      reps: recommendation.repsValue
+      reps: recommendation.minReps
     }));
   }
 
@@ -1543,13 +1693,96 @@ document.addEventListener('DOMContentLoaded', () => {
       }))
       .then(() => {
         showStatusMessage('Session saved to history.', 4000);
+        lastSavedAt = Date.now();
+        updateSyncStatus({
+          message: navigator.onLine ? 'Online • Session saved' : 'Offline • Session saved locally',
+          state: navigator.onLine ? 'online' : 'offline'
+        });
         clearSetInputs(dayId);
         renderHistory(historyDayFilter ? historyDayFilter.value : dayId);
+        applyProgressionHintsForDay(dayId);
       })
       .catch(() => {
         showStatusMessage('Could not save session. Check storage permissions.', 5000);
       });
   }
+
+  function getRepRangeForExercise(exerciseItem) {
+    const recommendation = parseRecommendedSets(exerciseItem?.dataset?.recommendedSets || '');
+    if (!recommendation) return null;
+    return {
+      minReps: recommendation.minReps,
+      maxReps: recommendation.maxReps || recommendation.minReps
+    };
+  }
+
+  function buildProgressionHint(exerciseItem, entry) {
+    if (!entry || !exerciseItem) return 'Log a session to get progression tips.';
+    const repRange = getRepRangeForExercise(exerciseItem);
+    const sets = entry.sets || [];
+    if (sets.length === 0 || !repRange) {
+      return 'Match your last session and aim to improve one rep.';
+    }
+    const weights = sets.map(set => set.weight);
+    const reps = sets.map(set => set.reps || 0);
+    const maxReps = Math.max(...reps, 0);
+    const minReps = Math.min(...reps.filter(r => r > 0));
+    const numericWeights = weights.filter(w => typeof w === 'number' && w > 0);
+    const isBodyweight = weights.some(w => w === 'BW') || numericWeights.length === 0;
+    if (maxReps >= repRange.maxReps) {
+      return isBodyweight
+        ? 'Next time: add 1–2 reps per set.'
+        : 'Next time: add 2.5–5 lb if form felt solid.';
+    }
+    if (minReps && minReps < repRange.minReps) {
+      return isBodyweight
+        ? `Aim for ${repRange.minReps} reps per set at the same difficulty.`
+        : `Hold weight and aim for ${repRange.minReps} reps per set.`;
+    }
+    if (numericWeights.length > 0) {
+      const topWeight = Math.max(...numericWeights);
+      return `Stay at ${topWeight} and try to reach ${repRange.maxReps} reps.`;
+    }
+    return `Aim for ${repRange.maxReps} reps per set.`;
+  }
+
+  function applyProgressionHintsForDay(dayId) {
+    const day = document.getElementById(dayId);
+    if (!day) return;
+    const hintEls = day.querySelectorAll('.progression-hint');
+    hintEls.forEach(el => {
+      el.textContent = 'Log a session to get progression tips.';
+    });
+
+    getHistoryDb()
+      .then(db => new Promise((resolve, reject) => {
+        const tx = db.transaction(HISTORY_STORE, 'readonly');
+        const store = tx.objectStore(HISTORY_STORE);
+        const index = store.index('by-day');
+        const request = index.getAll(IDBKeyRange.only(dayId));
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => reject(request.error);
+      }))
+      .then(sessions => {
+        const sorted = sessions.sort((a, b) => b.dateTs - a.dateTs);
+        const latest = sorted[0];
+        if (!latest) return;
+        const lookup = new Map(latest.exercises.map(entry => [entry.exerciseId, entry]));
+        day.querySelectorAll('li[data-exercise-id]').forEach(li => {
+          const hintEl = li.querySelector('.progression-hint');
+          if (!hintEl) return;
+          const entry = lookup.get(li.dataset.exerciseId);
+          hintEl.textContent = buildProgressionHint(li, entry);
+        });
+      })
+      .catch(() => {
+        day.querySelectorAll('.progression-hint').forEach(el => {
+          el.textContent = 'Progression tips are unavailable right now.';
+        });
+      });
+  }
+
+  window.applyProgressionHintsForDay = applyProgressionHintsForDay;
 
   function clearSetInputs(dayId) {
     const day = document.getElementById(dayId);
