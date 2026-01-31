@@ -960,8 +960,16 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.toggleVariants = function(btn) {
-    const list = btn.nextElementSibling;
+    const list = btn.closest('li')?.querySelector('.exercise-variants');
     if (!list) return;
+    const day = btn.closest('.day');
+    if (day) {
+      day.querySelectorAll('.exercise-variants.active').forEach(openList => {
+        if (openList !== list) {
+          openList.classList.remove('active');
+        }
+      });
+    }
     list.classList.toggle('active');
   };
 
