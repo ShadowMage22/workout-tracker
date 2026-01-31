@@ -410,6 +410,8 @@ function hideInstallPrompt() {
   window.clearCacheAndReload = clearCacheAndReload;
 })();
 
+const WORKOUT_DAY_IDS = ['push', 'pull', 'legs'];
+
 // Make tab switching resilient (exists even if later init code throws)
 // ---- Tab navigation (resilient, no inline onclick required) ----
 window.showDay = function showDay(dayId, tabBtn) {
@@ -428,7 +430,12 @@ window.showDay = function showDay(dayId, tabBtn) {
     if (btn) btn.classList.add('active');
   }
   if (typeof window.loadActiveDayMedia === 'function') window.loadActiveDayMedia();
-  if (typeof window.updateHistoryDay === 'function') window.updateHistoryDay(dayId);
+  if (typeof window.attachRestTimerToDay === 'function' && WORKOUT_DAY_IDS.includes(dayId)) {
+    window.attachRestTimerToDay(dayId);
+  }
+  if (typeof window.updateHistoryDay === 'function' && WORKOUT_DAY_IDS.includes(dayId)) {
+    window.updateHistoryDay(dayId);
+  }
 };
 
 // Event delegation: works even if inline handlers fail
@@ -1132,17 +1139,44 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function initRestTimer() {
-    const restDurationSelect = document.getElementById('restDuration');
-    const restStatus = document.getElementById('restStatus');
-    const restTimeDisplay = document.getElementById('restTimeDisplay');
-    const restPill = document.getElementById('restPill');
-    const startButton = document.getElementById('startRestTimer');
-    const stopButton = document.getElementById('stopRestTimer');
-    const notifyButton = document.getElementById('enableRestNotifications');
+    const restTemplate = document.getElementById('restTimerTemplate');
+    const restTimerCard = restTemplate?.content?.firstElementChild
+      ? restTemplate.content.firstElementChild.cloneNode(true)
+      : document.querySelector('.rest-timer');
+    if (!restTimerCard) return;
+
+    const restDurationSelect = restTimerCard.querySelector('#restDuration');
+    const restStatus = restTimerCard.querySelector('#restStatus');
+    const restTimeDisplay = restTimerCard.querySelector('#restTimeDisplay');
+    const restPill = restTimerCard.querySelector('#restPill');
+    const startButton = restTimerCard.querySelector('#startRestTimer');
+    const stopButton = restTimerCard.querySelector('#stopRestTimer');
+    const notifyButton = restTimerCard.querySelector('#enableRestNotifications');
 
     if (!restDurationSelect || !restStatus || !restTimeDisplay || !restPill || !startButton || !stopButton || !notifyButton) {
       return;
     }
+
+    const attachRestTimerToDay = (dayId) => {
+      const day = document.getElementById(dayId);
+      if (!day) return;
+      if (!WORKOUT_DAY_IDS.includes(dayId)) return;
+      if (restTimerCard.parentElement === day) return;
+      const heading = day.querySelector('h2');
+      if (heading && heading.nextSibling) {
+        day.insertBefore(restTimerCard, heading.nextSibling);
+      } else if (heading) {
+        day.appendChild(restTimerCard);
+      } else {
+        day.prepend(restTimerCard);
+      }
+    };
+
+    const initialDay = document.querySelector('.day.active')?.id || WORKOUT_DAY_IDS[0];
+    if (initialDay) {
+      attachRestTimerToDay(initialDay);
+    }
+    window.attachRestTimerToDay = attachRestTimerToDay;
 
     let intervalId = null;
     let endTime = null;
@@ -1427,7 +1461,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function initHistoryPanel() {
     if (!historyDayFilter || !historyList) return;
     const activeDay = document.querySelector('.day.active');
-    if (activeDay && activeDay.id) {
+    if (activeDay && activeDay.id && WORKOUT_DAY_IDS.includes(activeDay.id)) {
       historyDayFilter.value = activeDay.id;
     }
     historyDayFilter.addEventListener('change', () => {

@@ -37,31 +37,34 @@
     <button type="button" class="tab active" data-day="push">Push</button>
     <button type="button" class="tab" data-day="pull">Pull</button>
     <button type="button" class="tab" data-day="legs">Legs</button>
+    <button type="button" class="tab" data-day="history">History</button>
   </div>
 
-  <section class="rest-timer card" aria-live="polite">
-    <div class="rest-header">
-      <h2>Rest Timer</h2>
-      <span class="rest-pill" id="restPill">Ready</span>
-    </div>
-    <p class="rest-status" id="restStatus">Check off an exercise to start a rest timer, or start one manually.</p>
-    <div class="rest-controls">
-      <label for="restDuration">Duration</label>
-      <select id="restDuration">
-        <option value="30">0:30</option>
-        <option value="60" selected>1:00</option>
-        <option value="90">1:30</option>
-        <option value="120">2:00</option>
-        <option value="180">3:00</option>
-      </select>
-      <div class="rest-time" id="restTimeDisplay">01:00</div>
-    </div>
-    <div class="rest-actions">
-      <button class="primary-button" type="button" id="startRestTimer">Start Rest</button>
-      <button class="ghost-button" type="button" id="stopRestTimer" disabled>Stop</button>
-      <button class="ghost-button" type="button" id="enableRestNotifications">Enable notifications</button>
-    </div>
-  </section>
+  <template id="restTimerTemplate">
+    <section class="rest-timer" aria-live="polite">
+      <div class="rest-header">
+        <h2>Rest Timer</h2>
+        <span class="rest-pill" id="restPill">Ready</span>
+      </div>
+      <p class="rest-status" id="restStatus">Check off an exercise to start a rest timer, or start one manually.</p>
+      <div class="rest-controls">
+        <label for="restDuration">Duration</label>
+        <select id="restDuration">
+          <option value="30">0:30</option>
+          <option value="60" selected>1:00</option>
+          <option value="90">1:30</option>
+          <option value="120">2:00</option>
+          <option value="180">3:00</option>
+        </select>
+        <div class="rest-time" id="restTimeDisplay">01:00</div>
+      </div>
+      <div class="rest-actions">
+        <button class="primary-button" type="button" id="startRestTimer">Start Rest</button>
+        <button class="ghost-button" type="button" id="stopRestTimer" disabled>Stop</button>
+        <button class="ghost-button" type="button" id="enableRestNotifications">Enable notifications</button>
+      </div>
+    </section>
+  </template>
 
   <div class="day card active" id="push"></div>
 
@@ -69,19 +72,21 @@
 
   <div class="day card" id="legs"></div>
 
-  <section class="history-panel card" aria-live="polite">
-    <div class="history-header">
-      <h2>History & Progress</h2>
-      <label for="historyDayFilter">Day</label>
-      <select id="historyDayFilter">
-        <option value="push">Push</option>
-        <option value="pull">Pull</option>
-        <option value="legs">Legs</option>
-      </select>
-    </div>
-    <p class="history-subtitle">Log your sets after each workout to see daily progress over time.</p>
-    <div class="history-list" id="historyList"></div>
-  </section>
+  <div class="day card" id="history">
+    <section class="history-panel" aria-live="polite">
+      <div class="history-header">
+        <h2>History & Progress</h2>
+        <label for="historyDayFilter">Day</label>
+        <select id="historyDayFilter">
+          <option value="push">Push</option>
+          <option value="pull">Pull</option>
+          <option value="legs">Legs</option>
+        </select>
+      </div>
+      <p class="history-subtitle">Log your sets after each workout to see daily progress over time.</p>
+      <div class="history-list" id="historyList"></div>
+    </section>
+  </div>
 </main>
 
 <script src="./app.js" defer></script>
