@@ -635,7 +635,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const STATE_VERSION = 2;
   const PROGRAM_VERSION = '2026-01-v2.2';
   const ACTIVE_TAB_KEY = 'workoutTrackerActiveTab';
-  const ACTIVE_TAB_TTL_MS = 12000;
+  const ACTIVE_TAB_TTL_MS = 6000;
   const HISTORY_DB = 'workoutTrackerHistory';
   const HISTORY_STORE = 'sessions';
   const TAB_ID = (window.crypto && window.crypto.randomUUID)
@@ -785,6 +785,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     clearMissingMedia(visual);
     img.onerror = () => showMissingMedia(visual, img);
+    delete img.dataset.loaded;
     img.dataset.src = previewSrc;
     img.removeAttribute('src');
     img.classList.add('lazy-media');
@@ -1106,6 +1107,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (allowIfReadOnly) return true;
     if (!isReadOnly) {
       claimActiveTab();
+      return true;
+    }
+    if (claimActiveTab()) {
       return true;
     }
     showStatusMessage('Another tab is active. Switch to it to make edits.', 4000);
