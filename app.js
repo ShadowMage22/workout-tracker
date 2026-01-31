@@ -633,7 +633,7 @@ const loadWorkoutData = async () => {
 document.addEventListener('DOMContentLoaded', () => {
   const STORAGE_KEY = 'workoutTrackerState';
   const STATE_VERSION = 2;
-  const PROGRAM_VERSION = '2026-01-v2.2';
+  const PROGRAM_VERSION = '2026-01-v2.4';
   const ACTIVE_TAB_KEY = 'workoutTrackerActiveTab';
   const ACTIVE_TAB_TTL_MS = 6000;
   const HISTORY_DB = 'workoutTrackerHistory';
