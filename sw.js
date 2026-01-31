@@ -1,4 +1,4 @@
-const CACHE_NAME = 'workout-tracker-v14'; // bump when you deploy
+const CACHE_NAME = 'workout-tracker-v15'; // bump when you deploy
 const RUNTIME_CACHE = 'workout-tracker-runtime-v2';
 const RUNTIME_CACHE_LIMIT = 60;
 
@@ -8,6 +8,7 @@ const urlsToCache = [
   './styles.css',
   './app.js',
   './manifest.json',
+  './data/workouts.json',
   './icon-192.png',
   './icon-512.png'
 ];
