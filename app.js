@@ -1410,6 +1410,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const startButton = restTimerCard.querySelector('#startRestTimer');
     const stopButton = restTimerCard.querySelector('#stopRestTimer');
     const notifyButton = restTimerCard.querySelector('#enableRestNotifications');
+    const restSoundToggle = restTimerCard.querySelector('#restSoundToggle');
+    const restVibrateToggle = restTimerCard.querySelector('#restVibrateToggle');
+    const restVibrateToggleWrap = restTimerCard.querySelector('#restVibrateToggleWrap');
+    const restBanner = document.getElementById('restTimerBanner');
+    const restBannerStatus = document.getElementById('restTimerBannerStatus');
+    const restBannerTime = document.getElementById('restTimerBannerTime');
+    const restBannerDismiss = document.getElementById('dismissRestBanner');
 
     if (!restDurationSelect || !restStatus || !restTimeDisplay || !restPill || !startButton || !stopButton || !notifyButton) {
       return;
@@ -1438,12 +1445,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let intervalId = null;
     let endTime = null;
+    let bannerState = 'ready';
+    let bannerDismissed = false;
+    const soundPrefKey = 'restSoundEnabled';
+    const vibratePrefKey = 'restVibrateEnabled';
+    let audioContext = null;
+
+    const playRestBeep = () => {
+      if (!restSoundToggle?.checked) return;
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      if (!audioContext) {
+        audioContext = new AudioContext();
+      }
+      const oscillator = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      oscillator.type = 'sine';
+      oscillator.frequency.value = 880;
+      gain.gain.value = 0.15;
+      oscillator.connect(gain);
+      gain.connect(audioContext.destination);
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + 0.25);
+    };
 
     const formatMs = (ms) => {
       const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
       const minutes = Math.floor(totalSeconds / 60);
       const seconds = totalSeconds % 60;
       return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
+
+    const setBannerVisibility = (shouldShow) => {
+      if (!restBanner) return;
+      restBanner.classList.toggle('show', shouldShow);
+      restBanner.setAttribute('aria-hidden', shouldShow ? 'false' : 'true');
+    };
+
+    const updateBannerState = ({ state, statusText, timeText } = {}) => {
+      if (state) bannerState = state;
+      if (typeof statusText === 'string' && restBannerStatus) {
+        restBannerStatus.textContent = statusText;
+      }
+      if (typeof timeText === 'string' && restBannerTime) {
+        restBannerTime.textContent = timeText;
+      }
+      if (bannerState === 'running') {
+        setBannerVisibility(true);
+      } else if (bannerState === 'done') {
+        setBannerVisibility(!bannerDismissed);
+      } else {
+        setBannerVisibility(false);
+      }
+    };
+
+    const updateRestStatus = (message) => {
+      restStatus.textContent = message;
+      updateBannerState({ statusText: message });
     };
 
     const setPillState = (state) => {
@@ -1460,13 +1518,25 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const renderTime = () => {
+      let timeText = '';
       if (!endTime) {
         const durationMs = Number(restDurationSelect.value || 60) * 1000;
-        restTimeDisplay.textContent = formatMs(durationMs);
+        timeText = formatMs(durationMs);
+        restTimeDisplay.textContent = timeText;
+        updateBannerState({ timeText });
         return;
       }
       const remainingMs = endTime - Date.now();
-      restTimeDisplay.textContent = formatMs(remainingMs);
+      timeText = formatMs(remainingMs);
+      restTimeDisplay.textContent = timeText;
+      updateBannerState({ timeText });
+    };
+
+    const triggerCompletionEffects = () => {
+      playRestBeep();
+      if (restVibrateToggle?.checked && 'vibrate' in navigator) {
+        navigator.vibrate(200);
+      }
     };
 
     const finishTimer = ({ completed = false } = {}) => {
@@ -1477,9 +1547,14 @@ document.addEventListener('DOMContentLoaded', () => {
       endTime = null;
       updateButtons(false);
       setPillState(completed ? 'done' : 'ready');
-      restStatus.textContent = completed
+      bannerDismissed = completed ? false : bannerDismissed;
+      updateRestStatus(completed
         ? 'Rest complete. Ready for your next set or session.'
-        : 'Rest timer stopped.';
+        : 'Rest timer stopped.');
+      updateBannerState({ state: completed ? 'done' : 'ready' });
+      if (completed) {
+        triggerCompletionEffects();
+      }
       renderTime();
     };
 
@@ -1500,7 +1575,7 @@ document.addEventListener('DOMContentLoaded', () => {
         maybeNotify();
         return;
       }
-      restStatus.textContent = `Resting… ${formatMs(remainingMs)} remaining.`;
+      updateRestStatus(`Resting… ${formatMs(remainingMs)} remaining.`);
       renderTime();
     };
 
@@ -1515,28 +1590,30 @@ document.addEventListener('DOMContentLoaded', () => {
       endTime = Date.now() + durationMs;
       setPillState('running');
       updateButtons(true);
-      restStatus.textContent = 'Resting…';
+      bannerDismissed = false;
+      updateBannerState({ state: 'running' });
+      updateRestStatus('Resting…');
       renderTime();
       intervalId = window.setInterval(tick, 500);
     };
 
     const requestNotificationPermission = async () => {
       if (!('Notification' in window)) {
-        restStatus.textContent = 'Notifications are not supported in this browser.';
+        updateRestStatus('Notifications are not supported in this browser.');
         notifyButton.disabled = true;
         return;
       }
       if (Notification.permission === 'granted') {
-        restStatus.textContent = 'Notifications are enabled for rest alerts.';
+        updateRestStatus('Notifications are enabled for rest alerts.');
         notifyButton.disabled = true;
         return;
       }
       const result = await Notification.requestPermission();
       if (result === 'granted') {
-        restStatus.textContent = 'Notifications enabled. You will get a rest alert.';
+        updateRestStatus('Notifications enabled. You will get a rest alert.');
         notifyButton.disabled = true;
       } else {
-        restStatus.textContent = 'Notifications blocked. Enable them in your browser settings to get rest alerts.';
+        updateRestStatus('Notifications blocked. Enable them in your browser settings to get rest alerts.');
       }
     };
 
@@ -1546,12 +1623,55 @@ document.addEventListener('DOMContentLoaded', () => {
     startButton.addEventListener('click', () => startTimer());
     stopButton.addEventListener('click', () => finishTimer());
     notifyButton.addEventListener('click', requestNotificationPermission);
+    restBannerDismiss?.addEventListener('click', () => {
+      bannerDismissed = true;
+      if (bannerState !== 'running') {
+        updateBannerState({ state: bannerState });
+      }
+    });
+
+    const loadPreference = (key, fallback = false) => {
+      try {
+        const value = window.localStorage.getItem(key);
+        if (value === null) return fallback;
+        return value === 'true';
+      } catch (_) {
+        return fallback;
+      }
+    };
+
+    const savePreference = (key, value) => {
+      try {
+        window.localStorage.setItem(key, String(value));
+      } catch (_) {
+        // ignore
+      }
+    };
+
+    if (restSoundToggle) {
+      restSoundToggle.checked = loadPreference(soundPrefKey, false);
+      restSoundToggle.addEventListener('change', () => {
+        savePreference(soundPrefKey, restSoundToggle.checked);
+      });
+    }
+
+    if (restVibrateToggle) {
+      const canVibrate = 'vibrate' in navigator;
+      if (!canVibrate && restVibrateToggleWrap) {
+        restVibrateToggleWrap.hidden = true;
+      }
+      restVibrateToggle.checked = loadPreference(vibratePrefKey, false);
+      restVibrateToggle.addEventListener('change', () => {
+        savePreference(vibratePrefKey, restVibrateToggle.checked);
+      });
+    }
 
     if ('Notification' in window && Notification.permission === 'granted') {
       notifyButton.disabled = true;
-      restStatus.textContent = 'Notifications are enabled for rest alerts.';
+      updateRestStatus('Notifications are enabled for rest alerts.');
     }
     setPillState('ready');
+    updateBannerState({ state: 'ready', statusText: 'Ready' });
     renderTime();
     window.startRestTimer = (options = {}) => startTimer(options);
   }
