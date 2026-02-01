@@ -680,7 +680,8 @@ const renderWorkoutUI = (data = {}) => {
           listItem.appendChild(progressionHint);
 
           const videoLink = document.createElement('a');
-          videoLink.href = '#';
+          const media = exercise.mediaKey ? exerciseMedia[exercise.mediaKey] : null;
+          videoLink.href = media?.video || '#';
           if (exercise.mediaKey) videoLink.dataset.mediaKey = exercise.mediaKey;
           videoLink.target = '_blank';
           videoLink.rel = 'noopener noreferrer';
