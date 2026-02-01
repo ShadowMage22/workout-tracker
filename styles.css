@@ -365,6 +365,28 @@ button.clear:focus-visible {
 
 .day { display: none; }
 .day.active { display: block; }
+.day-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+}
+.skeleton-bar {
+  height: 12px;
+  width: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e2e8f0, #f1f5f9, #e2e8f0);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+}
+.skeleton-bar.wide { width: 92%; height: 18px; }
+.skeleton-bar.medium { width: 78%; }
+.skeleton-bar.short { width: 60%; }
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 0% 0; }
+  100% { background-position: -200% 0; }
+}
 
 .section { margin-bottom: var(--space-4); }
 .section-timer {

@@ -581,6 +581,7 @@ const parseDurationFromTitle = (title = '', sectionType = '') => {
 
 const renderWorkoutUI = (data = {}) => {
   if (!data || !Array.isArray(data.days)) return;
+  document.querySelectorAll('.day.card .day-skeleton').forEach((node) => node.remove());
 
   data.days.forEach(day => {
     if (!day || !day.id) return;
