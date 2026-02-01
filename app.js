@@ -696,6 +696,23 @@ const renderWorkoutUI = (data = {}) => {
           const variantsList = document.createElement('div');
           variantsList.className = 'exercise-variants';
 
+          const baseOption = document.createElement('div');
+          baseOption.className = 'variant-option';
+          baseOption.dataset.variantBase = 'true';
+          const baseName = exercise.displayName || exercise.name || '';
+          baseOption.dataset.name = baseName;
+          baseOption.dataset.instructions = buildInstructionString(exercise.instructions);
+          if (exercise.instructions && exercise.instructions.sets) {
+            baseOption.dataset.recommendedSets = exercise.instructions.sets;
+          }
+          baseOption.dataset.coaching = exercise.instructions?.notes || '';
+          if (exercise.mediaKey) baseOption.dataset.mediaKey = exercise.mediaKey;
+
+          const baseLabelText = baseName ? `Original: ${baseName}` : 'Original exercise';
+          const baseLabel = document.createTextNode(baseLabelText);
+          baseOption.appendChild(baseLabel);
+          variantsList.appendChild(baseOption);
+
           (exercise.variants || []).forEach((variant) => {
             const option = document.createElement('div');
             option.className = 'variant-option';
@@ -995,6 +1012,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const mediaKey = option.dataset.mediaKey;
     const media = mediaKey ? exerciseMedia[mediaKey] : null;
+    const isBaseOption = option.dataset.variantBase === 'true';
 
     if (nameEl) nameEl.textContent = option.dataset.name || nameEl.textContent;
     if (instructionsEl && option.dataset.instructions) {
@@ -1024,17 +1042,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Update media key on the exercise (single source of truth)
-    if (visualEl && mediaKey) visualEl.dataset.mediaKey = mediaKey;
-    if (videoLink && mediaKey) videoLink.dataset.mediaKey = mediaKey;
+    if (visualEl && mediaKey) {
+      visualEl.dataset.mediaKey = mediaKey;
+    } else if (visualEl) {
+      delete visualEl.dataset.mediaKey;
+    }
+    if (videoLink && mediaKey) {
+      videoLink.dataset.mediaKey = mediaKey;
+    } else if (videoLink) {
+      delete videoLink.dataset.mediaKey;
+    }
 
     if (media) {
       if (videoLink && media.video) videoLink.href = media.video;
       applyMediaToVisual(visualEl, imgEl, media, option.dataset.name || (imgEl ? imgEl.alt : 'Exercise demonstration'));
+    } else {
+      if (videoLink) videoLink.removeAttribute('href');
+      applyMediaToVisual(visualEl, imgEl, null, option.dataset.name || (imgEl ? imgEl.alt : 'Exercise demonstration'));
     }
 
     // Persist selection by stable exercise id
     const exerciseId = exerciseItem.dataset.exerciseId;
-    if (exerciseId && mediaKey) {
+    if (exerciseId && isBaseOption) {
+      delete state.selections[exerciseId];
+      if (!isHydratingState && !isApplyingExternalState) {
+        persistState();
+      }
+    } else if (exerciseId && mediaKey) {
       state.selections[exerciseId] = mediaKey;
       if (!isHydratingState && !isApplyingExternalState) {
         persistState();
