@@ -25,6 +25,14 @@
 <div class="status-banner info" id="statusBanner" role="status" aria-live="polite"></div>
 <div class="status-banner warning" id="readOnlyBanner" role="status" aria-live="polite"></div>
 <div class="status-banner warning" id="offlineBanner" role="status" aria-live="polite">You’re offline. Changes will sync when the connection returns.</div>
+<div class="rest-timer-banner" id="restTimerBanner" role="status" aria-live="polite" aria-hidden="true">
+  <div class="rest-timer-banner__content">
+    <span class="rest-timer-banner__label">Rest Timer</span>
+    <span class="rest-timer-banner__status" id="restTimerBannerStatus">Ready</span>
+  </div>
+  <div class="rest-timer-banner__time" id="restTimerBannerTime">01:00</div>
+  <button class="ghost-button rest-timer-banner__dismiss" type="button" id="dismissRestBanner">Dismiss</button>
+</div>
 
 <div id="svgOverlay" class="overlay" onclick="closeOverlay()">
   <div class="close" role="button" tabindex="0" aria-label="Close overlay">&times;</div>
@@ -64,6 +72,16 @@
           <option value="180">3:00</option>
         </select>
         <div class="rest-time" id="restTimeDisplay">01:00</div>
+      </div>
+      <div class="rest-preferences">
+        <label class="rest-toggle">
+          <input type="checkbox" id="restSoundToggle" />
+          Sound when complete
+        </label>
+        <label class="rest-toggle" id="restVibrateToggleWrap">
+          <input type="checkbox" id="restVibrateToggle" />
+          Vibrate on mobile
+        </label>
       </div>
       <div class="rest-actions">
         <button class="primary-button" type="button" id="startRestTimer">Start Rest</button>
