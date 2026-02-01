@@ -451,6 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
 })();
 
 const WORKOUT_DAY_IDS = ['push', 'pull', 'legs'];
+const LAST_VIEWED_TAB_KEY = 'workoutTrackerLastViewedTab';
 
 // Make tab switching resilient (exists even if later init code throws)
 // ---- Tab navigation (resilient, no inline onclick required) ----
@@ -468,6 +469,11 @@ window.showDay = function showDay(dayId, tabBtn) {
   } else {
     const btn = document.querySelector(`.tab[data-day="${CSS.escape(dayId)}"]`);
     if (btn) btn.classList.add('active');
+  }
+  try {
+    localStorage.setItem(LAST_VIEWED_TAB_KEY, dayId);
+  } catch (_) {
+    // ignore localStorage write errors
   }
   if (typeof window.loadActiveDayMedia === 'function') window.loadActiveDayMedia();
   if (typeof window.attachRestTimerToDay === 'function' && WORKOUT_DAY_IDS.includes(dayId)) {
@@ -810,7 +816,19 @@ document.addEventListener('DOMContentLoaded', () => {
     initSectionTimers();
     initSetTracking();
     initHistoryPanel();
-    applyProgressionHintsForDay(document.querySelector('.day.active')?.id || WORKOUT_DAY_IDS[0]);
+    const storedDayId = (() => {
+      try {
+        return localStorage.getItem(LAST_VIEWED_TAB_KEY);
+      } catch (_) {
+        return null;
+      }
+    })();
+    const initialDayId = WORKOUT_DAY_IDS.includes(storedDayId)
+      ? storedDayId
+      : (document.querySelector('.day.active')?.id || WORKOUT_DAY_IDS[0]);
+    if (initialDayId) {
+      window.showDay(initialDayId);
+    }
   };
 
   initApp();
@@ -838,6 +856,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem(ACTIVE_TAB_KEY);
+      localStorage.removeItem(LAST_VIEWED_TAB_KEY);
     } catch (_) {
       // ignore
     }
