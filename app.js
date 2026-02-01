@@ -1195,11 +1195,33 @@ document.addEventListener('DOMContentLoaded', () => {
       stateVersion: STATE_VERSION,
       programVersion: PROGRAM_VERSION,
       checkmarks: parsed.checkmarks && typeof parsed.checkmarks === 'object' ? parsed.checkmarks : {},
-      sets: parsed.sets && typeof parsed.sets === 'object' ? parsed.sets : {},
+      sets: normalizeSets(parsed.sets),
       selections: parsed.selections && typeof parsed.selections === 'object' ? parsed.selections : {},
       lastUpdated: typeof parsed.lastUpdated === 'number' ? parsed.lastUpdated : 0,
       lastUpdatedBy: parsed.lastUpdatedBy || null
     };
+  }
+
+  function normalizeSets(rawSets) {
+    if (!rawSets || typeof rawSets !== 'object') return {};
+    const normalized = {};
+    Object.entries(rawSets).forEach(([exerciseId, sets]) => {
+      if (!Array.isArray(sets)) return;
+      const cleaned = sets.map(set => {
+        if (!set || typeof set !== 'object') return null;
+        const reps = Number(set.reps || 0);
+        const weight = set.weight === 'BW' ? 'BW' : Number(set.weight || 0);
+        const hasWeight = weight === 'BW' || weight > 0;
+        if (!reps && !hasWeight) return null;
+        return {
+          reps: reps || 0,
+          weight: weight === 'BW' || weight > 0 ? weight : 0,
+          completed: Boolean(set.completed)
+        };
+      }).filter(Boolean);
+      if (cleaned.length) normalized[exerciseId] = cleaned;
+    });
+    return normalized;
   }
 
   function migrateState(parsed) {
@@ -1659,10 +1681,14 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSetStateFromRows(rows);
       });
       rows.addEventListener('change', (event) => {
-        if (!event.target.matches('.set-reps, .set-weight')) return;
+        if (!event.target.matches('.set-reps, .set-weight, .set-completed')) return;
         if (!ensureEditable()) {
           applyStateToUI();
           return;
+        }
+        if (event.target.matches('.set-completed')) {
+          const row = event.target.closest('.set-row');
+          if (row) toggleSetRowCompleted(row, event.target.checked);
         }
         updateSetStateFromRows(rows);
       });
@@ -1686,6 +1712,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function toggleSetRowCompleted(row, isCompleted) {
+    if (!row) return;
+    row.classList.toggle('is-completed', Boolean(isCompleted));
+  }
+
   function addSetRow(container, setData = {}) {
     if (!container) return;
     const repsOptions = Array.from({ length: 20 }, (_, idx) => idx + 1);
@@ -1693,6 +1724,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const row = document.createElement('div');
     row.className = 'set-row';
     row.innerHTML = `
+      <input type="checkbox" class="set-completed" aria-label="Set completed">
       <select class="set-reps" aria-label="Reps">
         <option value="" selected disabled>Reps</option>
         ${repsOptions.map(value => `<option value="${value}">${value}</option>`).join('')}
@@ -1707,6 +1739,11 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     container.appendChild(row);
 
+    const completedInput = row.querySelector('.set-completed');
+    if (completedInput) {
+      completedInput.checked = Boolean(setData.completed);
+      toggleSetRowCompleted(row, completedInput.checked);
+    }
     if (typeof setData.reps === 'number' && setData.reps > 0) {
       const repsSelect = row.querySelector('.set-reps');
       if (repsSelect) repsSelect.value = String(setData.reps);
@@ -1726,11 +1763,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const sets = Array.from(rows.querySelectorAll('.set-row')).map(row => {
       const repsValue = Number(row.querySelector('.set-reps')?.value || 0);
       const weightValue = readWeightValue(row.querySelector('.set-weight'));
+      const completed = row.querySelector('.set-completed')?.checked;
       const hasWeight = weightValue === 'BW' || weightValue > 0;
       if (!repsValue && !hasWeight) return null;
       return {
         reps: repsValue || 0,
-        weight: weightValue || 0
+        weight: weightValue || 0,
+        completed: Boolean(completed)
       };
     }).filter(Boolean);
 
@@ -1791,11 +1830,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const sets = Array.from(li.querySelectorAll('.set-row')).map(row => {
         const reps = Number(row.querySelector('.set-reps')?.value || 0);
         const weight = readWeightValue(row.querySelector('.set-weight'));
+        const completed = row.querySelector('.set-completed')?.checked;
         const hasWeight = weight === 'BW' || weight > 0;
         if (!reps && !hasWeight) return null;
         return {
           reps: reps || 0,
-          weight: weight || 0
+          weight: weight || 0,
+          completed: Boolean(completed)
         };
       }).filter(Boolean);
       if (sets.length > 0) {
@@ -1982,7 +2023,8 @@ document.addEventListener('DOMContentLoaded', () => {
             exerciseEl.className = 'history-exercise';
             const setsLabel = exercise.sets.map(set => {
               const weightLabel = set.weight === 'BW' ? 'BW' : set.weight;
-              return `${set.reps}×${weightLabel}`;
+              const completionLabel = set.completed ? ' ✓' : '';
+              return `${set.reps}×${weightLabel}${completionLabel}`;
             }).join(', ');
             exerciseEl.textContent = `${exercise.name}: ${setsLabel}`;
             card.appendChild(exerciseEl);

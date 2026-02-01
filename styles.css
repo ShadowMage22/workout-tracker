@@ -623,10 +623,24 @@ button.clear { width: 100%; padding: var(--space-2); font-size: 0.95rem; border:
 }
 .set-row {
   display: grid;
-  grid-template-columns: minmax(64px, 90px) minmax(74px, 110px) auto;
+  grid-template-columns: 20px minmax(64px, 90px) minmax(74px, 110px) auto;
   gap: var(--space-2);
   margin-bottom: var(--space-1);
   align-items: center;
+}
+.set-row .set-completed {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+.set-row.is-completed {
+  opacity: 0.65;
+  background: rgba(34, 197, 94, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 4px 6px;
+}
+.set-row.is-completed select {
+  color: var(--color-text-muted);
 }
 .set-row select {
   width: 100%;
