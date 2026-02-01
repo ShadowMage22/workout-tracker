@@ -592,6 +592,7 @@ const renderWorkoutUI = (data = {}) => {
       sectionEl.className = 'section';
       if (section.type === 'warmup') sectionEl.classList.add('warmup');
       if (section.type === 'cooldown') sectionEl.classList.add('cooldown');
+      if (section.type === 'strength') sectionEl.classList.add('strength');
 
       const title = document.createElement('h3');
       title.textContent = section.title || '';
@@ -813,19 +814,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   initApp();
-  enhanceAccessibility();
-  assignStableIds();
-  applyMediaFromKeys();
-  initLazyMedia();
-  initConnectivityStatus();
-  initCrossTabSync();
-  initActiveTabTracking();
-  initRestTimer();
-  initSectionTimers();
-  initSetTracking();
-  initHistoryPanel();
-  applyStateToUI();
-  applyProgressionHintsForDay(document.querySelector('.day.active')?.id || WORKOUT_DAY_IDS[0]);
 
   // ---------- Public API ----------
   window.clearChecks = function(dayId) {
