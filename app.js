@@ -695,10 +695,9 @@ const renderWorkoutUI = (data = {}) => {
           const variantsList = document.createElement('div');
           variantsList.className = 'exercise-variants';
 
-          (exercise.variants || []).forEach((variant, index) => {
+          (exercise.variants || []).forEach((variant) => {
             const option = document.createElement('div');
             option.className = 'variant-option';
-            if (index === 0) option.classList.add('selected');
             option.dataset.name = variant.displayName || variant.label || '';
             option.dataset.instructions = buildInstructionString(variant.instructions);
             if (variant.instructions && variant.instructions.sets) {
