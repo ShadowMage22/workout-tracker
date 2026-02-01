@@ -741,15 +741,36 @@ const renderWorkoutUI = (data = {}) => {
         });
       } else {
         (section.items || []).forEach(item => {
+          const isObjectItem = item && typeof item === 'object';
+          const itemName = isObjectItem ? item.name : item;
+          const itemInstructions = isObjectItem ? item.instructions : null;
+
           const listItem = document.createElement('li');
+          listItem.className = 'prep-item';
+          const card = document.createElement('div');
+          card.className = 'prep-card';
           const label = document.createElement('label');
+          label.className = 'prep-label';
           const checkbox = document.createElement('input');
           checkbox.type = 'checkbox';
           const span = document.createElement('span');
-          span.textContent = item;
+          span.className = 'prep-name';
+          span.textContent = itemName || '';
           label.appendChild(checkbox);
           label.appendChild(span);
-          listItem.appendChild(label);
+          card.appendChild(label);
+          listItem.appendChild(card);
+
+          const instructionsEl = document.createElement('div');
+          instructionsEl.className = 'instructions';
+          instructionsEl.innerHTML = buildInstructionHtml(itemInstructions || {});
+          listItem.appendChild(instructionsEl);
+
+          const coachTip = document.createElement('div');
+          coachTip.className = 'coach-tip';
+          setCoachTip(coachTip, itemInstructions?.notes);
+          listItem.appendChild(coachTip);
+
           list.appendChild(listItem);
         });
       }

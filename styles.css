@@ -480,6 +480,17 @@ label:has(input[type="checkbox"]:checked) {
 }
 
 .exercise { display: flex; gap: var(--space-2); align-items: flex-start; }
+.prep-card {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+}
+.prep-label {
+  align-items: flex-start;
+}
+.prep-name {
+  font-weight: 600;
+}
 .svg-wrap {
   width: 56px;
   height: 56px;
@@ -553,6 +564,10 @@ svg { width: 44px; height: 44px; }
   margin-left: 76px;
   margin-top: var(--space-1);
   display: none;
+}
+.prep-item .instructions,
+.prep-item .coach-tip {
+  margin-left: 32px;
 }
 .coach-tip.show {
   display: block;
