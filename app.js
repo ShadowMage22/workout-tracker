@@ -931,6 +931,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!visual || !img) return;
 
     if (!media) {
+      delete visual.dataset.fullSrc;
       showMissingMedia(visual, img);
       return;
     }
