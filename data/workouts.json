@@ -10,9 +10,36 @@
           "type": "warmup",
           "title": "Warm-Up (8 minutes)",
           "items": [
-            "Light cardio (walk/bike) \u2014 2 min",
-            "Arm circles + band pull-aparts \u2014 3 min",
-            "Warm-up sets for first two lifts \u2014 3 min"
+            {
+              "name": "Light cardio (walk/bike)",
+              "instructions": {
+                "sets": "",
+                "rest": "",
+                "time": "2 min",
+                "targets": "full body",
+                "notes": "Keep an easy pace to raise your heart rate."
+              }
+            },
+            {
+              "name": "Arm circles + band pull-aparts",
+              "instructions": {
+                "sets": "",
+                "rest": "",
+                "time": "3 min",
+                "targets": "shoulders, upper back",
+                "notes": "Move through a comfortable range and keep shoulders relaxed."
+              }
+            },
+            {
+              "name": "Warm-up sets for first two lifts",
+              "instructions": {
+                "sets": "",
+                "rest": "30 sec",
+                "time": "3 min",
+                "targets": "movement prep",
+                "notes": "Use lighter weights and smooth tempo."
+              }
+            }
           ]
         },
         {
@@ -225,9 +252,36 @@
           "type": "cooldown",
           "title": "Cooldown (5 minutes)",
           "items": [
-            "Chest stretch \u2014 30s/side",
-            "Shoulder stretch \u2014 30s/side",
-            "Breathing \u2014 1\u20132 min"
+            {
+              "name": "Chest stretch",
+              "instructions": {
+                "sets": "",
+                "rest": "",
+                "time": "30s/side",
+                "targets": "chest",
+                "notes": "Breathe slowly and keep shoulders down."
+              }
+            },
+            {
+              "name": "Shoulder stretch",
+              "instructions": {
+                "sets": "",
+                "rest": "",
+                "time": "30s/side",
+                "targets": "shoulders",
+                "notes": "Stay relaxed and avoid shrugging."
+              }
+            },
+            {
+              "name": "Breathing",
+              "instructions": {
+                "sets": "",
+                "rest": "",
+                "time": "1\u20132 min",
+                "targets": "recovery",
+                "notes": "Inhale through the nose and lengthen the exhale."
+              }
+            }
           ]
         }
       ]
@@ -242,9 +296,36 @@
           "type": "warmup",
           "title": "Warm-Up (8 minutes)",
           "items": [
-            "Light cardio (walk/row/bike) \u2014 2 min",
-            "Band pull-aparts + arm circles \u2014 3 min",
-            "Warm-up sets for first two lifts \u2014 3 min"
+            {
+              "name": "Light cardio (walk/row/bike)",
+              "instructions": {
+                "sets": "",
+                "rest": "",
+                "time": "2 min",
+                "targets": "full body",
+                "notes": "Keep the pace easy and steady."
+              }
+            },
+            {
+              "name": "Band pull-aparts + arm circles",
+              "instructions": {
+                "sets": "",
+                "rest": "",
+                "time": "3 min",
+                "targets": "shoulders, upper back",
+                "notes": "Control each rep and stay tall."
+              }
+            },
+            {
+              "name": "Warm-up sets for first two lifts",
+              "instructions": {
+                "sets": "",
+                "rest": "30 sec",
+                "time": "3 min",
+                "targets": "movement prep",
+                "notes": "Gradually increase load while staying smooth."
+              }
+            }
           ]
         },
         {
@@ -457,9 +538,36 @@
           "type": "cooldown",
           "title": "Cooldown (5 minutes)",
           "items": [
-            "Lat stretch \u2014 30s/side",
-            "Upper-back stretch \u2014 30s",
-            "Breathing \u2014 1\u20132 min"
+            {
+              "name": "Lat stretch",
+              "instructions": {
+                "sets": "",
+                "rest": "",
+                "time": "30s/side",
+                "targets": "lats",
+                "notes": "Reach long and keep ribs down."
+              }
+            },
+            {
+              "name": "Upper-back stretch",
+              "instructions": {
+                "sets": "",
+                "rest": "",
+                "time": "30s",
+                "targets": "upper back",
+                "notes": "Round gently and breathe into the stretch."
+              }
+            },
+            {
+              "name": "Breathing",
+              "instructions": {
+                "sets": "",
+                "rest": "",
+                "time": "1\u20132 min",
+                "targets": "recovery",
+                "notes": "Slow nasal inhales with longer exhales."
+              }
+            }
           ]
         }
       ]
@@ -474,9 +582,36 @@
           "type": "warmup",
           "title": "Warm-Up (8 minutes)",
           "items": [
-            "Light cardio (walk/bike) \u2014 2 min",
-            "Hip circles + leg swings \u2014 3 min",
-            "Warm-up sets for first two lifts \u2014 3 min"
+            {
+              "name": "Light cardio (walk/bike)",
+              "instructions": {
+                "sets": "",
+                "rest": "",
+                "time": "2 min",
+                "targets": "full body",
+                "notes": "Keep the pace easy and comfortable."
+              }
+            },
+            {
+              "name": "Hip circles + leg swings",
+              "instructions": {
+                "sets": "",
+                "rest": "",
+                "time": "3 min",
+                "targets": "hips, glutes",
+                "notes": "Use smooth swings and controlled circles."
+              }
+            },
+            {
+              "name": "Warm-up sets for first two lifts",
+              "instructions": {
+                "sets": "",
+                "rest": "30 sec",
+                "time": "3 min",
+                "targets": "movement prep",
+                "notes": "Focus on range of motion before loading up."
+              }
+            }
           ]
         },
         {
@@ -689,9 +824,36 @@
           "type": "cooldown",
           "title": "Cooldown (5 minutes)",
           "items": [
-            "Hamstring stretch \u2014 30s/side",
-            "Quad stretch \u2014 30s/side",
-            "Breathing \u2014 1\u20132 min"
+            {
+              "name": "Hamstring stretch",
+              "instructions": {
+                "sets": "",
+                "rest": "",
+                "time": "30s/side",
+                "targets": "hamstrings",
+                "notes": "Keep a long spine and avoid bouncing."
+              }
+            },
+            {
+              "name": "Quad stretch",
+              "instructions": {
+                "sets": "",
+                "rest": "",
+                "time": "30s/side",
+                "targets": "quads",
+                "notes": "Squeeze glutes gently to deepen the stretch."
+              }
+            },
+            {
+              "name": "Breathing",
+              "instructions": {
+                "sets": "",
+                "rest": "",
+                "time": "1\u20132 min",
+                "targets": "recovery",
+                "notes": "Let your heart rate settle with slow breaths."
+              }
+            }
           ]
         }
       ]
