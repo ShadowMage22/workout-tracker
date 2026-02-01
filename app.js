@@ -867,7 +867,7 @@ document.addEventListener('DOMContentLoaded', () => {
     persistState();
   };
 
-  window.resetApp = function() {
+  window.resetApp = async function() {
     const shouldReset = window.confirm('Reset the app and clear your saved progress? This cannot be undone.');
     if (!shouldReset) return;
 
@@ -881,7 +881,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     state = defaultState();
     persistState({ broadcast: true });
-    clearHistoryDb();
+    await clearHistoryDb();
 
     if (typeof window.clearCacheAndReload === 'function') {
       window.clearCacheAndReload();
@@ -1974,8 +1974,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function clearHistoryDb() {
-    if (!('indexedDB' in window)) return;
-    getHistoryDb()
+    if (!('indexedDB' in window)) return Promise.resolve();
+    return getHistoryDb()
       .then(db => new Promise((resolve, reject) => {
         const tx = db.transaction(HISTORY_STORE, 'readwrite');
         tx.oncomplete = () => resolve();
