@@ -17,7 +17,7 @@
                 "rest": "",
                 "time": "2 min",
                 "targets": "full body",
-                "notes": "Keep an easy pace to raise your heart rate."
+                "notes": "Setup: easy pace and tall posture. Move: steady, small strides/pedals. Breathe: nasal inhales, long exhales. Avoid: sprinting or shrugged shoulders."
               }
             },
             {
@@ -27,7 +27,7 @@
                 "rest": "",
                 "time": "3 min",
                 "targets": "shoulders, upper back",
-                "notes": "Move through a comfortable range and keep shoulders relaxed."
+                "notes": "Setup: stand tall, soft knees. Move: smooth circles and controlled pulls. Breathe: steady through the motion. Avoid: cranking range or arching low back."
               }
             },
             {
@@ -37,34 +37,34 @@
                 "rest": "30 sec",
                 "time": "3 min",
                 "targets": "movement prep",
-                "notes": "Use lighter weights and smooth tempo."
+                "notes": "Setup: light load and braced core. Move: full range with smooth tempo. Breathe: exhale on effort, inhale on reset. Avoid: rushing or bouncing reps."
               }
             }
           ]
         },
         {
           "type": "strength",
-          "title": "Strength + Core (\u224835 minutes)",
+          "title": "Strength + Core (≈35 minutes)",
           "exercises": [
             {
               "name": "Dumbbell Bench Press",
-              "displayName": "Dumbbell Bench Press \u2014 3\u00d78\u201310",
+              "displayName": "Dumbbell Bench Press — 3×8–10",
               "mediaKey": "dumbbell-bench-press",
               "instructions": {
-                "sets": "3\u00d78\u201310",
-                "rest": "60\u201390 sec",
-                "time": "~6\u20137 min",
+                "sets": "3×8–10",
+                "rest": "60–90 sec",
+                "time": "~6–7 min",
                 "targets": "chest, shoulders, triceps",
                 "notes": "Press smoothly; keep wrists stacked and shoulder blades set."
               },
               "variants": [
                 {
                   "label": "Push-Ups",
-                  "displayName": "Push-Ups \u2014 3\u00d710\u201315",
+                  "displayName": "Push-Ups — 3×10–15",
                   "muscles": "chest, shoulders, triceps",
                   "mediaKey": "push-ups",
                   "instructions": {
-                    "sets": "3\u00d710\u201315",
+                    "sets": "3×10–15",
                     "rest": "60 sec",
                     "time": "~6 min",
                     "targets": "chest, shoulders, triceps",
@@ -73,11 +73,11 @@
                 },
                 {
                   "label": "Dumbbell Chest Fly",
-                  "displayName": "Dumbbell Chest Fly \u2014 3\u00d710\u201312",
+                  "displayName": "Dumbbell Chest Fly — 3×10–12",
                   "muscles": "chest, shoulders",
                   "mediaKey": "dumbbell-chest-fly",
                   "instructions": {
-                    "sets": "3\u00d710\u201312",
+                    "sets": "3×10–12",
                     "rest": "60 sec",
                     "time": "~6 min",
                     "targets": "chest, shoulders",
@@ -88,38 +88,38 @@
             },
             {
               "name": "Dumbbell Standing Overhead Press",
-              "displayName": "Dumbbell Standing Overhead Press \u2014 3\u00d78\u201310",
+              "displayName": "Dumbbell Standing Overhead Press — 3×8–10",
               "mediaKey": "dumbbell-standing-overhead-press",
               "instructions": {
-                "sets": "3\u00d78\u201310",
-                "rest": "60\u201390 sec",
-                "time": "~6\u20137 min",
+                "sets": "3×8–10",
+                "rest": "60–90 sec",
+                "time": "~6–7 min",
                 "targets": "chest, shoulders, triceps",
                 "notes": "Press smoothly; keep wrists stacked and shoulder blades set."
               },
               "variants": [
                 {
                   "label": "Single Arm Arnold Press",
-                  "displayName": "Single Arm Arnold Press \u2014 3\u00d78\u201310",
+                  "displayName": "Single Arm Arnold Press — 3×8–10",
                   "muscles": "chest, shoulders, triceps",
                   "mediaKey": "single-arm-arnold-press",
                   "instructions": {
-                    "sets": "3\u00d78\u201310",
-                    "rest": "60\u201390 sec",
-                    "time": "~6\u20137 min",
+                    "sets": "3×8–10",
+                    "rest": "60–90 sec",
+                    "time": "~6–7 min",
                     "targets": "chest, shoulders, triceps",
                     "notes": "Press smoothly; keep wrists stacked and shoulder blades set."
                   }
                 },
                 {
                   "label": "Half-Kneeling Dumbbell Press",
-                  "displayName": "Half-Kneeling Dumbbell Press \u2014 3\u00d78\u201310",
+                  "displayName": "Half-Kneeling Dumbbell Press — 3×8–10",
                   "muscles": "chest, shoulders, triceps",
                   "mediaKey": "half-kneeling-dumbbell-press",
                   "instructions": {
-                    "sets": "3\u00d78\u201310",
-                    "rest": "60\u201390 sec",
-                    "time": "~6\u20137 min",
+                    "sets": "3×8–10",
+                    "rest": "60–90 sec",
+                    "time": "~6–7 min",
                     "targets": "chest, shoulders, triceps",
                     "notes": "Press smoothly; keep wrists stacked and shoulder blades set."
                   }
@@ -128,23 +128,23 @@
             },
             {
               "name": "Incline Press",
-              "displayName": "Incline Press \u2014 3\u00d710",
+              "displayName": "Incline Press — 3×10",
               "mediaKey": "dumbbell-incline-press",
               "instructions": {
-                "sets": "3\u00d710",
-                "rest": "60\u201390 sec",
-                "time": "~6\u20137 min",
+                "sets": "3×10",
+                "rest": "60–90 sec",
+                "time": "~6–7 min",
                 "targets": "chest, shoulders, triceps",
                 "notes": "Press smoothly; keep wrists stacked and shoulder blades set."
               },
               "variants": [
                 {
                   "label": "Incline Fly",
-                  "displayName": "Incline Fly \u2014 3\u00d710\u201312",
+                  "displayName": "Incline Fly — 3×10–12",
                   "muscles": "chest, shoulders",
                   "mediaKey": "dumbbell-incline-fly",
                   "instructions": {
-                    "sets": "3\u00d710\u201312",
+                    "sets": "3×10–12",
                     "rest": "60 sec",
                     "time": "~6 min",
                     "targets": "chest, shoulders",
@@ -153,11 +153,11 @@
                 },
                 {
                   "label": "Low Cable Fly",
-                  "displayName": "Low Cable Fly \u2014 3\u00d712",
+                  "displayName": "Low Cable Fly — 3×12",
                   "muscles": "chest, shoulders",
                   "mediaKey": "cable-fly",
                   "instructions": {
-                    "sets": "3\u00d712",
+                    "sets": "3×12",
                     "rest": "60 sec",
                     "time": "~6 min",
                     "targets": "chest, shoulders",
@@ -168,38 +168,38 @@
             },
             {
               "name": "Tricep Pushdown",
-              "displayName": "Tricep Pushdown \u2014 3\u00d710\u201312",
+              "displayName": "Tricep Pushdown — 3×10–12",
               "mediaKey": "tricep-pushdown",
               "instructions": {
-                "sets": "3\u00d710\u201312",
-                "rest": "45\u201360 sec",
-                "time": "~5\u20136 min",
+                "sets": "3×10–12",
+                "rest": "45–60 sec",
+                "time": "~5–6 min",
                 "targets": "triceps",
                 "notes": "Keep elbows pinned; extend fully with control."
               },
               "variants": [
                 {
                   "label": "Overhead Tricep Ext",
-                  "displayName": "Overhead Tricep Ext \u2014 3\u00d710\u201312",
+                  "displayName": "Overhead Tricep Ext — 3×10–12",
                   "muscles": "triceps",
                   "mediaKey": "overhead-tricep-ext",
                   "instructions": {
-                    "sets": "3\u00d710\u201312",
-                    "rest": "45\u201360 sec",
-                    "time": "~5\u20136 min",
+                    "sets": "3×10–12",
+                    "rest": "45–60 sec",
+                    "time": "~5–6 min",
                     "targets": "triceps",
                     "notes": "Keep elbows pinned; extend fully with control."
                   }
                 },
                 {
                   "label": "Close-Grip Pushups",
-                  "displayName": "Close-Grip Pushups \u2014 3\u00d710\u201312",
+                  "displayName": "Close-Grip Pushups — 3×10–12",
                   "muscles": "full body",
                   "mediaKey": "close-grip-pushup",
                   "instructions": {
-                    "sets": "3\u00d710\u201312",
-                    "rest": "45\u201360 sec",
-                    "time": "~5\u20136 min",
+                    "sets": "3×10–12",
+                    "rest": "45–60 sec",
+                    "time": "~5–6 min",
                     "targets": "full body",
                     "notes": "Use controlled tempo and full range of motion."
                   }
@@ -259,7 +259,7 @@
                 "rest": "",
                 "time": "30s/side",
                 "targets": "chest",
-                "notes": "Breathe slowly and keep shoulders down."
+                "notes": "Setup: open doorway or wall stance. Move: ease into stretch, hold steady. Breathe: slow inhales, longer exhales. Avoid: shrugging or forcing range."
               }
             },
             {
@@ -269,7 +269,7 @@
                 "rest": "",
                 "time": "30s/side",
                 "targets": "shoulders",
-                "notes": "Stay relaxed and avoid shrugging."
+                "notes": "Setup: arm across chest, shoulders down. Move: gentle pull to end range. Breathe: slow and even. Avoid: twisting torso or hiking shoulders."
               }
             },
             {
@@ -277,9 +277,9 @@
               "instructions": {
                 "sets": "",
                 "rest": "",
-                "time": "1\u20132 min",
+                "time": "1–2 min",
                 "targets": "recovery",
-                "notes": "Inhale through the nose and lengthen the exhale."
+                "notes": "Setup: lie or sit tall with relaxed ribs. Move: expand belly and ribs, then soften. Breathe: 4-count inhale, 6-count exhale. Avoid: shallow chest-only breaths."
               }
             }
           ]
@@ -303,7 +303,7 @@
                 "rest": "",
                 "time": "2 min",
                 "targets": "full body",
-                "notes": "Keep the pace easy and steady."
+                "notes": "Setup: relaxed grip and tall posture. Move: smooth, even strokes/steps. Breathe: nasal inhales, long exhales. Avoid: sprinting or tensing shoulders."
               }
             },
             {
@@ -313,7 +313,7 @@
                 "rest": "",
                 "time": "3 min",
                 "targets": "shoulders, upper back",
-                "notes": "Control each rep and stay tall."
+                "notes": "Setup: stand tall, band at chest height. Move: controlled pulls and circles. Breathe: steady through each rep. Avoid: jerky reps or flared ribs."
               }
             },
             {
@@ -323,49 +323,49 @@
                 "rest": "30 sec",
                 "time": "3 min",
                 "targets": "movement prep",
-                "notes": "Gradually increase load while staying smooth."
+                "notes": "Setup: light load, brace core. Move: groove full range with control. Breathe: exhale on effort, inhale on return. Avoid: jumping straight to working weight."
               }
             }
           ]
         },
         {
           "type": "strength",
-          "title": "Strength + Core (\u224835 minutes)",
+          "title": "Strength + Core (≈35 minutes)",
           "exercises": [
             {
               "name": "Seated Cable Row",
-              "displayName": "Seated Cable Row \u2014 3\u00d78\u201310",
+              "displayName": "Seated Cable Row — 3×8–10",
               "mediaKey": "cable-row",
               "instructions": {
-                "sets": "3\u00d78\u201310",
-                "rest": "60\u201390 sec",
-                "time": "~6\u20137 min",
+                "sets": "3×8–10",
+                "rest": "60–90 sec",
+                "time": "~6–7 min",
                 "targets": "back, biceps",
                 "notes": "Pull elbows toward hips; pause briefly and control the return."
               },
               "variants": [
                 {
                   "label": "Dumbbell Row",
-                  "displayName": "Dumbbell Row \u2014 3\u00d78\u201310/side",
+                  "displayName": "Dumbbell Row — 3×8–10/side",
                   "muscles": "back, biceps",
                   "mediaKey": "dumbbell-row",
                   "instructions": {
-                    "sets": "3\u00d78\u201310/side",
-                    "rest": "60\u201390 sec",
-                    "time": "~6\u20137 min",
+                    "sets": "3×8–10/side",
+                    "rest": "60–90 sec",
+                    "time": "~6–7 min",
                     "targets": "back, biceps",
                     "notes": "Pull elbows toward hips; pause briefly and control the return."
                   }
                 },
                 {
                   "label": "Bent Over Dumbbell Row",
-                  "displayName": "Bent Over Dumbbell Row \u2014 3\u00d78\u201310",
+                  "displayName": "Bent Over Dumbbell Row — 3×8–10",
                   "muscles": "back, biceps",
                   "mediaKey": "bent-over-dumbbell-row",
                   "instructions": {
-                    "sets": "3\u00d78\u201310",
-                    "rest": "60\u201390 sec",
-                    "time": "~6\u20137 min",
+                    "sets": "3×8–10",
+                    "rest": "60–90 sec",
+                    "time": "~6–7 min",
                     "targets": "back, biceps",
                     "notes": "Pull elbows toward hips; pause briefly and control the return."
                   }
@@ -374,36 +374,36 @@
             },
             {
               "name": "Lat Pulldown",
-              "displayName": "Lat Pulldown \u2014 3\u00d78\u201310",
+              "displayName": "Lat Pulldown — 3×8–10",
               "mediaKey": "lat-pulldown",
               "instructions": {
-                "sets": "3\u00d78\u201310",
-                "rest": "60\u201390 sec",
-                "time": "~6\u20137 min",
+                "sets": "3×8–10",
+                "rest": "60–90 sec",
+                "time": "~6–7 min",
                 "targets": "back, biceps",
                 "notes": "Depress shoulders; pull to the intended line and control the eccentric."
               },
               "variants": [
                 {
                   "label": "Lat Pushdowns",
-                  "displayName": "Lat Pushdowns \u2014 3\u00d75\u20138",
+                  "displayName": "Lat Pushdowns — 3×5–8",
                   "muscles": "back, biceps",
                   "mediaKey": "lat-pushdowns",
                   "instructions": {
-                    "sets": "3\u00d75\u20138",
+                    "sets": "3×5–8",
                     "rest": "90 sec",
-                    "time": "~6\u20137 min",
+                    "time": "~6–7 min",
                     "targets": "back, biceps",
                     "notes": "Depress shoulders; pull to the intended line and control the eccentric."
                   }
                 },
                 {
                   "label": "Straight-Arm Pulldown",
-                  "displayName": "Straight-Arm Pulldown \u2014 3\u00d710\u201312",
+                  "displayName": "Straight-Arm Pulldown — 3×10–12",
                   "muscles": "back, biceps",
                   "mediaKey": "straight-arm-pulldown",
                   "instructions": {
-                    "sets": "3\u00d710\u201312",
+                    "sets": "3×10–12",
                     "rest": "60 sec",
                     "time": "~6 min",
                     "targets": "back, biceps",
@@ -414,38 +414,38 @@
             },
             {
               "name": "Face Pulls",
-              "displayName": "Face Pulls \u2014 3\u00d712\u201315",
+              "displayName": "Face Pulls — 3×12–15",
               "mediaKey": "face-pulls",
               "instructions": {
-                "sets": "3\u00d712\u201315",
-                "rest": "45\u201360 sec",
-                "time": "~5\u20136 min",
+                "sets": "3×12–15",
+                "rest": "45–60 sec",
+                "time": "~5–6 min",
                 "targets": "back, biceps, rear delts, upper back",
                 "notes": "Pull toward eyes; rotate thumbs back and squeeze shoulder blades."
               },
               "variants": [
                 {
                   "label": "Reverse Fly",
-                  "displayName": "Reverse Fly \u2014 3\u00d712\u201315",
+                  "displayName": "Reverse Fly — 3×12–15",
                   "muscles": "chest, shoulders",
                   "mediaKey": "reverse-fly",
                   "instructions": {
-                    "sets": "3\u00d712\u201315",
-                    "rest": "45\u201360 sec",
-                    "time": "~5\u20136 min",
+                    "sets": "3×12–15",
+                    "rest": "45–60 sec",
+                    "time": "~5–6 min",
                     "targets": "chest, shoulders",
                     "notes": "Keep a slight elbow bend; open to a stretch and squeeze at the top."
                   }
                 },
                 {
                   "label": "Lateral Raises",
-                  "displayName": "Lateral Raises \u2014 3\u00d710\u201312",
+                  "displayName": "Lateral Raises — 3×10–12",
                   "muscles": "shoulders, back, biceps",
                   "mediaKey": "lateral-raise",
                   "instructions": {
-                    "sets": "3\u00d710\u201312",
+                    "sets": "3×10–12",
                     "rest": "60 sec",
-                    "time": "~5\u20136 min",
+                    "time": "~5–6 min",
                     "targets": "shoulders, back, biceps",
                     "notes": "Depress shoulders; pull to the intended line and control the eccentric."
                   }
@@ -454,38 +454,38 @@
             },
             {
               "name": "Bicep Curls",
-              "displayName": "Bicep Curls \u2014 3\u00d710\u201312",
+              "displayName": "Bicep Curls — 3×10–12",
               "mediaKey": "bicep-curls",
               "instructions": {
-                "sets": "3\u00d710\u201312",
-                "rest": "45\u201360 sec",
-                "time": "~5\u20136 min",
+                "sets": "3×10–12",
+                "rest": "45–60 sec",
+                "time": "~5–6 min",
                 "targets": "biceps",
                 "notes": "Keep elbows close; curl without swinging and lower slowly."
               },
               "variants": [
                 {
                   "label": "Hammer Curls",
-                  "displayName": "Hammer Curls \u2014 3\u00d710\u201312",
+                  "displayName": "Hammer Curls — 3×10–12",
                   "muscles": "biceps",
                   "mediaKey": "hammer-curls",
                   "instructions": {
-                    "sets": "3\u00d710\u201312",
-                    "rest": "45\u201360 sec",
-                    "time": "~5\u20136 min",
+                    "sets": "3×10–12",
+                    "rest": "45–60 sec",
+                    "time": "~5–6 min",
                     "targets": "biceps",
                     "notes": "Keep elbows close; curl without swinging and lower slowly."
                   }
                 },
                 {
                   "label": "Cable Curls",
-                  "displayName": "Cable Curls \u2014 3\u00d710\u201312",
+                  "displayName": "Cable Curls — 3×10–12",
                   "muscles": "biceps",
                   "mediaKey": "cable-curls",
                   "instructions": {
-                    "sets": "3\u00d710\u201312",
-                    "rest": "45\u201360 sec",
-                    "time": "~5\u20136 min",
+                    "sets": "3×10–12",
+                    "rest": "45–60 sec",
+                    "time": "~5–6 min",
                     "targets": "biceps",
                     "notes": "Keep elbows close; curl without swinging and lower slowly."
                   }
@@ -545,7 +545,7 @@
                 "rest": "",
                 "time": "30s/side",
                 "targets": "lats",
-                "notes": "Reach long and keep ribs down."
+                "notes": "Setup: grab stable support, hips back. Move: reach long and sink gently. Breathe: slow, deep exhales. Avoid: flaring ribs or twisting."
               }
             },
             {
@@ -555,7 +555,7 @@
                 "rest": "",
                 "time": "30s",
                 "targets": "upper back",
-                "notes": "Round gently and breathe into the stretch."
+                "notes": "Setup: clasp hands, round upper back. Move: widen and reach forward. Breathe: inhale into the back, exhale soften. Avoid: neck strain or shrugging."
               }
             },
             {
@@ -563,9 +563,9 @@
               "instructions": {
                 "sets": "",
                 "rest": "",
-                "time": "1\u20132 min",
+                "time": "1–2 min",
                 "targets": "recovery",
-                "notes": "Slow nasal inhales with longer exhales."
+                "notes": "Setup: sit or lie with relaxed shoulders. Move: expand ribs, then release. Breathe: slow nasal inhale, longer exhale. Avoid: breath holding."
               }
             }
           ]
@@ -589,7 +589,7 @@
                 "rest": "",
                 "time": "2 min",
                 "targets": "full body",
-                "notes": "Keep the pace easy and comfortable."
+                "notes": "Setup: tall posture, soft knees. Move: steady, easy cadence. Breathe: nasal inhales, long exhales. Avoid: rushing into a sprint."
               }
             },
             {
@@ -599,7 +599,7 @@
                 "rest": "",
                 "time": "3 min",
                 "targets": "hips, glutes",
-                "notes": "Use smooth swings and controlled circles."
+                "notes": "Setup: hold support, core braced. Move: smooth circles and controlled swings. Breathe: steady rhythm. Avoid: snapping the leg or twisting pelvis."
               }
             },
             {
@@ -609,34 +609,34 @@
                 "rest": "30 sec",
                 "time": "3 min",
                 "targets": "movement prep",
-                "notes": "Focus on range of motion before loading up."
+                "notes": "Setup: light load, feet grounded. Move: full range at easy tempo. Breathe: exhale on effort, inhale on reset. Avoid: skipping lighter sets."
               }
             }
           ]
         },
         {
           "type": "strength",
-          "title": "Strength + Core (\u224835 minutes)",
+          "title": "Strength + Core (≈35 minutes)",
           "exercises": [
             {
               "name": "Goblet Squat",
-              "displayName": "Goblet Squat \u2014 3\u00d78\u201310",
+              "displayName": "Goblet Squat — 3×8–10",
               "mediaKey": "goblet-squat",
               "instructions": {
-                "sets": "3\u00d78\u201310",
-                "rest": "60\u201390 sec",
-                "time": "~6\u20137 min",
+                "sets": "3×8–10",
+                "rest": "60–90 sec",
+                "time": "~6–7 min",
                 "targets": "quads, glutes",
                 "notes": "Keep knees tracking toes; stay tall and control depth."
               },
               "variants": [
                 {
                   "label": "Dumbbell Sumo Squat",
-                  "displayName": "Dumbbell Sumo Squat \u2014 3\u00d78\u201310",
+                  "displayName": "Dumbbell Sumo Squat — 3×8–10",
                   "muscles": "quads, glutes",
                   "mediaKey": "dumbbell-sumo-squat",
                   "instructions": {
-                    "sets": "3\u00d78\u201310",
+                    "sets": "3×8–10",
                     "rest": "90 sec",
                     "time": "~7 min",
                     "targets": "quads, glutes",
@@ -645,13 +645,13 @@
                 },
                 {
                   "label": "Dumbbell Front Squat",
-                  "displayName": "Dumbbell Front Squat \u2014 3\u00d710\u201312",
+                  "displayName": "Dumbbell Front Squat — 3×10–12",
                   "muscles": "quads, glutes",
                   "mediaKey": "dumbbell-front-squat",
                   "instructions": {
-                    "sets": "3\u00d710\u201312",
-                    "rest": "60\u201390 sec",
-                    "time": "~6\u20137 min",
+                    "sets": "3×10–12",
+                    "rest": "60–90 sec",
+                    "time": "~6–7 min",
                     "targets": "quads, glutes",
                     "notes": "Keep knees tracking toes; stay tall and control depth."
                   }
@@ -660,23 +660,23 @@
             },
             {
               "name": "Dumbbell Romanian Deadlift",
-              "displayName": "Dumbbell Romanian Deadlift \u2014 3\u00d78\u201310",
+              "displayName": "Dumbbell Romanian Deadlift — 3×8–10",
               "mediaKey": "dumbbell-rdl",
               "instructions": {
-                "sets": "3\u00d78\u201310",
-                "rest": "60\u201390 sec",
-                "time": "~6\u20137 min",
+                "sets": "3×8–10",
+                "rest": "60–90 sec",
+                "time": "~6–7 min",
                 "targets": "hamstrings, glutes, back",
                 "notes": "Hinge at hips; keep a neutral spine and drive hips through."
               },
               "variants": [
                 {
                   "label": "Leg Curl",
-                  "displayName": "Leg Curl \u2014 3\u00d710\u201312",
+                  "displayName": "Leg Curl — 3×10–12",
                   "muscles": "biceps",
                   "mediaKey": "leg-curl",
                   "instructions": {
-                    "sets": "3\u00d710\u201312",
+                    "sets": "3×10–12",
                     "rest": "60 sec",
                     "time": "~6 min",
                     "targets": "biceps",
@@ -685,12 +685,12 @@
                 },
                 {
                   "label": "Single-Leg RDL",
-                  "displayName": "Single-Leg RDL \u2014 3\u00d710",
+                  "displayName": "Single-Leg RDL — 3×10",
                   "muscles": "hamstrings, glutes, back",
                   "mediaKey": "single-leg-rdl",
                   "instructions": {
-                    "sets": "3\u00d710",
-                    "rest": "60\u201390 sec",
+                    "sets": "3×10",
+                    "rest": "60–90 sec",
                     "time": "~6 min",
                     "targets": "hamstrings, glutes, back",
                     "notes": "Hinge at hips; keep a neutral spine and drive hips through."
@@ -700,38 +700,38 @@
             },
             {
               "name": "Bulgarian Split Squat",
-              "displayName": "Bulgarian Split Squat \u2014 3\u00d78/side",
+              "displayName": "Bulgarian Split Squat — 3×8/side",
               "mediaKey": "bulgarian-split-squat",
               "instructions": {
-                "sets": "3\u00d78/side",
-                "rest": "60\u201390 sec",
-                "time": "~7\u20138 min",
+                "sets": "3×8/side",
+                "rest": "60–90 sec",
+                "time": "~7–8 min",
                 "targets": "quads, glutes",
                 "notes": "Keep knees tracking toes; stay tall and control depth."
               },
               "variants": [
                 {
                   "label": "Walking Lunges",
-                  "displayName": "Walking Lunges \u2014 3\u00d710/side",
+                  "displayName": "Walking Lunges — 3×10/side",
                   "muscles": "quads, glutes",
                   "mediaKey": "walking-lunges",
                   "instructions": {
-                    "sets": "3\u00d710/side",
+                    "sets": "3×10/side",
                     "rest": "60 sec",
-                    "time": "~6\u20137 min",
+                    "time": "~6–7 min",
                     "targets": "quads, glutes",
                     "notes": "Keep knees tracking toes; stay tall and control depth."
                   }
                 },
                 {
                   "label": "Step-Ups",
-                  "displayName": "Step-Ups \u2014 3\u00d710/side",
+                  "displayName": "Step-Ups — 3×10/side",
                   "muscles": "quads, glutes",
                   "mediaKey": "step-ups",
                   "instructions": {
-                    "sets": "3\u00d710/side",
+                    "sets": "3×10/side",
                     "rest": "60 sec",
-                    "time": "~6\u20137 min",
+                    "time": "~6–7 min",
                     "targets": "quads, glutes",
                     "notes": "Keep knees tracking toes; stay tall and control depth."
                   }
@@ -740,23 +740,23 @@
             },
             {
               "name": "Calf Raises",
-              "displayName": "Calf Raises \u2014 3\u00d712\u201315",
+              "displayName": "Calf Raises — 3×12–15",
               "mediaKey": "calf-raises",
               "instructions": {
-                "sets": "3\u00d712\u201315",
-                "rest": "45\u201360 sec",
-                "time": "~5\u20136 min",
+                "sets": "3×12–15",
+                "rest": "45–60 sec",
+                "time": "~5–6 min",
                 "targets": "calves",
                 "notes": "Pause at the top; lower to a full stretch under control."
               },
               "variants": [
                 {
                   "label": "Seated Calf Raise",
-                  "displayName": "Seated Calf Raise \u2014 3\u00d715\u201320",
+                  "displayName": "Seated Calf Raise — 3×15–20",
                   "muscles": "calves",
                   "mediaKey": "seated-calf",
                   "instructions": {
-                    "sets": "3\u00d715\u201320",
+                    "sets": "3×15–20",
                     "rest": "45 sec",
                     "time": "~5 min",
                     "targets": "calves",
@@ -765,11 +765,11 @@
                 },
                 {
                   "label": "Single-Leg Calf Raise",
-                  "displayName": "Single-Leg Calf Raise \u2014 3\u00d710\u201312/side",
+                  "displayName": "Single-Leg Calf Raise — 3×10–12/side",
                   "muscles": "calves",
                   "mediaKey": "single-leg-calf-raise",
                   "instructions": {
-                    "sets": "3\u00d710\u201312/side",
+                    "sets": "3×10–12/side",
                     "rest": "45 sec",
                     "time": "~6 min",
                     "targets": "calves",
@@ -831,7 +831,7 @@
                 "rest": "",
                 "time": "30s/side",
                 "targets": "hamstrings",
-                "notes": "Keep a long spine and avoid bouncing."
+                "notes": "Setup: hinge with long spine. Move: ease into stretch and hold. Breathe: slow inhales, longer exhales. Avoid: bouncing or rounded back."
               }
             },
             {
@@ -841,7 +841,7 @@
                 "rest": "",
                 "time": "30s/side",
                 "targets": "quads",
-                "notes": "Squeeze glutes gently to deepen the stretch."
+                "notes": "Setup: stand tall, knees together. Move: heel toward glute, hips tucked. Breathe: slow and even. Avoid: arching low back or pulling knee wide."
               }
             },
             {
@@ -849,9 +849,9 @@
               "instructions": {
                 "sets": "",
                 "rest": "",
-                "time": "1\u20132 min",
+                "time": "1–2 min",
                 "targets": "recovery",
-                "notes": "Let your heart rate settle with slow breaths."
+                "notes": "Setup: lie or sit with relaxed jaw. Move: expand belly, then soften. Breathe: 4-count inhale, 6-count exhale. Avoid: chest-only breathing."
               }
             }
           ]
