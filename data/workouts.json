@@ -11,7 +11,7 @@
           "title": "Warm-Up (8 minutes)",
           "items": [
             {
-              "name": "Light cardio (walk/bike)",
+              "name": "Light cardio (walk/row/bike)",
               "instructions": {
                 "sets": "",
                 "rest": "",
@@ -21,7 +21,7 @@
               }
             },
             {
-              "name": "Arm circles + band pull-aparts",
+              "name": "Band pull-aparts + arm circles",
               "instructions": {
                 "sets": "",
                 "rest": "",
@@ -583,7 +583,7 @@
           "title": "Warm-Up (8 minutes)",
           "items": [
             {
-              "name": "Light cardio (walk/bike)",
+              "name": "Light cardio (walk/row/bike)",
               "instructions": {
                 "sets": "",
                 "rest": "",
