@@ -480,14 +480,47 @@ button.clear:focus-visible {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
 }
+.section-timer.is-dismissed {
+  display: none;
+}
+.section-timer__summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.section-timer__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
 .section-timer .timer-label {
   font-size: 0.8rem;
   color: var(--color-text-muted);
 }
+.section-timer-pill {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  border: 1px solid rgba(29, 78, 216, 0.2);
+}
+.section-timer-pill.running {
+  background: var(--color-warning-soft);
+  color: var(--color-warning);
+  border-color: rgba(161, 98, 7, 0.25);
+}
+.section-timer-pill.done {
+  background: var(--color-success-soft);
+  color: var(--color-success);
+  border-color: rgba(21, 128, 61, 0.2);
+}
 .section-timer .timer-display {
   font-size: 1.1rem;
   font-weight: 600;
-  margin-left: var(--space-2);
 }
 .section-timer .timer-actions {
   display: flex;

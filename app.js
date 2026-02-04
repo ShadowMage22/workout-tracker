@@ -611,13 +611,17 @@ const renderWorkoutUI = (data = {}) => {
         timerWrap.dataset.sectionType = section.type;
         timerWrap.dataset.duration = parseDurationFromTitle(section.title, section.type).toString();
         timerWrap.innerHTML = `
-          <div>
-            <span class="timer-label">${section.type === 'warmup' ? 'Warm-up timer' : 'Cooldown timer'}</span>
+          <div class="section-timer__summary">
+            <div class="section-timer__header">
+              <span class="timer-label">${section.type === 'warmup' ? 'Warm-up timer' : 'Cooldown timer'}</span>
+              <span class="section-timer-pill" data-state="ready">Ready</span>
+            </div>
             <span class="timer-display">00:00</span>
           </div>
           <div class="timer-actions">
             <button type="button" class="ghost-button start-timer">Start</button>
             <button type="button" class="ghost-button stop-timer" disabled>Stop</button>
+            <button type="button" class="ghost-button dismiss-timer">Dismiss</button>
           </div>
         `;
         sectionEl.appendChild(timerWrap);
@@ -1148,6 +1152,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (stopBtn) {
       event.preventDefault();
       stopSectionTimer(stopBtn.closest('.section-timer'));
+      return;
+    }
+    const dismissBtn = event.target.closest('.section-timer .dismiss-timer');
+    if (dismissBtn) {
+      event.preventDefault();
+      const timerEl = dismissBtn.closest('.section-timer');
+      if (timerEl) {
+        timerEl.dataset.dismissed = 'true';
+        timerEl.classList.add('is-dismissed');
+        timerEl.setAttribute('aria-hidden', 'true');
+      }
     }
   });
 
@@ -1684,12 +1699,26 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.section-timer').forEach(timer => {
       if (timer.dataset.initialized === 'true') return;
       timer.dataset.initialized = 'true';
+      timer.dataset.dismissed = 'false';
       const durationSeconds = Number(timer.dataset.duration || 0);
       const display = timer.querySelector('.timer-display');
       if (display) {
         display.textContent = formatTimer(durationSeconds * 1000);
       }
+      setSectionTimerState(timer, 'ready');
     });
+  }
+
+  function setSectionTimerState(timerEl, state) {
+    if (!timerEl) return;
+    const pill = timerEl.querySelector('.section-timer-pill');
+    if (!pill) return;
+    pill.classList.remove('running', 'done');
+    if (state === 'running') pill.classList.add('running');
+    if (state === 'done') pill.classList.add('done');
+    pill.textContent = state === 'running' ? 'Running' : state === 'done' ? 'Done' : 'Ready';
+    pill.dataset.state = state;
+    timerEl.dataset.state = state;
   }
 
   function startSectionTimer(timerEl) {
@@ -1697,6 +1726,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sectionTimerState.has(timerEl)) return;
     const durationSeconds = Number(timerEl.dataset.duration || 0);
     if (!durationSeconds) return;
+    if (timerEl.dataset.dismissed === 'true') {
+      timerEl.dataset.dismissed = 'false';
+      timerEl.classList.remove('is-dismissed');
+      timerEl.setAttribute('aria-hidden', 'false');
+    }
     const display = timerEl.querySelector('.timer-display');
     const startButton = timerEl.querySelector('.start-timer');
     const stopButton = timerEl.querySelector('.stop-timer');
@@ -1711,6 +1745,8 @@ document.addEventListener('DOMContentLoaded', () => {
     sectionTimerState.set(timerEl, { intervalId, endTime });
     if (startButton) startButton.disabled = true;
     if (stopButton) stopButton.disabled = false;
+    if (display) display.textContent = formatTimer(durationSeconds * 1000);
+    setSectionTimerState(timerEl, 'running');
   }
 
   function stopSectionTimer(timerEl, { completed = false } = {}) {
@@ -1728,6 +1764,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const stopButton = timerEl?.querySelector('.stop-timer');
     if (startButton) startButton.disabled = false;
     if (stopButton) stopButton.disabled = true;
+    setSectionTimerState(timerEl, completed ? 'done' : 'ready');
   }
 
   function parseRecommendedSets(setsText) {
