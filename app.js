@@ -1497,7 +1497,7 @@ document.addEventListener('DOMContentLoaded', () => {
         restBannerTime.textContent = timeText;
       }
       if (bannerState === 'running') {
-        setBannerVisibility(true);
+        setBannerVisibility(!bannerDismissed);
       } else if (bannerState === 'done') {
         setBannerVisibility(!bannerDismissed);
       } else {
@@ -1631,9 +1631,7 @@ document.addEventListener('DOMContentLoaded', () => {
     notifyButton.addEventListener('click', requestNotificationPermission);
     restBannerDismiss?.addEventListener('click', () => {
       bannerDismissed = true;
-      if (bannerState !== 'running') {
-        updateBannerState({ state: bannerState });
-      }
+      updateBannerState({ state: bannerState });
     });
 
     const loadPreference = (key, fallback = false) => {
