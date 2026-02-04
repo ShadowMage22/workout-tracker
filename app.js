@@ -1436,6 +1436,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const restBannerStatus = document.getElementById('restTimerBannerStatus');
     const restBannerTime = document.getElementById('restTimerBannerTime');
     const restBannerDismiss = document.getElementById('dismissRestBanner');
+    const restBannerStop = document.getElementById('stopRestBanner');
 
     if (!restDurationSelect || !restStatus || !restTimeDisplay || !restPill || !startButton || !stopButton || !notifyButton) {
       return;
@@ -1645,6 +1646,12 @@ document.addEventListener('DOMContentLoaded', () => {
     restBannerDismiss?.addEventListener('click', () => {
       bannerDismissed = true;
       updateBannerState({ state: bannerState });
+    });
+    restBannerStop?.addEventListener('click', () => {
+      if (endTime) {
+        finishTimer({ completed: false });
+      }
+      updateBannerState({ state: 'ready' });
     });
 
     const loadPreference = (key, fallback = false) => {

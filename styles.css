@@ -316,7 +316,8 @@ button.clear:focus-visible {
   font-weight: 600;
   margin-left: auto;
 }
-.rest-timer-banner__dismiss {
+.rest-timer-banner__dismiss,
+.rest-timer-banner__stop {
   font-size: 0.8rem;
   padding: 6px 10px;
 }
