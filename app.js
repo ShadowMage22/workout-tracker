@@ -621,7 +621,6 @@ const renderWorkoutUI = (data = {}) => {
           <div class="timer-actions">
             <button type="button" class="ghost-button start-timer">Start</button>
             <button type="button" class="ghost-button stop-timer" disabled>Stop</button>
-            <button type="button" class="ghost-button dismiss-timer">Dismiss</button>
           </div>
         `;
         sectionEl.appendChild(timerWrap);
@@ -824,6 +823,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const syncStatus = document.getElementById('syncStatus');
   const historyDayFilter = document.getElementById('historyDayFilter');
   const historyList = document.getElementById('historyList');
+  const sectionTimerBanner = document.getElementById('sectionTimerBanner');
+  const sectionTimerBannerLabel = document.getElementById('sectionTimerBannerLabel');
+  const sectionTimerBannerStatus = document.getElementById('sectionTimerBannerStatus');
+  const sectionTimerBannerTime = document.getElementById('sectionTimerBannerTime');
+  const sectionBannerDismiss = document.getElementById('dismissSectionBanner');
+  const sectionBannerStop = document.getElementById('stopSectionBanner');
 
   // In-memory working state (persisted to localStorage)
   let state = loadState();
@@ -834,6 +839,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let historyDbPromise = null;
   let lastSavedAt = null;
   const sectionTimerState = new WeakMap();
+  let activeSectionTimer = null;
+  let sectionBannerState = 'ready';
+  let sectionBannerDismissed = false;
 
   const initApp = async () => {
     try {
@@ -1153,16 +1161,6 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault();
       stopSectionTimer(stopBtn.closest('.section-timer'));
       return;
-    }
-    const dismissBtn = event.target.closest('.section-timer .dismiss-timer');
-    if (dismissBtn) {
-      event.preventDefault();
-      const timerEl = dismissBtn.closest('.section-timer');
-      if (timerEl) {
-        timerEl.dataset.dismissed = 'true';
-        timerEl.classList.add('is-dismissed');
-        timerEl.setAttribute('aria-hidden', 'true');
-      }
     }
   });
 
@@ -1695,11 +1693,49 @@ document.addEventListener('DOMContentLoaded', () => {
     window.startRestTimer = (options = {}) => startTimer(options);
   }
 
+  function setSectionBannerVisibility(shouldShow) {
+    if (!sectionTimerBanner) return;
+    sectionTimerBanner.classList.toggle('show', shouldShow);
+    sectionTimerBanner.setAttribute('aria-hidden', shouldShow ? 'false' : 'true');
+  }
+
+  function getSectionBannerLabel(timerEl) {
+    const sectionType = timerEl?.dataset?.sectionType;
+    if (sectionType === 'warmup') return 'Warm-up Timer';
+    if (sectionType === 'cooldown') return 'Cooldown Timer';
+    return 'Section Timer';
+  }
+
+  function updateSectionBannerState({ timerEl, state, statusText, timeText } = {}) {
+    if (timerEl) activeSectionTimer = timerEl;
+    if (state) sectionBannerState = state;
+    if (timerEl && sectionTimerBannerLabel) {
+      sectionTimerBannerLabel.textContent = getSectionBannerLabel(timerEl);
+    }
+    if (typeof statusText === 'string' && sectionTimerBannerStatus) {
+      sectionTimerBannerStatus.textContent = statusText;
+    }
+    if (typeof timeText === 'string' && sectionTimerBannerTime) {
+      sectionTimerBannerTime.textContent = timeText;
+    }
+    if (sectionBannerState === 'running' || sectionBannerState === 'done') {
+      setSectionBannerVisibility(!sectionBannerDismissed);
+    } else {
+      setSectionBannerVisibility(false);
+    }
+  }
+
+  function clearSectionBanner() {
+    activeSectionTimer = null;
+    sectionBannerState = 'ready';
+    sectionBannerDismissed = false;
+    setSectionBannerVisibility(false);
+  }
+
   function initSectionTimers() {
     document.querySelectorAll('.section-timer').forEach(timer => {
       if (timer.dataset.initialized === 'true') return;
       timer.dataset.initialized = 'true';
-      timer.dataset.dismissed = 'false';
       const durationSeconds = Number(timer.dataset.duration || 0);
       const display = timer.querySelector('.timer-display');
       if (display) {
@@ -1707,6 +1743,22 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       setSectionTimerState(timer, 'ready');
     });
+
+    if (sectionBannerDismiss) {
+      sectionBannerDismiss.addEventListener('click', () => {
+        sectionBannerDismissed = true;
+        updateSectionBannerState({ state: sectionBannerState });
+      });
+    }
+
+    if (sectionBannerStop) {
+      sectionBannerStop.addEventListener('click', () => {
+        if (activeSectionTimer) {
+          stopSectionTimer(activeSectionTimer, { completed: false });
+        }
+        clearSectionBanner();
+      });
+    }
   }
 
   function setSectionTimerState(timerEl, state) {
@@ -1726,18 +1778,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sectionTimerState.has(timerEl)) return;
     const durationSeconds = Number(timerEl.dataset.duration || 0);
     if (!durationSeconds) return;
-    if (timerEl.dataset.dismissed === 'true') {
-      timerEl.dataset.dismissed = 'false';
-      timerEl.classList.remove('is-dismissed');
-      timerEl.setAttribute('aria-hidden', 'false');
-    }
     const display = timerEl.querySelector('.timer-display');
     const startButton = timerEl.querySelector('.start-timer');
     const stopButton = timerEl.querySelector('.stop-timer');
     const endTime = Date.now() + durationSeconds * 1000;
+    sectionBannerDismissed = false;
+    updateSectionBannerState({
+      timerEl,
+      state: 'running',
+      statusText: 'Running',
+      timeText: formatTimer(durationSeconds * 1000)
+    });
     const intervalId = window.setInterval(() => {
       const remaining = endTime - Date.now();
       if (display) display.textContent = formatTimer(remaining);
+      updateSectionBannerState({
+        timerEl,
+        state: 'running',
+        statusText: 'Running',
+        timeText: formatTimer(remaining)
+      });
       if (remaining <= 0) {
         stopSectionTimer(timerEl, { completed: true });
       }
@@ -1765,6 +1825,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (startButton) startButton.disabled = false;
     if (stopButton) stopButton.disabled = true;
     setSectionTimerState(timerEl, completed ? 'done' : 'ready');
+    if (timerEl && activeSectionTimer === timerEl) {
+      if (completed) {
+        sectionBannerDismissed = false;
+        updateSectionBannerState({
+          timerEl,
+          state: 'done',
+          statusText: 'Done',
+          timeText: formatTimer(0)
+        });
+      } else {
+        updateSectionBannerState({
+          timerEl,
+          state: 'ready',
+          statusText: 'Ready',
+          timeText: formatTimer(durationSeconds * 1000)
+        });
+        clearSectionBanner();
+      }
+    }
   }
 
   function parseRecommendedSets(setsText) {
