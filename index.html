@@ -46,6 +46,8 @@
   <div class="sync-status" id="syncStatus" role="status" aria-live="polite">Online • All changes saved</div>
   <div class="app-controls">
     <button class="ghost-button" type="button" onclick="resetApp()">Reset App / End Session</button>
+    <button class="ghost-button" type="button" onclick="resetApp({ clearHistory: true })">Full Reset (Deletes History)</button>
+    <p class="app-controls__note">Cache reset fixes offline issues; history is preserved unless you choose to delete it.</p>
   </div>
 
   <div class="tabs">

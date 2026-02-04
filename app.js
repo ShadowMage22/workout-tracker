@@ -888,7 +888,8 @@ document.addEventListener('DOMContentLoaded', () => {
     persistState();
   };
 
-  window.resetApp = async function() {
+  window.resetApp = async function(options = {}) {
+    const { clearHistory = false } = options;
     const shouldReset = window.confirm('Reset the app and clear your saved progress? This cannot be undone.');
     if (!shouldReset) return;
 
@@ -902,7 +903,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     state = defaultState();
     persistState({ broadcast: true });
-    await clearHistoryDb();
+    if (clearHistory) {
+      const shouldClearHistory = window.confirm('Delete workout history too? This cannot be undone.');
+      if (shouldClearHistory) {
+        await clearHistoryDb();
+      }
+    }
 
     if (typeof window.clearCacheAndReload === 'function') {
       window.clearCacheAndReload();
