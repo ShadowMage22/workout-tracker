@@ -17,7 +17,7 @@
                 "rest": "",
                 "time": "2 min",
                 "targets": "full body",
-                "notes": "Setup: easy pace and tall posture. Move: steady, small strides/pedals. Breathe: nasal inhales, long exhales. Avoid: sprinting or shrugged shoulders."
+                "notes": "Setup: Start upright with a tall spine and relaxed shoulders, choosing an easy pace you could talk through on a treadmill, bike, or open floor. Move: Take small, steady strides or smooth pedal strokes for two minutes at a conversational cadence, slowing further if you feel winded. Breathe: Inhale through the nose for 2–3 steps or pedals and exhale for 3–4, keeping the breath calm. Avoid: Avoid sprinting or shrugging, and shorten your stride or lower resistance if your joints feel stiff."
               }
             },
             {
@@ -27,7 +27,7 @@
                 "rest": "",
                 "time": "3 min",
                 "targets": "shoulders, upper back",
-                "notes": "Setup: stand tall, soft knees. Move: smooth circles and controlled pulls. Breathe: steady through the motion. Avoid: cranking range or arching low back."
+                "notes": "Setup: Stand tall with soft knees, a light band at chest height, and ribs stacked over hips. Move: Circle the arms forward and backward for 5–8 reps each direction, then perform slow pull-aparts for 2 seconds out and 2 seconds back, using a smaller range if your shoulders feel tight. Breathe: Inhale as the arms open and exhale as they return to center. Avoid: Avoid cranking range or arching the low back, and switch to smaller circles or a lighter band if needed."
               }
             },
             {
@@ -37,7 +37,7 @@
                 "rest": "30 sec",
                 "time": "3 min",
                 "targets": "movement prep",
-                "notes": "Setup: light load and braced core. Move: full range with smooth tempo. Breathe: exhale on effort, inhale on reset. Avoid: rushing or bouncing reps."
+                "notes": "Setup: Choose a very light load, brace your core, and set up exactly like your working lift. Move: Perform 8–10 controlled reps through full range at a 2-second down, 1-second pause, 2-second up tempo, using a partial range if any position feels stiff. Breathe: Exhale on the effort phase and inhale as you reset for the next rep. Avoid: Avoid rushing or bouncing reps, and add an extra warm-up set if the movement still feels unsteady."
               }
             }
           ]
@@ -259,7 +259,7 @@
                 "rest": "",
                 "time": "30s/side",
                 "targets": "chest",
-                "notes": "Setup: open doorway or wall stance. Move: ease into stretch, hold steady. Breathe: slow inhales, longer exhales. Avoid: shrugging or forcing range."
+                "notes": "Setup: Stand in a doorway or by a wall with one forearm on the frame and the chest lifted. Move: Step forward until you feel a gentle stretch and hold it for 20–30 seconds, easing back a step if the stretch is too intense. Breathe: Take slow 4-count inhales and 6-count exhales to let the chest soften. Avoid: Avoid shrugging or forcing range, and keep the elbow lower if the shoulder feels pinchy."
               }
             },
             {
@@ -269,7 +269,7 @@
                 "rest": "",
                 "time": "30s/side",
                 "targets": "shoulders",
-                "notes": "Setup: arm across chest, shoulders down. Move: gentle pull to end range. Breathe: slow and even. Avoid: twisting torso or hiking shoulders."
+                "notes": "Setup: Stand tall with one arm across your chest and the opposite hand supporting just above the elbow. Move: Gently pull the arm in until you feel a mild stretch and hold for 20–30 seconds, keeping the torso square and lowering the arm if needed. Breathe: Breathe slowly and evenly, letting each exhale relax the shoulder. Avoid: Avoid twisting the torso or hiking the shoulder toward the ear."
               }
             },
             {
@@ -279,7 +279,7 @@
                 "rest": "",
                 "time": "1–2 min",
                 "targets": "recovery",
-                "notes": "Setup: lie or sit tall with relaxed ribs. Move: expand belly and ribs, then soften. Breathe: 4-count inhale, 6-count exhale. Avoid: shallow chest-only breaths."
+                "notes": "Setup: Lie on your back with knees bent or sit tall with relaxed ribs and a long neck. Move: Expand the belly and side ribs on the inhale, pause for a second, then let them soften on the exhale, shortening the range if you feel lightheaded. Breathe: Use a 4-count inhale and a 6-count exhale to downshift. Avoid: Avoid shallow chest-only breaths or breath holding."
               }
             }
           ]
@@ -303,7 +303,7 @@
                 "rest": "",
                 "time": "2 min",
                 "targets": "full body",
-                "notes": "Setup: relaxed grip and tall posture. Move: smooth, even strokes/steps. Breathe: nasal inhales, long exhales. Avoid: sprinting or tensing shoulders."
+                "notes": "Setup: Sit or stand tall with a relaxed grip on the handle or rails and shoulders down. Move: Use smooth, even strokes or steps for two minutes at a steady, talkable cadence, reducing resistance if your heart rate spikes. Breathe: Inhale through the nose for 2–3 strokes or steps and exhale longer for 3–4 to stay calm. Avoid: Avoid sprinting or tensing the shoulders, and shorten the range if any joint feels cranky."
               }
             },
             {
@@ -313,7 +313,7 @@
                 "rest": "",
                 "time": "3 min",
                 "targets": "shoulders, upper back",
-                "notes": "Setup: stand tall, band at chest height. Move: controlled pulls and circles. Breathe: steady through each rep. Avoid: jerky reps or flared ribs."
+                "notes": "Setup: Stand tall with the band held at chest height, soft knees, and ribs stacked over hips. Move: Perform controlled pull-aparts for 2 seconds out and 2 seconds in, then do smooth arm circles for 5–8 reps each direction, using a lighter band if you cannot keep control. Breathe: Keep a steady breath, inhaling as the arms open and exhaling as they return. Avoid: Avoid jerky reps or flared ribs, and shrink the range if the shoulders feel tight."
               }
             },
             {
@@ -323,7 +323,7 @@
                 "rest": "30 sec",
                 "time": "3 min",
                 "targets": "movement prep",
-                "notes": "Setup: light load, brace core. Move: groove full range with control. Breathe: exhale on effort, inhale on return. Avoid: jumping straight to working weight."
+                "notes": "Setup: Pick a light load, brace the core, and match your exact working setup and grip. Move: Groove 8–10 reps through full range at a 2-second down, 1-second pause, 2-second up cadence, shortening the range if any position feels stiff. Breathe: Exhale on the effort and inhale on the return to reset. Avoid: Avoid jumping straight to working weight, and add a second warm-up set if you still feel tight."
               }
             }
           ]
@@ -545,7 +545,7 @@
                 "rest": "",
                 "time": "30s/side",
                 "targets": "lats",
-                "notes": "Setup: grab stable support, hips back. Move: reach long and sink gently. Breathe: slow, deep exhales. Avoid: flaring ribs or twisting."
+                "notes": "Setup: Hold a stable support with both hands, hinge the hips back, and lengthen the spine. Move: Reach the hips back and chest down until you feel a stretch along the side, then hold 20–30 seconds, bending the knees slightly if needed. Breathe: Take slow, deep inhales and longer exhales to let the lats soften. Avoid: Avoid flaring the ribs or twisting, and reduce the reach if the shoulder feels pinchy."
               }
             },
             {
@@ -555,7 +555,7 @@
                 "rest": "",
                 "time": "30s",
                 "targets": "upper back",
-                "notes": "Setup: clasp hands, round upper back. Move: widen and reach forward. Breathe: inhale into the back, exhale soften. Avoid: neck strain or shrugging."
+                "notes": "Setup: Stand or sit tall, clasp the hands in front, and gently round the upper back. Move: Reach the hands forward and spread the shoulder blades, holding the stretch for 20–30 seconds while keeping the chin slightly tucked, or shorten the reach if you feel strain. Breathe: Inhale into the upper back and exhale to soften the stretch. Avoid: Avoid neck strain or shrugging the shoulders."
               }
             },
             {
@@ -565,7 +565,7 @@
                 "rest": "",
                 "time": "1–2 min",
                 "targets": "recovery",
-                "notes": "Setup: sit or lie with relaxed shoulders. Move: expand ribs, then release. Breathe: slow nasal inhale, longer exhale. Avoid: breath holding."
+                "notes": "Setup: Sit or lie down with relaxed shoulders and a long neck. Move: Expand the ribs on the inhale, pause briefly, then let them release on the exhale, shortening the breath if you feel lightheaded. Breathe: Use a slow nasal inhale and a longer, controlled exhale to downshift. Avoid: Avoid breath holding or shallow chest-only breathing."
               }
             }
           ]
@@ -589,7 +589,7 @@
                 "rest": "",
                 "time": "2 min",
                 "targets": "full body",
-                "notes": "Setup: tall posture, soft knees. Move: steady, easy cadence. Breathe: nasal inhales, long exhales. Avoid: rushing into a sprint."
+                "notes": "Setup: Stand tall with soft knees and relaxed shoulders, choosing an easy pace on a treadmill, bike, or open floor. Move: Keep a steady, easy cadence for two minutes, lengthening or shortening your stride to stay comfortable. Breathe: Inhale through the nose for 2–3 steps or pedals and exhale for 3–4 to stay relaxed. Avoid: Avoid rushing into a sprint, and lower resistance if your legs feel heavy."
               }
             },
             {
@@ -599,7 +599,7 @@
                 "rest": "",
                 "time": "3 min",
                 "targets": "hips, glutes",
-                "notes": "Setup: hold support, core braced. Move: smooth circles and controlled swings. Breathe: steady rhythm. Avoid: snapping the leg or twisting pelvis."
+                "notes": "Setup: Hold a stable support with the core lightly braced and weight balanced on the standing leg. Move: Make slow hip circles for 5–8 reps each way and then perform controlled leg swings for 8–10 reps, keeping the swings small if balance is challenging. Breathe: Keep a steady rhythm, inhaling on the back swing and exhaling on the forward swing. Avoid: Avoid snapping the leg or twisting the pelvis, and reduce range if you feel pinching."
               }
             },
             {
@@ -609,7 +609,7 @@
                 "rest": "30 sec",
                 "time": "3 min",
                 "targets": "movement prep",
-                "notes": "Setup: light load, feet grounded. Move: full range at easy tempo. Breathe: exhale on effort, inhale on reset. Avoid: skipping lighter sets."
+                "notes": "Setup: Choose a light load, plant the feet firmly, and brace the core as you would for working sets. Move: Perform 8–10 reps through full range at a smooth 2-second down, 1-second pause, 2-second up tempo, using a partial depth if you feel stiff. Breathe: Exhale on the effort and inhale on the reset to stay braced. Avoid: Avoid skipping lighter sets, and add another warm-up set if the movement still feels tight."
               }
             }
           ]
@@ -831,7 +831,7 @@
                 "rest": "",
                 "time": "30s/side",
                 "targets": "hamstrings",
-                "notes": "Setup: hinge with long spine. Move: ease into stretch and hold. Breathe: slow inhales, longer exhales. Avoid: bouncing or rounded back."
+                "notes": "Setup: Stand tall, hinge at the hips with a long spine, and rest hands lightly on the thighs or a support. Move: Ease into the stretch until you feel mild tension and hold for 20–30 seconds, bending the knees slightly if hamstrings feel tight. Breathe: Take slow inhales and longer exhales to let the hamstrings relax. Avoid: Avoid bouncing or rounding the back."
               }
             },
             {
@@ -841,7 +841,7 @@
                 "rest": "",
                 "time": "30s/side",
                 "targets": "quads",
-                "notes": "Setup: stand tall, knees together. Move: heel toward glute, hips tucked. Breathe: slow and even. Avoid: arching low back or pulling knee wide."
+                "notes": "Setup: Stand tall with knees together and one hand on support for balance. Move: Draw the heel toward the glute, tuck the hips slightly, and hold for 20–30 seconds, using a strap or lower hold if you cannot reach comfortably. Breathe: Breathe slow and even, letting each exhale soften the front of the thigh. Avoid: Avoid arching the low back or pulling the knee wide."
               }
             },
             {
@@ -851,7 +851,7 @@
                 "rest": "",
                 "time": "1–2 min",
                 "targets": "recovery",
-                "notes": "Setup: lie or sit with relaxed jaw. Move: expand belly, then soften. Breathe: 4-count inhale, 6-count exhale. Avoid: chest-only breathing."
+                "notes": "Setup: Lie on your back with a relaxed jaw or sit tall with shoulders down. Move: Expand the belly on the inhale, pause for a beat, then let it soften on the exhale, shortening the range if you feel lightheaded. Breathe: Use a 4-count inhale and 6-count exhale to slow your heart rate. Avoid: Avoid chest-only breathing or holding your breath."
               }
             }
           ]
