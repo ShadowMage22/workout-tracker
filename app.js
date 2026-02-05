@@ -1936,6 +1936,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target.matches('.set-completed')) {
           const row = event.target.closest('.set-row');
           if (row) toggleSetRowCompleted(row, event.target.checked);
+          if (event.target.checked && typeof window.startRestTimer === 'function') {
+            window.startRestTimer({ allowPrompt: false });
+          }
         }
         updateSetStateFromRows(rows);
       });
