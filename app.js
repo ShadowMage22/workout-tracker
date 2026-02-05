@@ -1492,6 +1492,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
 
+    const persistElapsedForDay = (dayId) => {
+      const state = ensureDayState(dayId);
+      if (state.isRunning) {
+        state.elapsedMs = getElapsedMs(dayId);
+        state.startedAt = Date.now();
+      }
+      saveElapsed();
+    };
+
     const getElapsedMs = (dayId) => {
       const state = ensureDayState(dayId);
       const runningMs = state.isRunning && state.startedAt
@@ -1518,6 +1527,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dayId === activeDayId) {
           updateStopwatchUI(dayId);
         }
+        persistElapsedForDay(dayId);
       }, 1000);
       updateStopwatchUI(dayId);
     };
@@ -1559,6 +1569,12 @@ document.addEventListener('DOMContentLoaded', () => {
     resetButton.addEventListener('click', () => {
       if (!activeDayId) return;
       resetStopwatch(activeDayId);
+    });
+
+    window.addEventListener('beforeunload', () => {
+      if (activeDayId) {
+        persistElapsedForDay(activeDayId);
+      }
     });
 
     const attachStopwatchToDay = (dayId) => {
