@@ -1134,14 +1134,22 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!checkId) return;
       if (!ensureEditable()) {
         e.target.checked = !!state.checkmarks[checkId];
+        const exerciseItem = e.target.closest('li[data-exercise-id]');
+        if (exerciseItem) {
+          exerciseItem.classList.toggle('exercise-completed', e.target.checked);
+        }
         return;
       }
       if (e.target.checked) state.checkmarks[checkId] = true;
       else delete state.checkmarks[checkId];
       persistState();
 
+      const exerciseItem = e.target.closest('li[data-exercise-id]');
+      if (exerciseItem) {
+        exerciseItem.classList.toggle('exercise-completed', e.target.checked);
+      }
+
       if (e.target.checked) {
-        const exerciseItem = e.target.closest('li');
         if (exerciseItem && exerciseItem.dataset.exerciseId && typeof window.startRestTimer === 'function') {
           window.startRestTimer({ allowPrompt: false });
         }
@@ -2479,6 +2487,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const checkId = c.dataset.checkId;
       if (!checkId) return;
       c.checked = !!state.checkmarks[checkId];
+    });
+
+    document.querySelectorAll('li[data-exercise-id]').forEach(li => {
+      const checkbox = li.querySelector('input[type="checkbox"][data-check-id]');
+      if (!checkbox) return;
+      li.classList.toggle('exercise-completed', checkbox.checked);
     });
 
     // Apply saved variant selections
