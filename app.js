@@ -479,6 +479,9 @@ window.showDay = function showDay(dayId, tabBtn) {
   if (typeof window.attachRestTimerToDay === 'function' && WORKOUT_DAY_IDS.includes(dayId)) {
     window.attachRestTimerToDay(dayId);
   }
+  if (typeof window.attachStopwatchToDay === 'function' && WORKOUT_DAY_IDS.includes(dayId)) {
+    window.attachStopwatchToDay(dayId);
+  }
   if (typeof window.updateHistoryDay === 'function' && WORKOUT_DAY_IDS.includes(dayId)) {
     window.updateHistoryDay(dayId);
   }
@@ -864,6 +867,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCrossTabSync();
     initActiveTabTracking();
     initRestTimer();
+    initWorkoutStopwatch();
     initSectionTimers();
     initSetTracking();
     initHistoryPanel();
@@ -1421,6 +1425,173 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     showStatusMessage('Another tab is active. Switch to it to make edits.', 4000);
     return false;
+  }
+
+  function initWorkoutStopwatch() {
+    const stopwatchTemplate = document.getElementById('workoutStopwatchTemplate');
+    const stopwatchCard = stopwatchTemplate?.content?.firstElementChild
+      ? stopwatchTemplate.content.firstElementChild.cloneNode(true)
+      : document.querySelector('.workout-stopwatch');
+    if (!stopwatchCard) return;
+
+    const stopwatchDisplay = stopwatchCard.querySelector('#stopwatchDisplay');
+    const toggleButton = stopwatchCard.querySelector('#toggleStopwatch');
+    const resetButton = stopwatchCard.querySelector('#resetStopwatch');
+    const statusPill = stopwatchCard.querySelector('.workout-stopwatch__pill');
+
+    if (!stopwatchDisplay || !toggleButton || !resetButton || !statusPill) return;
+
+    const storageKey = 'workoutStopwatchElapsed';
+    let activeDayId = null;
+    let persistedElapsed = {};
+    const stopwatchState = {};
+
+    try {
+      persistedElapsed = JSON.parse(localStorage.getItem(storageKey)) || {};
+    } catch (_) {
+      persistedElapsed = {};
+    }
+
+    const formatElapsed = (ms) => {
+      const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      if (hours > 0) {
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+      }
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
+
+    const ensureDayState = (dayId) => {
+      if (!stopwatchState[dayId]) {
+        stopwatchState[dayId] = {
+          elapsedMs: Number(persistedElapsed[dayId]) || 0,
+          isRunning: false,
+          startedAt: null,
+          intervalId: null
+        };
+      }
+      return stopwatchState[dayId];
+    };
+
+    const saveElapsed = () => {
+      const snapshot = {};
+      WORKOUT_DAY_IDS.forEach((dayId) => {
+        const state = stopwatchState[dayId];
+        if (state) {
+          snapshot[dayId] = state.elapsedMs;
+        } else if (persistedElapsed[dayId]) {
+          snapshot[dayId] = persistedElapsed[dayId];
+        }
+      });
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(snapshot));
+      } catch (_) {
+        // ignore storage errors
+      }
+    };
+
+    const getElapsedMs = (dayId) => {
+      const state = ensureDayState(dayId);
+      const runningMs = state.isRunning && state.startedAt
+        ? Date.now() - state.startedAt
+        : 0;
+      return state.elapsedMs + runningMs;
+    };
+
+    const updateStopwatchUI = (dayId) => {
+      const state = ensureDayState(dayId);
+      stopwatchDisplay.textContent = formatElapsed(getElapsedMs(dayId));
+      const isRunning = state.isRunning;
+      statusPill.dataset.state = isRunning ? 'running' : 'paused';
+      statusPill.textContent = isRunning ? 'Running' : 'Paused';
+      toggleButton.textContent = isRunning ? 'Pause' : 'Start';
+    };
+
+    const startStopwatch = (dayId) => {
+      const state = ensureDayState(dayId);
+      if (state.isRunning) return;
+      state.isRunning = true;
+      state.startedAt = Date.now();
+      state.intervalId = window.setInterval(() => {
+        if (dayId === activeDayId) {
+          updateStopwatchUI(dayId);
+        }
+      }, 1000);
+      updateStopwatchUI(dayId);
+    };
+
+    const pauseStopwatch = (dayId) => {
+      const state = ensureDayState(dayId);
+      if (!state.isRunning) return;
+      state.elapsedMs = getElapsedMs(dayId);
+      state.isRunning = false;
+      state.startedAt = null;
+      if (state.intervalId) {
+        window.clearInterval(state.intervalId);
+        state.intervalId = null;
+      }
+      saveElapsed();
+      updateStopwatchUI(dayId);
+    };
+
+    const resetStopwatch = (dayId) => {
+      const state = ensureDayState(dayId);
+      state.elapsedMs = 0;
+      if (state.isRunning) {
+        state.startedAt = Date.now();
+      }
+      saveElapsed();
+      updateStopwatchUI(dayId);
+    };
+
+    toggleButton.addEventListener('click', () => {
+      if (!activeDayId) return;
+      const state = ensureDayState(activeDayId);
+      if (state.isRunning) {
+        pauseStopwatch(activeDayId);
+      } else {
+        startStopwatch(activeDayId);
+      }
+    });
+
+    resetButton.addEventListener('click', () => {
+      if (!activeDayId) return;
+      resetStopwatch(activeDayId);
+    });
+
+    const attachStopwatchToDay = (dayId) => {
+      const day = document.getElementById(dayId);
+      if (!day) return;
+      if (!WORKOUT_DAY_IDS.includes(dayId)) return;
+      if (stopwatchCard.parentElement === day) {
+        activeDayId = dayId;
+        updateStopwatchUI(dayId);
+        return;
+      }
+      const restTimer = day.querySelector('.rest-timer');
+      if (restTimer && restTimer.parentElement === day) {
+        day.insertBefore(stopwatchCard, restTimer.nextSibling);
+      } else {
+        const heading = day.querySelector('h2');
+        if (heading && heading.nextSibling) {
+          day.insertBefore(stopwatchCard, heading.nextSibling);
+        } else if (heading) {
+          day.appendChild(stopwatchCard);
+        } else {
+          day.prepend(stopwatchCard);
+        }
+      }
+      activeDayId = dayId;
+      updateStopwatchUI(dayId);
+    };
+
+    const initialDay = document.querySelector('.day.active')?.id || WORKOUT_DAY_IDS[0];
+    if (initialDay) {
+      attachStopwatchToDay(initialDay);
+    }
+    window.attachStopwatchToDay = attachStopwatchToDay;
   }
 
   function initRestTimer() {

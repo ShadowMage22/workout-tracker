@@ -103,6 +103,22 @@
     </section>
   </template>
 
+  <template id="workoutStopwatchTemplate">
+    <section class="workout-stopwatch" aria-live="polite">
+      <div class="workout-stopwatch__header">
+        <h2>Workout Stopwatch</h2>
+        <span class="workout-stopwatch__pill" data-state="paused">Paused</span>
+      </div>
+      <div class="workout-stopwatch__body">
+        <div class="workout-stopwatch__time" id="stopwatchDisplay">00:00</div>
+        <div class="workout-stopwatch__actions">
+          <button class="primary-button" type="button" id="toggleStopwatch">Start</button>
+          <button class="ghost-button" type="button" id="resetStopwatch">Reset</button>
+        </div>
+      </div>
+    </section>
+  </template>
+
   <div class="day card active" id="push">
     <div class="day-skeleton skeleton" aria-hidden="true">
       <div class="skeleton-bar wide"></div>

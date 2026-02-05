@@ -276,6 +276,60 @@ button.clear:focus-visible {
   gap: var(--space-2);
 }
 
+.workout-stopwatch {
+  margin-bottom: var(--space-4);
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.workout-stopwatch__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.workout-stopwatch__pill {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  border: 1px solid rgba(29, 78, 216, 0.2);
+}
+.workout-stopwatch__pill[data-state="running"] {
+  background: var(--color-warning-soft);
+  color: var(--color-warning);
+  border-color: rgba(161, 98, 7, 0.25);
+}
+.workout-stopwatch__pill[data-state="paused"] {
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  border-color: rgba(148, 163, 184, 0.4);
+}
+.workout-stopwatch__body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+.workout-stopwatch__time {
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.workout-stopwatch__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
 .rest-timer-banner,
 .section-timer-banner {
   position: fixed;
