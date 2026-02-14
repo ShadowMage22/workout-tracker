@@ -148,6 +148,7 @@ const renderWorkoutUI = (data = {}) => {
         (section.exercises || []).forEach(exercise => {
           const listItem = document.createElement('div');
           listItem.className = 'exercise-card exercise-item workout-item';
+          if (exercise.id) listItem.dataset.exerciseId = exercise.id;
           const exerciseTitle = exercise.displayName || exercise.name || '';
           const bodyId = `${day.id || 'day'}-exercise-card-body-${cardBodyCounter++}`;
 
@@ -241,6 +242,7 @@ const renderWorkoutUI = (data = {}) => {
           const baseOption = document.createElement('div');
           baseOption.className = 'variant-option';
           baseOption.dataset.variantBase = 'true';
+          if (exercise.id) baseOption.dataset.variantId = exercise.id;
           const baseName = exercise.displayName || exercise.name || '';
           baseOption.dataset.name = baseName;
           baseOption.dataset.instructions = buildInstructionString(exercise.instructions);
@@ -262,6 +264,7 @@ const renderWorkoutUI = (data = {}) => {
           (exercise.variants || []).forEach((variant) => {
             const option = document.createElement('div');
             option.className = 'variant-option';
+            if (variant.id) option.dataset.variantId = variant.id;
             option.dataset.name = variant.displayName || variant.label || '';
             option.dataset.instructions = buildInstructionString(variant.instructions);
             const variantRestSeconds = parseRestDurationToSeconds(variant.instructions?.rest);
@@ -303,6 +306,7 @@ const renderWorkoutUI = (data = {}) => {
 
           const listItem = document.createElement('div');
           listItem.className = 'exercise-card workout-item prep-item';
+          if (isObjectItem && item.id) listItem.dataset.exerciseId = item.id;
           const bodyId = `${day.id || 'day'}-exercise-card-body-${cardBodyCounter++}`;
 
           const header = document.createElement('div');

@@ -2071,6 +2071,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       day.querySelectorAll('.workout-item').forEach(li => {
         const checkbox = li.querySelector('input[type="checkbox"]');
+        const existingExerciseId = li.dataset.exerciseId;
 
         const section = li.closest('.section');
         const sectionIsWarm = section && section.classList.contains('warmup');
@@ -2083,21 +2084,21 @@ document.addEventListener('DOMContentLoaded', () => {
           ? visual.dataset.mediaKey
           : null;
 
-        let itemId;
-        if (li.classList.contains('exercise-li')) {
+        let itemId = existingExerciseId;
+        if (!itemId && li.classList.contains('exercise-li')) {
           // reserved if you later add a class
           itemId = `${dayId}-ex-${mediaKey || (miscIdx++)}`;
-        } else if (visual && getExerciseTitleElement(li)) {
+        } else if (!itemId && visual && getExerciseTitleElement(li)) {
           itemId = `${dayId}-ex-${mediaKey || (miscIdx++)}`;
-        } else if (sectionIsWarm) {
+        } else if (!itemId && sectionIsWarm) {
           itemId = `${dayId}-warmup-${warmIdx++}`;
-        } else if (sectionIsCool) {
+        } else if (!itemId && sectionIsCool) {
           itemId = `${dayId}-cooldown-${coolIdx++}`;
-        } else if (isPrepItem) {
+        } else if (!itemId && isPrepItem) {
           itemId = `${dayId}-prep-${prepIdx++}`;
-        } else if (isStrengthItem) {
+        } else if (!itemId && isStrengthItem) {
           itemId = `${dayId}-ex-${mediaKey || strengthIdx++}`;
-        } else {
+        } else if (!itemId) {
           itemId = `${dayId}-item-${miscIdx++}`;
         }
 
@@ -2111,8 +2112,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const variants = li.querySelectorAll('.variant-option');
         variants.forEach(v => {
-          if (v.dataset.mediaKey) {
-            v.dataset.variantId = v.dataset.mediaKey;
+          if (v.dataset.variantId) {
+            v.dataset.variantId = makeUniqueId(v.dataset.variantId);
+          } else if (v.dataset.mediaKey) {
+            v.dataset.variantId = makeUniqueId(v.dataset.mediaKey);
           } else {
             delete v.dataset.variantId;
           }
