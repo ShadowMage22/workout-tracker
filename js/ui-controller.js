@@ -170,46 +170,57 @@ const renderWorkoutUI = (data = {}) => {
       title.textContent = section.title || '';
       sectionEl.appendChild(title);
 
-      if (section.type === 'strength') {
-        const list = document.createElement('div');
-        list.className = 'exercise-card-list';
-        (section.exercises || []).forEach(exercise => {
-          const listItem = document.createElement('div');
-          listItem.className = 'exercise-card exercise-item workout-item';
-          if (exercise.id) listItem.dataset.exerciseId = exercise.id;
-          const exerciseTitle = exercise.displayName || exercise.name || '';
-          const bodyId = `${day.id || 'day'}-exercise-card-body-${cardBodyCounter++}`;
+      const list = document.createElement('div');
+      list.className = 'exercise-card-list';
+      const sectionItems = section.items || [];
+      const prepItems = sectionItems.filter((item) => (item?.itemType || section.type) !== 'strength');
+      const sectionDurationSeconds = parseDurationFromTitle(section.title, section.type);
 
-          const header = document.createElement('div');
-          header.className = 'exercise-card__header';
-          const titleEl = document.createElement('span');
-          titleEl.className = 'exercise-card__title';
-          titleEl.textContent = exerciseTitle;
-          const toggleBtn = document.createElement('button');
-          toggleBtn.type = 'button';
-          toggleBtn.className = 'exercise-card__toggle';
-          toggleBtn.setAttribute('aria-expanded', 'true');
-          toggleBtn.setAttribute('aria-controls', bodyId);
-          toggleBtn.textContent = 'Collapse';
-          header.appendChild(titleEl);
-          header.appendChild(toggleBtn);
-          listItem.appendChild(header);
+      sectionItems.forEach((item) => {
+        if (!item || typeof item !== 'object') return;
+        const itemType = item.itemType || section.type;
+        const isStrength = itemType === 'strength';
+        const itemName = item.displayName || item.name || '';
 
-          const body = document.createElement('div');
-          body.className = 'exercise-card__body';
-          body.id = bodyId;
+        const listItem = document.createElement('div');
+        listItem.className = isStrength
+          ? 'exercise-card exercise-item workout-item'
+          : 'exercise-card workout-item prep-item';
+        if (item.id) listItem.dataset.exerciseId = item.id;
+        const bodyId = `${day.id || 'day'}-exercise-card-body-${cardBodyCounter++}`;
 
-          if (exercise.instructions && exercise.instructions.sets) {
-            listItem.dataset.recommendedSets = exercise.instructions.sets;
-          }
-          const numericRestSeconds = getInstructionRestSeconds(exercise.instructions);
-          const parsedRestSeconds = Number.isFinite(numericRestSeconds)
-            ? numericRestSeconds
-            : parseRestDurationToSeconds(exercise.instructions?.rest);
-          if (Number.isFinite(parsedRestSeconds) && parsedRestSeconds > 0) {
-            listItem.dataset.restSeconds = String(parsedRestSeconds);
-          }
+        const header = document.createElement('div');
+        header.className = 'exercise-card__header';
+        const titleEl = document.createElement('span');
+        titleEl.className = 'exercise-card__title';
+        titleEl.textContent = itemName;
+        const toggleBtn = document.createElement('button');
+        toggleBtn.type = 'button';
+        toggleBtn.className = 'exercise-card__toggle';
+        toggleBtn.setAttribute('aria-expanded', 'true');
+        toggleBtn.setAttribute('aria-controls', bodyId);
+        toggleBtn.textContent = 'Collapse';
+        header.appendChild(titleEl);
+        header.appendChild(toggleBtn);
+        listItem.appendChild(header);
 
+        const body = document.createElement('div');
+        body.className = 'exercise-card__body';
+        body.id = bodyId;
+
+        if (item.instructions && item.instructions.sets) {
+          listItem.dataset.recommendedSets = item.instructions.sets;
+        }
+
+        const numericRestSeconds = getInstructionRestSeconds(item.instructions);
+        const parsedRestSeconds = Number.isFinite(numericRestSeconds)
+          ? numericRestSeconds
+          : parseRestDurationToSeconds(item.instructions?.rest);
+        if (Number.isFinite(parsedRestSeconds) && parsedRestSeconds > 0) {
+          listItem.dataset.restSeconds = String(parsedRestSeconds);
+        }
+
+        if (isStrength) {
           const exerciseWrap = document.createElement('div');
           exerciseWrap.className = 'exercise';
 
@@ -221,11 +232,11 @@ const renderWorkoutUI = (data = {}) => {
 
           const visual = document.createElement('div');
           visual.className = 'exercise-visual';
-          if (exercise.mediaKey) visual.dataset.mediaKey = exercise.mediaKey;
+          if (item.mediaKey) visual.dataset.mediaKey = item.mediaKey;
 
           const img = document.createElement('img');
           img.src = '';
-          img.alt = exercise.name || exercise.displayName || 'Exercise demonstration';
+          img.alt = item.name || item.displayName || 'Exercise demonstration';
           visual.appendChild(img);
 
           const expandHint = document.createElement('div');
@@ -235,27 +246,39 @@ const renderWorkoutUI = (data = {}) => {
           exerciseWrap.appendChild(visual);
 
           body.appendChild(exerciseWrap);
+        } else {
+          const card = document.createElement('div');
+          card.className = 'prep-card';
+          const label = document.createElement('label');
+          label.className = 'prep-label';
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          label.appendChild(checkbox);
+          card.appendChild(label);
+          body.appendChild(card);
+        }
 
-          const instructionsEl = document.createElement('div');
-          instructionsEl.className = 'instructions';
-          instructionsEl.innerHTML = buildInstructionHtml(exercise.instructions);
-          body.appendChild(instructionsEl);
+        const instructionsEl = document.createElement('div');
+        instructionsEl.className = 'instructions';
+        instructionsEl.innerHTML = buildInstructionHtml(item.instructions || {});
+        body.appendChild(instructionsEl);
 
-          listItem.dataset.coaching = exercise.instructions?.notes || '';
-          const coachTip = document.createElement('div');
-          coachTip.className = 'coach-tip';
-          setCoachTip(coachTip, exercise.instructions?.notes);
-          body.appendChild(coachTip);
+        listItem.dataset.coaching = item.instructions?.notes || '';
+        const coachTip = document.createElement('div');
+        coachTip.className = 'coach-tip';
+        setCoachTip(coachTip, item.instructions?.notes);
+        body.appendChild(coachTip);
 
+        if (isStrength) {
           const progressionHint = document.createElement('div');
           progressionHint.className = 'progression-hint';
           progressionHint.textContent = 'Log a session to get progression tips.';
           body.appendChild(progressionHint);
 
           const videoLink = document.createElement('a');
-          const media = exercise.mediaKey ? exerciseMedia[exercise.mediaKey] : null;
+          const media = item.mediaKey ? exerciseMedia[item.mediaKey] : null;
           videoLink.href = media?.video || '#';
-          if (exercise.mediaKey) videoLink.dataset.mediaKey = exercise.mediaKey;
+          if (item.mediaKey) videoLink.dataset.mediaKey = item.mediaKey;
           videoLink.target = '_blank';
           videoLink.rel = 'noopener noreferrer';
           videoLink.className = 'video-link';
@@ -273,29 +296,28 @@ const renderWorkoutUI = (data = {}) => {
           const baseOption = document.createElement('div');
           baseOption.className = 'variant-option';
           baseOption.dataset.variantBase = 'true';
-          if (exercise.id) baseOption.dataset.variantId = exercise.id;
-          const baseName = exercise.displayName || exercise.name || '';
-          baseOption.dataset.name = baseName;
-          baseOption.dataset.instructions = buildInstructionString(exercise.instructions);
-          const baseNumericRestSeconds = getInstructionRestSeconds(exercise.instructions);
+          if (item.id) baseOption.dataset.variantId = item.id;
+          baseOption.dataset.name = itemName;
+          baseOption.dataset.instructions = buildInstructionString(item.instructions);
+          const baseNumericRestSeconds = getInstructionRestSeconds(item.instructions);
           const baseRestSeconds = Number.isFinite(baseNumericRestSeconds)
             ? baseNumericRestSeconds
-            : parseRestDurationToSeconds(exercise.instructions?.rest);
+            : parseRestDurationToSeconds(item.instructions?.rest);
           if (Number.isFinite(baseRestSeconds) && baseRestSeconds > 0) {
             baseOption.dataset.restSeconds = String(baseRestSeconds);
           }
-          if (exercise.instructions && exercise.instructions.sets) {
-            baseOption.dataset.recommendedSets = exercise.instructions.sets;
+          if (item.instructions && item.instructions.sets) {
+            baseOption.dataset.recommendedSets = item.instructions.sets;
           }
-          baseOption.dataset.coaching = exercise.instructions?.notes || '';
-          if (exercise.mediaKey) baseOption.dataset.mediaKey = exercise.mediaKey;
+          baseOption.dataset.coaching = item.instructions?.notes || '';
+          if (item.mediaKey) baseOption.dataset.mediaKey = item.mediaKey;
 
-          const baseLabelText = baseName ? `Original: ${baseName}` : 'Original exercise';
+          const baseLabelText = itemName ? `Original: ${itemName}` : 'Original exercise';
           const baseLabel = document.createTextNode(baseLabelText);
           baseOption.appendChild(baseLabel);
           variantsList.appendChild(baseOption);
 
-          (exercise.variants || []).forEach((variant) => {
+          (item.variants || []).forEach((variant) => {
             const option = document.createElement('div');
             option.className = 'variant-option';
             if (variant.id) option.dataset.variantId = variant.id;
@@ -326,76 +348,18 @@ const renderWorkoutUI = (data = {}) => {
           });
 
           body.appendChild(variantsList);
-          listItem.appendChild(body);
-          list.appendChild(listItem);
-        });
-
-        sectionEl.appendChild(list);
-      } else {
-        const list = document.createElement('div');
-        list.className = 'exercise-card-list';
-        const prepItems = section.items || [];
-        const sectionDurationSeconds = parseDurationFromTitle(section.title, section.type);
-        prepItems.forEach(item => {
-          const isObjectItem = item && typeof item === 'object';
-          const itemName = isObjectItem ? item.name : item;
-          const itemInstructions = isObjectItem ? item.instructions : null;
-
-          const listItem = document.createElement('div');
-          listItem.className = 'exercise-card workout-item prep-item';
-          if (isObjectItem && item.id) listItem.dataset.exerciseId = item.id;
-          const bodyId = `${day.id || 'day'}-exercise-card-body-${cardBodyCounter++}`;
-
-          const header = document.createElement('div');
-          header.className = 'exercise-card__header';
-          const titleEl = document.createElement('span');
-          titleEl.className = 'exercise-card__title';
-          titleEl.textContent = itemName || '';
-          const toggleBtn = document.createElement('button');
-          toggleBtn.type = 'button';
-          toggleBtn.className = 'exercise-card__toggle';
-          toggleBtn.setAttribute('aria-expanded', 'true');
-          toggleBtn.setAttribute('aria-controls', bodyId);
-          toggleBtn.textContent = 'Collapse';
-          header.appendChild(titleEl);
-          header.appendChild(toggleBtn);
-          listItem.appendChild(header);
-
-          const body = document.createElement('div');
-          body.className = 'exercise-card__body';
-          body.id = bodyId;
-
-          const card = document.createElement('div');
-          card.className = 'prep-card';
-          const label = document.createElement('label');
-          label.className = 'prep-label';
-          const checkbox = document.createElement('input');
-          checkbox.type = 'checkbox';
-          label.appendChild(checkbox);
-          card.appendChild(label);
-          body.appendChild(card);
-
-          const instructionsEl = document.createElement('div');
-          instructionsEl.className = 'instructions';
-          instructionsEl.innerHTML = buildInstructionHtml(itemInstructions || {});
-          body.appendChild(instructionsEl);
-
-          const coachTip = document.createElement('div');
-          coachTip.className = 'coach-tip';
-          setCoachTip(coachTip, itemInstructions?.notes);
-          body.appendChild(coachTip);
-
+        } else {
           const timerWrap = document.createElement('div');
           timerWrap.className = 'section-timer';
-          timerWrap.dataset.sectionType = section.type;
+          timerWrap.dataset.sectionType = itemType;
           timerWrap.dataset.exerciseName = itemName || section.title || 'Exercise';
           timerWrap.dataset.duration = String(
-            getPrepItemDurationSeconds(itemInstructions, sectionDurationSeconds, prepItems.length)
+            getPrepItemDurationSeconds(item.instructions, sectionDurationSeconds, prepItems.length)
           );
           timerWrap.innerHTML = `
             <div class="section-timer__summary">
               <div class="section-timer__header">
-                <span class="timer-label">${section.type === 'warmup' ? 'Warm-up timer' : 'Cooldown timer'}</span>
+                <span class="timer-label">${itemType === 'warmup' ? 'Warm-up timer' : 'Cooldown timer'}</span>
                 <span class="section-timer-pill" role="status" aria-live="polite" data-state="ready">Ready</span>
               </div>
               <span class="timer-display">00:00</span>
@@ -406,14 +370,13 @@ const renderWorkoutUI = (data = {}) => {
             </div>
           `;
           body.appendChild(timerWrap);
+        }
 
-          listItem.appendChild(body);
+        listItem.appendChild(body);
+        list.appendChild(listItem);
+      });
 
-          list.appendChild(listItem);
-        });
-
-        sectionEl.appendChild(list);
-      }
+      sectionEl.appendChild(list);
       container.appendChild(sectionEl);
     });
 
