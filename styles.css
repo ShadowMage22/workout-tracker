@@ -718,6 +718,53 @@ button.clear:focus-visible {
   display: none;
 }
 
+.exercise-card__rest-actions {
+  margin-top: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.exercise-card__rest-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.exercise-card__rest-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.exercise-card__rest-btn {
+  border: 1px solid rgba(29, 78, 216, 0.24);
+  background: #eff6ff;
+  color: #1e3a8a;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  line-height: 1;
+  min-height: 34px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.exercise-card__rest-btn:hover {
+  background: #dbeafe;
+  border-color: rgba(29, 78, 216, 0.45);
+}
+
+.exercise-card__rest-btn.is-custom {
+  background: var(--color-surface-alt);
+  border-style: dashed;
+  color: var(--color-text);
+}
+
 .exercise-card.is-collapsed .exercise-card__body {
   display: none;
 }
@@ -742,6 +789,19 @@ button.clear:focus-visible {
   .exercise-card__toggle {
     min-width: 76px;
     padding-inline: 10px;
+  }
+
+  .exercise-card__rest-actions {
+    align-items: flex-start;
+  }
+
+  .exercise-card__rest-cluster {
+    gap: 4px;
+  }
+
+  .exercise-card__rest-btn {
+    padding: 6px 8px;
+    font-size: 0.72rem;
   }
 }
 

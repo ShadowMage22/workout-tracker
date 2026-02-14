@@ -723,6 +723,21 @@ const renderWorkoutUI = (data = {}) => {
           progressionHint.textContent = 'Log a session to get progression tips.';
           body.appendChild(progressionHint);
 
+          const restActions = document.createElement('div');
+          restActions.className = 'exercise-card__rest-actions';
+          restActions.setAttribute('role', 'group');
+          restActions.setAttribute('aria-label', `Rest timer controls for ${exerciseTitle || 'exercise'}`);
+          restActions.innerHTML = `
+            <span class="exercise-card__rest-label">Rest</span>
+            <div class="exercise-card__rest-cluster">
+              <button type="button" class="exercise-card__rest-btn" data-rest-seconds="45">45s</button>
+              <button type="button" class="exercise-card__rest-btn" data-rest-seconds="60">60s</button>
+              <button type="button" class="exercise-card__rest-btn" data-rest-seconds="90">90s</button>
+              <button type="button" class="exercise-card__rest-btn is-custom" data-rest-custom="true">Custom</button>
+            </div>
+          `;
+          body.appendChild(restActions);
+
           const videoLink = document.createElement('a');
           const media = exercise.mediaKey ? exerciseMedia[exercise.mediaKey] : null;
           videoLink.href = media?.video || '#';
@@ -1254,6 +1269,36 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.addEventListener('click', (event) => {
+    const restBtn = event.target.closest('.exercise-card__rest-btn');
+    if (restBtn) {
+      event.preventDefault();
+      const exerciseCard = restBtn.closest('.exercise-card[data-exercise-id]');
+      if (!exerciseCard || typeof window.startRestTimer !== 'function') return;
+
+      let durationSeconds;
+      const customDurationRequested = restBtn.dataset.restCustom === 'true';
+      if (customDurationRequested) {
+        const response = window.prompt('Enter rest duration in seconds', '60');
+        if (response === null) return;
+        const parsedDuration = Number.parseInt(response, 10);
+        if (!Number.isFinite(parsedDuration) || parsedDuration <= 0) return;
+        durationSeconds = parsedDuration;
+      } else {
+        durationSeconds = Number.parseInt(restBtn.dataset.restSeconds || '', 10);
+      }
+
+      if (!Number.isFinite(durationSeconds) || durationSeconds <= 0) return;
+      const sourceExerciseId = exerciseCard.dataset.exerciseId;
+      const sourceExerciseName = exerciseCard.querySelector('.exercise-card__title')?.textContent?.trim() || '';
+      window.startRestTimer({
+        allowPrompt: false,
+        sourceExerciseId,
+        sourceExerciseName,
+        durationSeconds
+      });
+      return;
+    }
+
     const startBtn = event.target.closest('.section-timer .start-timer');
     if (startBtn) {
       event.preventDefault();
@@ -1898,20 +1943,40 @@ document.addEventListener('DOMContentLoaded', () => {
       renderTime();
     };
 
-    const startTimer = async ({ allowPrompt = true } = {}) => {
+    const startTimer = async ({
+      allowPrompt = true,
+      durationSeconds,
+      sourceExerciseId,
+      sourceExerciseName
+    } = {}) => {
       if (endTime) return;
-      const durationMs = Number(restDurationSelect.value || 60) * 1000;
+      const hasCustomDuration = Number.isFinite(Number(durationSeconds)) && Number(durationSeconds) > 0;
+      const durationMs = hasCustomDuration
+        ? Number(durationSeconds) * 1000
+        : Number(restDurationSelect.value || 60) * 1000;
       if (!durationMs) return;
       if (allowPrompt && 'Notification' in window && Notification.permission === 'default') {
         await requestNotificationPermission();
       }
       if (intervalId) window.clearInterval(intervalId);
+      if (hasCustomDuration && restDurationSelect) {
+        const durationValue = String(Number(durationSeconds));
+        if ([...restDurationSelect.options].some((option) => option.value === durationValue)) {
+          restDurationSelect.value = durationValue;
+        }
+      }
       endTime = Date.now() + durationMs;
       setPillState('running');
       updateButtons(true);
       bannerDismissed = false;
       updateBannerState({ state: 'running' });
-      updateRestStatus('Resting…');
+      const contextSuffix = sourceExerciseName ? ` for ${sourceExerciseName}` : '';
+      if (sourceExerciseId) {
+        restTimerCard.dataset.sourceExerciseId = sourceExerciseId;
+      } else {
+        delete restTimerCard.dataset.sourceExerciseId;
+      }
+      updateRestStatus(`Resting${contextSuffix}…`);
       renderTime();
       intervalId = window.setInterval(tick, 500);
     };
@@ -2636,7 +2701,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (visual && getExerciseTitleElement(li)) {
           itemId = `${dayId}-ex-${mediaKey || (miscIdx++)}`;
         } else if (sectionIsWarm) {
-        if (sectionIsWarm) {
           itemId = `${dayId}-warmup-${warmIdx++}`;
         } else if (sectionIsCool) {
           itemId = `${dayId}-cooldown-${coolIdx++}`;
