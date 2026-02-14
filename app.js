@@ -597,6 +597,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---------- Event Wiring ----------
   document.addEventListener('change', function(e) {
     if (e.target && e.target.type === 'checkbox') {
+      const checkableItemSelector = `${EXERCISE_ITEM_SELECTOR}, .prep-item`;
+
       const syncExerciseCompletionState = (exerciseItem, isChecked) => {
         if (!exerciseItem) return;
 
@@ -623,7 +625,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!checkId) return;
       if (!ensureEditable()) {
         e.target.checked = !!state.checkmarks[checkId];
-        const exerciseItem = e.target.closest(EXERCISE_ITEM_SELECTOR);
+        const exerciseItem = e.target.closest(checkableItemSelector);
         syncExerciseCompletionState(exerciseItem, e.target.checked);
         return;
       }
@@ -631,7 +633,7 @@ document.addEventListener('DOMContentLoaded', () => {
       else delete state.checkmarks[checkId];
       persistState();
 
-      const exerciseItem = e.target.closest(EXERCISE_ITEM_SELECTOR);
+      const exerciseItem = e.target.closest(checkableItemSelector);
       syncExerciseCompletionState(exerciseItem, e.target.checked);
 
       if (e.target.checked) {
