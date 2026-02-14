@@ -2596,47 +2596,55 @@ document.addEventListener('DOMContentLoaded', () => {
       const dayId = day.id || 'day';
       let warmIdx = 0;
       let coolIdx = 0;
+      let strengthIdx = 0;
       let miscIdx = 0;
+      const idCounts = new Map();
 
-      day.querySelectorAll('.workout-item, li').forEach(li => {
+      const makeUniqueId = (baseId) => {
+        const seenCount = idCounts.get(baseId) || 0;
+        idCounts.set(baseId, seenCount + 1);
+        return seenCount === 0 ? baseId : `${baseId}-${seenCount}`;
+      };
+
+      day.querySelectorAll('.workout-item').forEach(li => {
         const checkbox = li.querySelector('input[type="checkbox"]');
         if (!checkbox) return;
 
         const section = li.closest('.section');
         const sectionIsWarm = section && section.classList.contains('warmup');
         const sectionIsCool = section && section.classList.contains('cooldown');
+        const isStrengthItem = li.classList.contains('exercise-item');
 
-        // Strength/core exercises: use the media key as stable identity when possible
         const visual = li.querySelector('.exercise-visual');
-        const mediaKey = visual && visual.dataset.mediaKey ? visual.dataset.mediaKey : null;
+        const mediaKey = isStrengthItem && visual && visual.dataset.mediaKey
+          ? visual.dataset.mediaKey
+          : null;
 
         let itemId;
-        if (li.classList.contains('exercise-li')) {
-          // reserved if you later add a class
-          itemId = `${dayId}-ex-${mediaKey || (miscIdx++)}`;
-        } else if (visual && li.querySelector('.exercise-name')) {
-          itemId = `${dayId}-ex-${mediaKey || (miscIdx++)}`;
-        } else if (sectionIsWarm) {
+        if (sectionIsWarm) {
           itemId = `${dayId}-warmup-${warmIdx++}`;
         } else if (sectionIsCool) {
           itemId = `${dayId}-cooldown-${coolIdx++}`;
+        } else if (isStrengthItem) {
+          itemId = `${dayId}-ex-${mediaKey || strengthIdx++}`;
         } else {
           itemId = `${dayId}-item-${miscIdx++}`;
         }
 
-        if (!li.dataset.exerciseId) {
-          li.dataset.exerciseId = itemId;
-        }
+        itemId = makeUniqueId(itemId);
+
+        li.dataset.exerciseId = itemId;
 
         checkbox.dataset.checkId = itemId;
 
-        // Tag variants with stable ids (variantId = mediaKey)
         const variants = li.querySelectorAll('.variant-option');
         variants.forEach(v => {
           if (v.dataset.mediaKey) {
             v.dataset.variantId = v.dataset.mediaKey;
-            if (li.dataset.exerciseId) v.dataset.exerciseId = li.dataset.exerciseId;
+          } else {
+            delete v.dataset.variantId;
           }
+          v.dataset.exerciseId = itemId;
         });
       });
     });
