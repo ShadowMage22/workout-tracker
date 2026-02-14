@@ -598,6 +598,30 @@ const parseDurationFromTitle = (title = '', sectionType = '') => {
   return 6 * 60;
 };
 
+const parseRestDurationToSeconds = (restText = '') => {
+  const normalized = String(restText || '').trim().toLowerCase();
+  if (!normalized) return null;
+
+  const unitMultiplier = /\bmin(?:ute)?s?\b/.test(normalized) ? 60 : 1;
+  const rangeMatch = normalized.match(/(\d+(?:\.\d+)?)\s*(?:-|–|—|to)\s*(\d+(?:\.\d+)?)/i);
+  if (rangeMatch) {
+    const lowerBound = Number.parseFloat(rangeMatch[1]);
+    if (!Number.isFinite(lowerBound) || lowerBound <= 0) return null;
+    return Math.round(lowerBound * unitMultiplier);
+  }
+
+  const singleMatch = normalized.match(/(\d+(?:\.\d+)?)/);
+  if (!singleMatch) return null;
+  const seconds = Number.parseFloat(singleMatch[1]) * unitMultiplier;
+  if (!Number.isFinite(seconds) || seconds <= 0) return null;
+  return Math.round(seconds);
+};
+
+const getExerciseRestSeconds = (exerciseItem) => {
+  const parsed = Number.parseInt(exerciseItem?.dataset?.restSeconds || '', 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+};
+
 const EXERCISE_ITEM_SELECTOR = '.exercise-item[data-exercise-id]';
 const EXERCISE_CONTAINER_SELECTOR = '.exercise-item, .exercise-card';
 
@@ -679,6 +703,10 @@ const renderWorkoutUI = (data = {}) => {
 
           if (exercise.instructions && exercise.instructions.sets) {
             listItem.dataset.recommendedSets = exercise.instructions.sets;
+          }
+          const parsedRestSeconds = parseRestDurationToSeconds(exercise.instructions?.rest);
+          if (Number.isFinite(parsedRestSeconds) && parsedRestSeconds > 0) {
+            listItem.dataset.restSeconds = String(parsedRestSeconds);
           }
 
           const exerciseWrap = document.createElement('div');
@@ -762,6 +790,10 @@ const renderWorkoutUI = (data = {}) => {
           const baseName = exercise.displayName || exercise.name || '';
           baseOption.dataset.name = baseName;
           baseOption.dataset.instructions = buildInstructionString(exercise.instructions);
+          const baseRestSeconds = parseRestDurationToSeconds(exercise.instructions?.rest);
+          if (Number.isFinite(baseRestSeconds) && baseRestSeconds > 0) {
+            baseOption.dataset.restSeconds = String(baseRestSeconds);
+          }
           if (exercise.instructions && exercise.instructions.sets) {
             baseOption.dataset.recommendedSets = exercise.instructions.sets;
           }
@@ -778,6 +810,10 @@ const renderWorkoutUI = (data = {}) => {
             option.className = 'variant-option';
             option.dataset.name = variant.displayName || variant.label || '';
             option.dataset.instructions = buildInstructionString(variant.instructions);
+            const variantRestSeconds = parseRestDurationToSeconds(variant.instructions?.rest);
+            if (Number.isFinite(variantRestSeconds) && variantRestSeconds > 0) {
+              option.dataset.restSeconds = String(variantRestSeconds);
+            }
             if (variant.instructions && variant.instructions.sets) {
               option.dataset.recommendedSets = variant.instructions.sets;
             }
@@ -1192,6 +1228,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (option.dataset.recommendedSets) {
       exerciseItem.dataset.recommendedSets = option.dataset.recommendedSets;
     }
+    const optionRestSeconds = Number.parseInt(option.dataset.restSeconds || '', 10);
+    if (Number.isFinite(optionRestSeconds) && optionRestSeconds > 0) {
+      exerciseItem.dataset.restSeconds = String(optionRestSeconds);
+    } else {
+      delete exerciseItem.dataset.restSeconds;
+    }
 
     // Update media key on the exercise (single source of truth)
     if (visualEl && mediaKey) {
@@ -1262,7 +1304,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (e.target.checked) {
         if (exerciseItem && exerciseItem.dataset.exerciseId && typeof window.startRestTimer === 'function') {
-          window.startRestTimer({ allowPrompt: false });
+          const sourceExerciseId = exerciseItem.dataset.exerciseId;
+          const sourceExerciseName = exerciseItem.querySelector('.exercise-card__title')?.textContent?.trim() || '';
+          const durationSeconds = getExerciseRestSeconds(exerciseItem);
+          window.startRestTimer({
+            allowPrompt: false,
+            sourceExerciseId,
+            sourceExerciseName,
+            durationSeconds
+          });
         }
       }
     }
@@ -2301,7 +2351,13 @@ document.addEventListener('DOMContentLoaded', () => {
           const row = event.target.closest('.set-row');
           if (row) toggleSetRowCompleted(row, event.target.checked);
           if (event.target.checked && typeof window.startRestTimer === 'function') {
-            window.startRestTimer({ allowPrompt: false });
+            const durationSeconds = getExerciseRestSeconds(li);
+            window.startRestTimer({
+              allowPrompt: false,
+              sourceExerciseId: li.dataset.exerciseId,
+              sourceExerciseName: li.querySelector('.exercise-card__title')?.textContent?.trim() || '',
+              durationSeconds
+            });
           }
         }
         updateSetStateFromRows(rows);
