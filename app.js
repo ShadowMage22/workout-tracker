@@ -1111,13 +1111,22 @@ document.addEventListener('DOMContentLoaded', () => {
     list.classList.toggle('active');
   };
 
+  function getExerciseTitleElement(exerciseItem) {
+    if (!exerciseItem) return null;
+    return exerciseItem.querySelector('.exercise-card__title, .exercise-name');
+  }
+
+  function getExerciseTitleText(exerciseItem) {
+    return getExerciseTitleElement(exerciseItem)?.textContent?.trim() || '';
+  }
+
   window.selectVariant = function(option) {
     if (!ensureEditable({ allowIfReadOnly: isHydratingState || isApplyingExternalState })) return;
     const container = option.closest('.exercise-variants');
     const exerciseItem = option.closest('li');
     if (!container || !exerciseItem) return;
 
-    const nameEl = exerciseItem.querySelector('.exercise-name');
+    const nameEl = getExerciseTitleElement(exerciseItem);
     const instructionsEl = exerciseItem.querySelector('.instructions');
     const coachTip = exerciseItem.querySelector('.coach-tip');
     const videoLink = exerciseItem.querySelector('.video-link');
@@ -2352,7 +2361,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!day) return;
     const exerciseEntries = [];
     day.querySelectorAll(EXERCISE_ITEM_SELECTOR).forEach(li => {
-      const name = li.querySelector('.exercise-name')?.textContent?.trim();
+      const name = getExerciseTitleText(li);
       const sets = Array.from(li.querySelectorAll('.set-row')).map(row => {
         const reps = Number(row.querySelector('.set-reps')?.value || 0);
         const weight = readWeightValue(row.querySelector('.set-weight'));
@@ -2600,7 +2609,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (li.classList.contains('exercise-li')) {
           // reserved if you later add a class
           itemId = `${dayId}-ex-${mediaKey || (miscIdx++)}`;
-        } else if (visual && li.querySelector('.exercise-name')) {
+        } else if (visual && getExerciseTitleElement(li)) {
           itemId = `${dayId}-ex-${mediaKey || (miscIdx++)}`;
         } else if (sectionIsWarm) {
           itemId = `${dayId}-warmup-${warmIdx++}`;
