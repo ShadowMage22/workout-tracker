@@ -77,7 +77,25 @@ const parseInstructionDurationToSeconds = (durationText = '') => {
   return Math.round(parsed);
 };
 
+const getInstructionDurationSeconds = (instructions = {}) => {
+  const single = Number(instructions?.durationSeconds);
+  if (Number.isFinite(single) && single > 0) return Math.round(single);
+
+  const min = Number(instructions?.durationSecondsMin);
+  if (Number.isFinite(min) && min > 0) return Math.round(min);
+
+  const max = Number(instructions?.durationSecondsMax);
+  if (Number.isFinite(max) && max > 0) return Math.round(max);
+
+  return null;
+};
+
 const getPrepItemDurationSeconds = (instructions = {}, fallbackSeconds = 0, totalItems = 0) => {
+  const numericDuration = getInstructionDurationSeconds(instructions);
+  if (Number.isFinite(numericDuration) && numericDuration > 0) {
+    return numericDuration;
+  }
+
   const parsedInstructionDuration = parseInstructionDurationToSeconds(instructions?.time);
   if (Number.isFinite(parsedInstructionDuration) && parsedInstructionDuration > 0) {
     return parsedInstructionDuration;
@@ -86,6 +104,16 @@ const getPrepItemDurationSeconds = (instructions = {}, fallbackSeconds = 0, tota
     return Math.max(10, Math.round(fallbackSeconds / totalItems));
   }
   return 60;
+};
+
+const getInstructionRestSeconds = (instructions = {}) => {
+  const min = Number(instructions?.restSecondsMin);
+  if (Number.isFinite(min) && min > 0) return Math.round(min);
+
+  const max = Number(instructions?.restSecondsMax);
+  if (Number.isFinite(max) && max > 0) return Math.round(max);
+
+  return null;
 };
 
 const parseRestDurationToSeconds = (restText = '') => {
@@ -174,7 +202,10 @@ const renderWorkoutUI = (data = {}) => {
           if (exercise.instructions && exercise.instructions.sets) {
             listItem.dataset.recommendedSets = exercise.instructions.sets;
           }
-          const parsedRestSeconds = parseRestDurationToSeconds(exercise.instructions?.rest);
+          const numericRestSeconds = getInstructionRestSeconds(exercise.instructions);
+          const parsedRestSeconds = Number.isFinite(numericRestSeconds)
+            ? numericRestSeconds
+            : parseRestDurationToSeconds(exercise.instructions?.rest);
           if (Number.isFinite(parsedRestSeconds) && parsedRestSeconds > 0) {
             listItem.dataset.restSeconds = String(parsedRestSeconds);
           }
@@ -246,7 +277,10 @@ const renderWorkoutUI = (data = {}) => {
           const baseName = exercise.displayName || exercise.name || '';
           baseOption.dataset.name = baseName;
           baseOption.dataset.instructions = buildInstructionString(exercise.instructions);
-          const baseRestSeconds = parseRestDurationToSeconds(exercise.instructions?.rest);
+          const baseNumericRestSeconds = getInstructionRestSeconds(exercise.instructions);
+          const baseRestSeconds = Number.isFinite(baseNumericRestSeconds)
+            ? baseNumericRestSeconds
+            : parseRestDurationToSeconds(exercise.instructions?.rest);
           if (Number.isFinite(baseRestSeconds) && baseRestSeconds > 0) {
             baseOption.dataset.restSeconds = String(baseRestSeconds);
           }
@@ -267,7 +301,10 @@ const renderWorkoutUI = (data = {}) => {
             if (variant.id) option.dataset.variantId = variant.id;
             option.dataset.name = variant.displayName || variant.label || '';
             option.dataset.instructions = buildInstructionString(variant.instructions);
-            const variantRestSeconds = parseRestDurationToSeconds(variant.instructions?.rest);
+            const variantNumericRestSeconds = getInstructionRestSeconds(variant.instructions);
+            const variantRestSeconds = Number.isFinite(variantNumericRestSeconds)
+              ? variantNumericRestSeconds
+              : parseRestDurationToSeconds(variant.instructions?.rest);
             if (Number.isFinite(variantRestSeconds) && variantRestSeconds > 0) {
               option.dataset.restSeconds = String(variantRestSeconds);
             }
@@ -414,7 +451,9 @@ const loadWorkoutData = async () => {
     setCoachTip,
     parseDurationFromTitle,
     parseInstructionDurationToSeconds,
+    getInstructionDurationSeconds,
     getPrepItemDurationSeconds,
+    getInstructionRestSeconds,
     parseRestDurationToSeconds,
     getExerciseRestSeconds,
     renderWorkoutUI,
