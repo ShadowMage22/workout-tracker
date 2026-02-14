@@ -1084,10 +1084,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('overlayContent');
     if (!overlay || !container || !url) return;
     const safeAlt = altText || 'Exercise demonstration';
+    container.textContent = '';
+
     if (isVideoSource(url)) {
-      container.innerHTML = `<video src="${url}" controls autoplay loop muted playsinline></video>`;
+      const video = document.createElement('video');
+      video.src = url;
+      video.controls = true;
+      video.autoplay = true;
+      video.loop = true;
+      video.muted = true;
+      video.playsInline = true;
+      container.appendChild(video);
     } else {
-      container.innerHTML = `<img src="${url}" alt="${safeAlt}" />`;
+      const image = document.createElement('img');
+      image.src = url;
+      image.alt = safeAlt;
+      container.appendChild(image);
     }
     overlay.classList.add('active');
   };
