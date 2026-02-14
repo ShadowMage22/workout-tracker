@@ -1290,14 +1290,34 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---------- Event Wiring ----------
   document.addEventListener('change', function(e) {
     if (e.target && e.target.type === 'checkbox') {
+      const syncExerciseCompletionState = (exerciseItem, isChecked) => {
+        if (!exerciseItem) return;
+
+        exerciseItem.classList.toggle('exercise-completed', isChecked);
+
+        const card = exerciseItem.closest('.exercise-card[data-exercise-id]');
+        if (!card) return;
+
+        const shouldCollapse = Boolean(isChecked);
+        card.classList.toggle('is-collapsed', shouldCollapse);
+
+        const toggleButton = card.querySelector('.exercise-card__toggle');
+        if (toggleButton) {
+          toggleButton.textContent = shouldCollapse ? 'Expand' : 'Collapse';
+          toggleButton.setAttribute('aria-expanded', String(!shouldCollapse));
+        }
+
+        if (card.dataset.exerciseId && window.setCardCollapsedState) {
+          window.setCardCollapsedState(card.dataset.exerciseId, shouldCollapse);
+        }
+      };
+
       const checkId = e.target.dataset.checkId;
       if (!checkId) return;
       if (!ensureEditable()) {
         e.target.checked = !!state.checkmarks[checkId];
         const exerciseItem = e.target.closest(EXERCISE_ITEM_SELECTOR);
-        if (exerciseItem) {
-          exerciseItem.classList.toggle('exercise-completed', e.target.checked);
-        }
+        syncExerciseCompletionState(exerciseItem, e.target.checked);
         return;
       }
       if (e.target.checked) state.checkmarks[checkId] = true;
@@ -1305,9 +1325,7 @@ document.addEventListener('DOMContentLoaded', () => {
       persistState();
 
       const exerciseItem = e.target.closest(EXERCISE_ITEM_SELECTOR);
-      if (exerciseItem) {
-        exerciseItem.classList.toggle('exercise-completed', e.target.checked);
-      }
+      syncExerciseCompletionState(exerciseItem, e.target.checked);
 
       if (e.target.checked) {
         if (exerciseItem && exerciseItem.dataset.exerciseId && typeof window.startRestTimer === 'function') {
