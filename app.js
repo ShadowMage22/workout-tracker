@@ -598,6 +598,37 @@ const parseDurationFromTitle = (title = '', sectionType = '') => {
   return 6 * 60;
 };
 
+const parseInstructionDurationToSeconds = (durationText = '') => {
+  const normalized = String(durationText || '').trim().toLowerCase();
+  if (!normalized) return null;
+
+  const isMinuteUnit = /\bmin(?:ute)?s?\b/.test(normalized);
+  const unitMultiplier = isMinuteUnit ? 60 : 1;
+  const rangeMatch = normalized.match(/(\d+(?:\.\d+)?)\s*(?:-|–|—|to)\s*(\d+(?:\.\d+)?)/i);
+  if (rangeMatch) {
+    const lowerBound = Number.parseFloat(rangeMatch[1]);
+    if (!Number.isFinite(lowerBound) || lowerBound <= 0) return null;
+    return Math.round(lowerBound * unitMultiplier);
+  }
+
+  const singleMatch = normalized.match(/(\d+(?:\.\d+)?)/);
+  if (!singleMatch) return null;
+  const parsed = Number.parseFloat(singleMatch[1]) * unitMultiplier;
+  if (!Number.isFinite(parsed) || parsed <= 0) return null;
+  return Math.round(parsed);
+};
+
+const getPrepItemDurationSeconds = (instructions = {}, fallbackSeconds = 0, totalItems = 0) => {
+  const parsedInstructionDuration = parseInstructionDurationToSeconds(instructions?.time);
+  if (Number.isFinite(parsedInstructionDuration) && parsedInstructionDuration > 0) {
+    return parsedInstructionDuration;
+  }
+  if (Number.isFinite(fallbackSeconds) && fallbackSeconds > 0 && Number.isFinite(totalItems) && totalItems > 0) {
+    return Math.max(10, Math.round(fallbackSeconds / totalItems));
+  }
+  return 60;
+};
+
 const parseRestDurationToSeconds = (restText = '') => {
   const normalized = String(restText || '').trim().toLowerCase();
   if (!normalized) return null;
@@ -651,27 +682,6 @@ const renderWorkoutUI = (data = {}) => {
       const title = document.createElement('h3');
       title.textContent = section.title || '';
       sectionEl.appendChild(title);
-
-      if (section.type === 'warmup' || section.type === 'cooldown') {
-        const timerWrap = document.createElement('div');
-        timerWrap.className = 'section-timer';
-        timerWrap.dataset.sectionType = section.type;
-        timerWrap.dataset.duration = parseDurationFromTitle(section.title, section.type).toString();
-        timerWrap.innerHTML = `
-          <div class="section-timer__summary">
-            <div class="section-timer__header">
-              <span class="timer-label">${section.type === 'warmup' ? 'Warm-up timer' : 'Cooldown timer'}</span>
-              <span class="section-timer-pill" data-state="ready">Ready</span>
-            </div>
-            <span class="timer-display">00:00</span>
-          </div>
-          <div class="timer-actions">
-            <button type="button" class="ghost-button start-timer">Start</button>
-            <button type="button" class="ghost-button stop-timer" disabled>Stop</button>
-          </div>
-        `;
-        sectionEl.appendChild(timerWrap);
-      }
 
       if (section.type === 'strength') {
         const list = document.createElement('div');
@@ -825,7 +835,9 @@ const renderWorkoutUI = (data = {}) => {
       } else {
         const list = document.createElement('div');
         list.className = 'exercise-card-list';
-        (section.items || []).forEach(item => {
+        const prepItems = section.items || [];
+        const sectionDurationSeconds = parseDurationFromTitle(section.title, section.type);
+        prepItems.forEach(item => {
           const isObjectItem = item && typeof item === 'object';
           const itemName = isObjectItem ? item.name : item;
           const itemInstructions = isObjectItem ? item.instructions : null;
@@ -872,6 +884,28 @@ const renderWorkoutUI = (data = {}) => {
           coachTip.className = 'coach-tip';
           setCoachTip(coachTip, itemInstructions?.notes);
           body.appendChild(coachTip);
+
+          const timerWrap = document.createElement('div');
+          timerWrap.className = 'section-timer';
+          timerWrap.dataset.sectionType = section.type;
+          timerWrap.dataset.exerciseName = itemName || section.title || 'Exercise';
+          timerWrap.dataset.duration = String(
+            getPrepItemDurationSeconds(itemInstructions, sectionDurationSeconds, prepItems.length)
+          );
+          timerWrap.innerHTML = `
+            <div class="section-timer__summary">
+              <div class="section-timer__header">
+                <span class="timer-label">${section.type === 'warmup' ? 'Warm-up timer' : 'Cooldown timer'}</span>
+                <span class="section-timer-pill" role="status" aria-live="polite" data-state="ready">Ready</span>
+              </div>
+              <span class="timer-display">00:00</span>
+            </div>
+            <div class="timer-actions">
+              <button type="button" class="ghost-button start-timer">Start</button>
+              <button type="button" class="ghost-button stop-timer" disabled>Stop</button>
+            </div>
+          `;
+          body.appendChild(timerWrap);
 
           listItem.appendChild(body);
 
@@ -966,7 +1000,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initActiveTabTracking();
     initRestTimer();
     initWorkoutStopwatch();
-    initSectionTimers();
+    initPrepCardTimers();
     initSetTracking();
     initHistoryPanel();
     const storedDayId = (() => {
@@ -1314,13 +1348,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const startBtn = event.target.closest('.section-timer .start-timer');
     if (startBtn) {
       event.preventDefault();
-      startSectionTimer(startBtn.closest('.section-timer'));
+      startPrepCardTimer(startBtn.closest('.section-timer'));
       return;
     }
     const stopBtn = event.target.closest('.section-timer .stop-timer');
     if (stopBtn) {
       event.preventDefault();
-      stopSectionTimer(stopBtn.closest('.section-timer'));
+      stopPrepCardTimer(stopBtn.closest('.section-timer'));
       return;
     }
   });
@@ -2102,10 +2136,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getSectionBannerLabel(timerEl) {
-    const sectionType = timerEl?.dataset?.sectionType;
-    if (sectionType === 'warmup') return 'Warm-up Timer';
-    if (sectionType === 'cooldown') return 'Cooldown Timer';
-    return 'Section Timer';
+    const exerciseName = timerEl?.dataset?.exerciseName?.trim();
+    if (exerciseName) return exerciseName;
+    return 'Exercise Timer';
   }
 
   function updateSectionBannerState({ timerEl, state, statusText, timeText } = {}) {
@@ -2134,7 +2167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setSectionBannerVisibility(false);
   }
 
-  function initSectionTimers() {
+  function initPrepCardTimers() {
     document.querySelectorAll('.section-timer').forEach(timer => {
       if (timer.dataset.initialized === 'true') return;
       timer.dataset.initialized = 'true';
@@ -2156,7 +2189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sectionBannerStop) {
       sectionBannerStop.addEventListener('click', () => {
         if (activeSectionTimer) {
-          stopSectionTimer(activeSectionTimer, { completed: false });
+          stopPrepCardTimer(activeSectionTimer, { completed: false });
         }
         clearSectionBanner();
       });
@@ -2170,14 +2203,19 @@ document.addEventListener('DOMContentLoaded', () => {
     pill.classList.remove('running', 'done');
     if (state === 'running') pill.classList.add('running');
     if (state === 'done') pill.classList.add('done');
-    pill.textContent = state === 'running' ? 'Running' : state === 'done' ? 'Done' : 'Ready';
+    const stateLabel = state === 'running' ? 'Running' : state === 'done' ? 'Done' : 'Ready';
+    pill.textContent = stateLabel;
     pill.dataset.state = state;
+    pill.setAttribute('aria-label', `Timer status: ${stateLabel}`);
     timerEl.dataset.state = state;
   }
 
-  function startSectionTimer(timerEl) {
+  function startPrepCardTimer(timerEl) {
     if (!timerEl) return;
     if (sectionTimerState.has(timerEl)) return;
+    if (activeSectionTimer && activeSectionTimer !== timerEl && sectionTimerState.has(activeSectionTimer)) {
+      stopPrepCardTimer(activeSectionTimer, { completed: false });
+    }
     const durationSeconds = Number(timerEl.dataset.duration || 0);
     if (!durationSeconds) return;
     const display = timerEl.querySelector('.timer-display');
@@ -2201,7 +2239,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timeText: formatTimer(remaining)
       });
       if (remaining <= 0) {
-        stopSectionTimer(timerEl, { completed: true });
+        stopPrepCardTimer(timerEl, { completed: true });
       }
     }, 500);
     sectionTimerState.set(timerEl, { intervalId, endTime });
@@ -2211,7 +2249,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setSectionTimerState(timerEl, 'running');
   }
 
-  function stopSectionTimer(timerEl, { completed = false } = {}) {
+  function stopPrepCardTimer(timerEl, { completed = false } = {}) {
     const state = sectionTimerState.get(timerEl);
     if (state?.intervalId) {
       window.clearInterval(state.intervalId);
