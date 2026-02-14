@@ -1,6 +1,20 @@
 // UI controller module: workout data loading + DOM rendering helpers.
 (function initWorkoutUiControllerModule() {
 const WORKOUT_DATA_URL = './data/workouts.json';
+let hasWarnedMissingMediaMap = false;
+
+const getExerciseMediaMap = () => window.WorkoutMedia?.exerciseMedia || window.exerciseMedia || {};
+
+const warnIfMediaMapUnavailable = () => {
+  if (hasWarnedMissingMediaMap) return;
+  const hasMediaMap = Boolean(window.WorkoutMedia?.exerciseMedia || window.exerciseMedia);
+  if (!hasMediaMap) {
+    console.warn('[WorkoutUIController] No exercise media map found. Media links will be disabled.');
+    hasWarnedMissingMediaMap = true;
+  }
+};
+
+warnIfMediaMapUnavailable();
 
 const escapeHtml = (value) => String(value)
   .replace(/&/g, '&amp;')
@@ -160,6 +174,8 @@ const buildExerciseDisplayLabel = (item = {}, isVariant = false) => {
 
 const renderWorkoutUI = (data = {}) => {
   if (!data || !Array.isArray(data.days)) return;
+  const mediaMap = getExerciseMediaMap();
+  warnIfMediaMapUnavailable();
   document.querySelectorAll('.day.card .day-skeleton').forEach((node) => node.remove());
   let cardBodyCounter = 0;
 
@@ -291,13 +307,21 @@ const renderWorkoutUI = (data = {}) => {
           body.appendChild(progressionHint);
 
           const videoLink = document.createElement('a');
-          const media = item.mediaKey ? exerciseMedia[item.mediaKey] : null;
-          videoLink.href = media?.video || '#';
+          const media = item.mediaKey ? mediaMap[item.mediaKey] : null;
+          const hasVideo = Boolean(media?.video);
+          videoLink.href = hasVideo ? media.video : '#';
           if (item.mediaKey) videoLink.dataset.mediaKey = item.mediaKey;
-          videoLink.target = '_blank';
-          videoLink.rel = 'noopener noreferrer';
+          if (hasVideo) {
+            videoLink.target = '_blank';
+            videoLink.rel = 'noopener noreferrer';
+          } else {
+            videoLink.setAttribute('aria-disabled', 'true');
+            videoLink.style.opacity = '0.55';
+            videoLink.style.pointerEvents = 'none';
+            videoLink.style.cursor = 'not-allowed';
+          }
           videoLink.className = 'video-link';
-          videoLink.textContent = 'Watch Form Tutorial';
+          videoLink.textContent = hasVideo ? 'Watch Form Tutorial' : 'Form Tutorial Unavailable';
           body.appendChild(videoLink);
 
           const variantsToggle = document.createElement('div');
