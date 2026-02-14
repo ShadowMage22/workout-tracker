@@ -143,6 +143,21 @@ const getExerciseRestSeconds = (exerciseItem) => {
 const EXERCISE_ITEM_SELECTOR = '.exercise-item[data-exercise-id]';
 const EXERCISE_CONTAINER_SELECTOR = '.exercise-item, .exercise-card';
 
+const getCanonicalExerciseTitle = (item = {}, isVariant = false) => {
+  return (isVariant ? item.label : item.name) || '';
+};
+
+const buildExerciseDisplayLabel = (item = {}, isVariant = false) => {
+  const canonicalTitle = getCanonicalExerciseTitle(item, isVariant);
+  const sets = String(item?.instructions?.sets || '').trim();
+  const computedLabel = sets ? `${canonicalTitle} — ${sets}` : canonicalTitle;
+  const shortName = String(item.shortName || '').trim();
+  if (shortName && shortName !== canonicalTitle && shortName !== computedLabel) {
+    return shortName;
+  }
+  return computedLabel;
+};
+
 const renderWorkoutUI = (data = {}) => {
   if (!data || !Array.isArray(data.days)) return;
   document.querySelectorAll('.day.card .day-skeleton').forEach((node) => node.remove());
@@ -180,7 +195,7 @@ const renderWorkoutUI = (data = {}) => {
         if (!item || typeof item !== 'object') return;
         const itemType = item.itemType || section.type;
         const isStrength = itemType === 'strength';
-        const itemName = item.displayName || item.name || '';
+        const itemName = buildExerciseDisplayLabel(item);
 
         const listItem = document.createElement('div');
         listItem.className = isStrength
@@ -236,7 +251,7 @@ const renderWorkoutUI = (data = {}) => {
 
           const img = document.createElement('img');
           img.src = '';
-          img.alt = item.name || item.displayName || 'Exercise demonstration';
+          img.alt = getCanonicalExerciseTitle(item) || 'Exercise demonstration';
           visual.appendChild(img);
 
           const expandHint = document.createElement('div');
@@ -321,7 +336,7 @@ const renderWorkoutUI = (data = {}) => {
             const option = document.createElement('div');
             option.className = 'variant-option';
             if (variant.id) option.dataset.variantId = variant.id;
-            option.dataset.name = variant.displayName || variant.label || '';
+            option.dataset.name = buildExerciseDisplayLabel(variant, true);
             option.dataset.instructions = buildInstructionString(variant.instructions);
             const variantNumericRestSeconds = getInstructionRestSeconds(variant.instructions);
             const variantRestSeconds = Number.isFinite(variantNumericRestSeconds)
@@ -336,7 +351,7 @@ const renderWorkoutUI = (data = {}) => {
             option.dataset.coaching = variant.instructions?.notes || '';
             if (variant.mediaKey) option.dataset.mediaKey = variant.mediaKey;
 
-            const labelText = document.createTextNode(variant.label || '');
+            const labelText = document.createTextNode(buildExerciseDisplayLabel(variant, true));
             option.appendChild(labelText);
             if (variant.muscles) {
               const muscles = document.createElement('span');

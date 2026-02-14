@@ -59,7 +59,6 @@
           "items": [
             {
               "name": "Dumbbell Bench Press",
-              "displayName": "Dumbbell Bench Press \u2014 3\u00d78\u201310",
               "mediaKey": "dumbbell-bench-press",
               "instructions": {
                 "sets": "3\u00d78\u201310",
@@ -75,7 +74,6 @@
               "variants": [
                 {
                   "label": "Push-Ups",
-                  "displayName": "Push-Ups \u2014 3\u00d710\u201315",
                   "muscles": "chest, shoulders, triceps",
                   "mediaKey": "push-ups",
                   "instructions": {
@@ -92,7 +90,6 @@
                 },
                 {
                   "label": "Dumbbell Chest Fly",
-                  "displayName": "Dumbbell Chest Fly \u2014 3\u00d710\u201312",
                   "muscles": "chest, shoulders",
                   "mediaKey": "dumbbell-chest-fly",
                   "instructions": {
@@ -113,7 +110,6 @@
             },
             {
               "name": "Dumbbell Standing Overhead Press",
-              "displayName": "Dumbbell Standing Overhead Press \u2014 3\u00d78\u201310",
               "mediaKey": "dumbbell-standing-overhead-press",
               "instructions": {
                 "sets": "3\u00d78\u201310",
@@ -129,7 +125,6 @@
               "variants": [
                 {
                   "label": "Single Arm Arnold Press",
-                  "displayName": "Single Arm Arnold Press \u2014 3\u00d78\u201310",
                   "muscles": "chest, shoulders, triceps",
                   "mediaKey": "single-arm-arnold-press",
                   "instructions": {
@@ -147,7 +142,6 @@
                 },
                 {
                   "label": "Half-Kneeling Dumbbell Press",
-                  "displayName": "Half-Kneeling Dumbbell Press \u2014 3\u00d78\u201310",
                   "muscles": "chest, shoulders, triceps",
                   "mediaKey": "half-kneeling-dumbbell-press",
                   "instructions": {
@@ -169,7 +163,6 @@
             },
             {
               "name": "Incline Press",
-              "displayName": "Incline Press \u2014 3\u00d710",
               "mediaKey": "dumbbell-incline-press",
               "instructions": {
                 "sets": "3\u00d710",
@@ -185,7 +178,6 @@
               "variants": [
                 {
                   "label": "Incline Fly",
-                  "displayName": "Incline Fly \u2014 3\u00d710\u201312",
                   "muscles": "chest, shoulders",
                   "mediaKey": "dumbbell-incline-fly",
                   "instructions": {
@@ -202,7 +194,6 @@
                 },
                 {
                   "label": "Low Cable Fly",
-                  "displayName": "Low Cable Fly \u2014 3\u00d712",
                   "muscles": "chest, shoulders",
                   "mediaKey": "cable-fly",
                   "instructions": {
@@ -223,7 +214,6 @@
             },
             {
               "name": "Tricep Pushdown",
-              "displayName": "Tricep Pushdown \u2014 3\u00d710\u201312",
               "mediaKey": "tricep-pushdown",
               "instructions": {
                 "sets": "3\u00d710\u201312",
@@ -239,7 +229,6 @@
               "variants": [
                 {
                   "label": "Overhead Tricep Ext",
-                  "displayName": "Overhead Tricep Ext \u2014 3\u00d710\u201312",
                   "muscles": "triceps",
                   "mediaKey": "overhead-tricep-ext",
                   "instructions": {
@@ -257,7 +246,6 @@
                 },
                 {
                   "label": "Close-Grip Pushups",
-                  "displayName": "Close-Grip Pushups \u2014 3\u00d710\u201312",
                   "muscles": "full body",
                   "mediaKey": "close-grip-pushup",
                   "instructions": {
@@ -279,7 +267,6 @@
             },
             {
               "name": "Plank",
-              "displayName": "Plank",
               "mediaKey": "plank",
               "instructions": {
                 "sets": "",
@@ -294,7 +281,6 @@
               "variants": [
                 {
                   "label": "Mountain Climbers",
-                  "displayName": "Mountain Climbers",
                   "muscles": "full body",
                   "mediaKey": "mountain-climbers",
                   "instructions": {
@@ -311,7 +297,6 @@
                 },
                 {
                   "label": "Plank Walk Out",
-                  "displayName": "Plank Walk Out",
                   "muscles": "full body",
                   "mediaKey": "plank-walk-out",
                   "instructions": {
@@ -439,7 +424,6 @@
           "items": [
             {
               "name": "Seated Cable Row",
-              "displayName": "Seated Cable Row \u2014 3\u00d78\u201310",
               "mediaKey": "cable-row",
               "instructions": {
                 "sets": "3\u00d78\u201310",
@@ -455,7 +439,6 @@
               "variants": [
                 {
                   "label": "Dumbbell Row",
-                  "displayName": "Dumbbell Row \u2014 3\u00d78\u201310/side",
                   "muscles": "back, biceps",
                   "mediaKey": "dumbbell-row",
                   "instructions": {
@@ -473,7 +456,6 @@
                 },
                 {
                   "label": "Bent Over Dumbbell Row",
-                  "displayName": "Bent Over Dumbbell Row \u2014 3\u00d78\u201310",
                   "muscles": "back, biceps",
                   "mediaKey": "bent-over-dumbbell-row",
                   "instructions": {
@@ -495,7 +477,6 @@
             },
             {
               "name": "Lat Pulldown",
-              "displayName": "Lat Pulldown \u2014 3\u00d78\u201310",
               "mediaKey": "lat-pulldown",
               "instructions": {
                 "sets": "3\u00d78\u201310",
@@ -511,7 +492,6 @@
               "variants": [
                 {
                   "label": "Lat Pushdowns",
-                  "displayName": "Lat Pushdowns \u2014 3\u00d75\u20138",
                   "muscles": "back, biceps",
                   "mediaKey": "lat-pushdowns",
                   "instructions": {
@@ -529,7 +509,6 @@
                 },
                 {
                   "label": "Straight-Arm Pulldown",
-                  "displayName": "Straight-Arm Pulldown \u2014 3\u00d710\u201312",
                   "muscles": "back, biceps",
                   "mediaKey": "straight-arm-pulldown",
                   "instructions": {
@@ -550,7 +529,6 @@
             },
             {
               "name": "Face Pulls",
-              "displayName": "Face Pulls \u2014 3\u00d712\u201315",
               "mediaKey": "face-pulls",
               "instructions": {
                 "sets": "3\u00d712\u201315",
@@ -566,7 +544,6 @@
               "variants": [
                 {
                   "label": "Reverse Fly",
-                  "displayName": "Reverse Fly \u2014 3\u00d712\u201315",
                   "muscles": "chest, shoulders",
                   "mediaKey": "reverse-fly",
                   "instructions": {
@@ -584,7 +561,6 @@
                 },
                 {
                   "label": "Lateral Raises",
-                  "displayName": "Lateral Raises \u2014 3\u00d710\u201312",
                   "muscles": "shoulders, back, biceps",
                   "mediaKey": "lateral-raise",
                   "instructions": {
@@ -606,7 +582,6 @@
             },
             {
               "name": "Bicep Curls",
-              "displayName": "Bicep Curls \u2014 3\u00d710\u201312",
               "mediaKey": "bicep-curls",
               "instructions": {
                 "sets": "3\u00d710\u201312",
@@ -622,7 +597,6 @@
               "variants": [
                 {
                   "label": "Hammer Curls",
-                  "displayName": "Hammer Curls \u2014 3\u00d710\u201312",
                   "muscles": "biceps",
                   "mediaKey": "hammer-curls",
                   "instructions": {
@@ -640,7 +614,6 @@
                 },
                 {
                   "label": "Cable Curls",
-                  "displayName": "Cable Curls \u2014 3\u00d710\u201312",
                   "muscles": "biceps",
                   "mediaKey": "cable-curls",
                   "instructions": {
@@ -662,7 +635,6 @@
             },
             {
               "name": "Dead Bug",
-              "displayName": "Dead Bug",
               "mediaKey": "dead-bug",
               "instructions": {
                 "sets": "",
@@ -677,7 +649,6 @@
               "variants": [
                 {
                   "label": "Bird Dog",
-                  "displayName": "Bird Dog",
                   "muscles": "full body",
                   "mediaKey": "bird-dog",
                   "instructions": {
@@ -694,7 +665,6 @@
                 },
                 {
                   "label": "Hollow Body Hold",
-                  "displayName": "Hollow Body Hold",
                   "muscles": "full body",
                   "mediaKey": "hollow-body",
                   "instructions": {
@@ -822,7 +792,6 @@
           "items": [
             {
               "name": "Goblet Squat",
-              "displayName": "Goblet Squat \u2014 3\u00d78\u201310",
               "mediaKey": "goblet-squat",
               "instructions": {
                 "sets": "3\u00d78\u201310",
@@ -838,7 +807,6 @@
               "variants": [
                 {
                   "label": "Dumbbell Sumo Squat",
-                  "displayName": "Dumbbell Sumo Squat \u2014 3\u00d78\u201310",
                   "muscles": "quads, glutes",
                   "mediaKey": "dumbbell-sumo-squat",
                   "instructions": {
@@ -855,7 +823,6 @@
                 },
                 {
                   "label": "Dumbbell Front Squat",
-                  "displayName": "Dumbbell Front Squat \u2014 3\u00d710\u201312",
                   "muscles": "quads, glutes",
                   "mediaKey": "dumbbell-front-squat",
                   "instructions": {
@@ -877,7 +844,6 @@
             },
             {
               "name": "Dumbbell Romanian Deadlift",
-              "displayName": "Dumbbell Romanian Deadlift \u2014 3\u00d78\u201310",
               "mediaKey": "dumbbell-rdl",
               "instructions": {
                 "sets": "3\u00d78\u201310",
@@ -893,7 +859,6 @@
               "variants": [
                 {
                   "label": "Leg Curl",
-                  "displayName": "Leg Curl \u2014 3\u00d710\u201312",
                   "muscles": "biceps",
                   "mediaKey": "leg-curl",
                   "instructions": {
@@ -910,7 +875,6 @@
                 },
                 {
                   "label": "Single-Leg RDL",
-                  "displayName": "Single-Leg RDL \u2014 3\u00d710",
                   "muscles": "hamstrings, glutes, back",
                   "mediaKey": "single-leg-rdl",
                   "instructions": {
@@ -931,7 +895,6 @@
             },
             {
               "name": "Bulgarian Split Squat",
-              "displayName": "Bulgarian Split Squat \u2014 3\u00d78/side",
               "mediaKey": "bulgarian-split-squat",
               "instructions": {
                 "sets": "3\u00d78/side",
@@ -947,7 +910,6 @@
               "variants": [
                 {
                   "label": "Walking Lunges",
-                  "displayName": "Walking Lunges \u2014 3\u00d710/side",
                   "muscles": "quads, glutes",
                   "mediaKey": "walking-lunges",
                   "instructions": {
@@ -965,7 +927,6 @@
                 },
                 {
                   "label": "Step-Ups",
-                  "displayName": "Step-Ups \u2014 3\u00d710/side",
                   "muscles": "quads, glutes",
                   "mediaKey": "step-ups",
                   "instructions": {
@@ -987,7 +948,6 @@
             },
             {
               "name": "Calf Raises",
-              "displayName": "Calf Raises \u2014 3\u00d712\u201315",
               "mediaKey": "calf-raises",
               "instructions": {
                 "sets": "3\u00d712\u201315",
@@ -1003,7 +963,6 @@
               "variants": [
                 {
                   "label": "Seated Calf Raise",
-                  "displayName": "Seated Calf Raise \u2014 3\u00d715\u201320",
                   "muscles": "calves",
                   "mediaKey": "seated-calf",
                   "instructions": {
@@ -1020,7 +979,6 @@
                 },
                 {
                   "label": "Single-Leg Calf Raise",
-                  "displayName": "Single-Leg Calf Raise \u2014 3\u00d710\u201312/side",
                   "muscles": "calves",
                   "mediaKey": "single-leg-calf-raise",
                   "instructions": {
@@ -1041,7 +999,6 @@
             },
             {
               "name": "Side Plank",
-              "displayName": "Side Plank",
               "mediaKey": "side-plank",
               "instructions": {
                 "sets": "",
@@ -1056,7 +1013,6 @@
               "variants": [
                 {
                   "label": "Pallof Press",
-                  "displayName": "Pallof Press",
                   "muscles": "chest, shoulders, triceps",
                   "mediaKey": "pallof-press",
                   "instructions": {
@@ -1073,7 +1029,6 @@
                 },
                 {
                   "label": "Russian Twists",
-                  "displayName": "Russian Twists",
                   "muscles": "full body",
                   "mediaKey": "russian-twists",
                   "instructions": {
