@@ -582,6 +582,8 @@ const parseDurationFromTitle = (title = '', sectionType = '') => {
   return 6 * 60;
 };
 
+const EXERCISE_ITEM_SELECTOR = '.exercise-item[data-exercise-id]';
+
 const renderWorkoutUI = (data = {}) => {
   if (!data || !Array.isArray(data.days)) return;
   document.querySelectorAll('.day.card .day-skeleton').forEach((node) => node.remove());
@@ -629,11 +631,12 @@ const renderWorkoutUI = (data = {}) => {
         sectionEl.appendChild(timerWrap);
       }
 
-      const list = document.createElement('ul');
-
       if (section.type === 'strength') {
+        const list = document.createElement('div');
+        list.className = 'exercise-card-list';
         (section.exercises || []).forEach(exercise => {
-          const listItem = document.createElement('li');
+          const listItem = document.createElement('div');
+          listItem.className = 'exercise-card exercise-item workout-item';
           if (exercise.instructions && exercise.instructions.sets) {
             listItem.dataset.recommendedSets = exercise.instructions.sets;
           }
@@ -745,14 +748,18 @@ const renderWorkoutUI = (data = {}) => {
           listItem.appendChild(variantsList);
           list.appendChild(listItem);
         });
+
+        sectionEl.appendChild(list);
       } else {
+        const list = document.createElement('div');
+        list.className = 'exercise-card-list';
         (section.items || []).forEach(item => {
           const isObjectItem = item && typeof item === 'object';
           const itemName = isObjectItem ? item.name : item;
           const itemInstructions = isObjectItem ? item.instructions : null;
 
-          const listItem = document.createElement('li');
-          listItem.className = 'prep-item';
+          const listItem = document.createElement('div');
+          listItem.className = 'exercise-card workout-item prep-item';
           const card = document.createElement('div');
           card.className = 'prep-card';
           const label = document.createElement('label');
@@ -779,9 +786,9 @@ const renderWorkoutUI = (data = {}) => {
 
           list.appendChild(listItem);
         });
-      }
 
-      sectionEl.appendChild(list);
+        sectionEl.appendChild(list);
+      }
       container.appendChild(sectionEl);
     });
 
@@ -1138,7 +1145,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!checkId) return;
       if (!ensureEditable()) {
         e.target.checked = !!state.checkmarks[checkId];
-        const exerciseItem = e.target.closest('li[data-exercise-id]');
+        const exerciseItem = e.target.closest(EXERCISE_ITEM_SELECTOR);
         if (exerciseItem) {
           exerciseItem.classList.toggle('exercise-completed', e.target.checked);
         }
@@ -1148,7 +1155,7 @@ document.addEventListener('DOMContentLoaded', () => {
       else delete state.checkmarks[checkId];
       persistState();
 
-      const exerciseItem = e.target.closest('li[data-exercise-id]');
+      const exerciseItem = e.target.closest(EXERCISE_ITEM_SELECTOR);
       if (exerciseItem) {
         exerciseItem.classList.toggle('exercise-completed', e.target.checked);
       }
@@ -2069,7 +2076,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function populateRecommendedRows(rows) {
     if (!rows) return;
-    const exerciseItem = rows.closest('li[data-exercise-id]');
+    const exerciseItem = rows.closest(EXERCISE_ITEM_SELECTOR);
     const recommended = getRecommendedSetRows(exerciseItem);
     rows.innerHTML = '';
     if (recommended.length > 0) {
@@ -2096,7 +2103,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function initSetTracking() {
-    document.querySelectorAll('li[data-exercise-id]').forEach(li => {
+    document.querySelectorAll(EXERCISE_ITEM_SELECTOR).forEach(li => {
       if (li.querySelector('.set-tracker')) return;
       const tracker = document.createElement('div');
       tracker.className = 'set-tracker';
@@ -2203,7 +2210,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateSetStateFromRows(rows) {
-    const exerciseId = rows?.closest('li[data-exercise-id]')?.dataset.exerciseId;
+    const exerciseId = rows?.closest(EXERCISE_ITEM_SELECTOR)?.dataset.exerciseId;
     if (!exerciseId) return;
     const sets = Array.from(rows.querySelectorAll('.set-row')).map(row => {
       const repsValue = Number(row.querySelector('.set-reps')?.value || 0);
@@ -2270,7 +2277,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const day = document.getElementById(dayId);
     if (!day) return;
     const exerciseEntries = [];
-    day.querySelectorAll('li[data-exercise-id]').forEach(li => {
+    day.querySelectorAll(EXERCISE_ITEM_SELECTOR).forEach(li => {
       const name = li.querySelector('.exercise-name')?.textContent?.trim();
       const sets = Array.from(li.querySelectorAll('.set-row')).map(row => {
         const reps = Number(row.querySelector('.set-reps')?.value || 0);
@@ -2391,7 +2398,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const latest = sorted[0];
         if (!latest) return;
         const lookup = new Map(latest.exercises.map(entry => [entry.exerciseId, entry]));
-        day.querySelectorAll('li[data-exercise-id]').forEach(li => {
+        day.querySelectorAll(EXERCISE_ITEM_SELECTOR).forEach(li => {
           const hintEl = li.querySelector('.progression-hint');
           if (!hintEl) return;
           const entry = lookup.get(li.dataset.exerciseId);
@@ -2503,7 +2510,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let coolIdx = 0;
       let miscIdx = 0;
 
-      day.querySelectorAll('li').forEach(li => {
+      day.querySelectorAll('.workout-item, li').forEach(li => {
         const checkbox = li.querySelector('input[type="checkbox"]');
         if (!checkbox) return;
 
@@ -2676,14 +2683,14 @@ document.addEventListener('DOMContentLoaded', () => {
       c.checked = !!state.checkmarks[checkId];
     });
 
-    document.querySelectorAll('li[data-exercise-id]').forEach(li => {
+    document.querySelectorAll(EXERCISE_ITEM_SELECTOR).forEach(li => {
       const checkbox = li.querySelector('input[type="checkbox"][data-check-id]');
       if (!checkbox) return;
       li.classList.toggle('exercise-completed', checkbox.checked);
     });
 
     // Apply saved variant selections
-    document.querySelectorAll('li[data-exercise-id], li[data-exercise-id=""]').forEach(li => {
+    document.querySelectorAll(`${EXERCISE_ITEM_SELECTOR}, .exercise-item[data-exercise-id=""]`).forEach(li => {
       const exerciseId = li.dataset.exerciseId;
       if (!exerciseId) return;
       const selectedKey = state.selections[exerciseId];
@@ -2696,7 +2703,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    document.querySelectorAll('li[data-exercise-id]').forEach(li => {
+    document.querySelectorAll(EXERCISE_ITEM_SELECTOR).forEach(li => {
       const rows = li.querySelector('.set-rows');
       if (!rows) return;
       const exerciseId = li.dataset.exerciseId;
@@ -2716,7 +2723,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function resetSetStateForDay(dayId) {
     const day = document.getElementById(dayId);
     if (!day) return;
-    day.querySelectorAll('li[data-exercise-id]').forEach(li => {
+    day.querySelectorAll(EXERCISE_ITEM_SELECTOR).forEach(li => {
       const exerciseId = li.dataset.exerciseId;
       if (exerciseId && state.sets[exerciseId]) {
         delete state.sets[exerciseId];
