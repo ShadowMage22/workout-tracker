@@ -1022,6 +1022,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     resetSetStateForDay(dayId);
+    container.querySelectorAll(EXERCISE_ITEM_SELECTOR).forEach(li => {
+      const rows = li.querySelector('.set-rows');
+      if (!rows) return;
+      rows.innerHTML = '';
+      populateRecommendedRows(rows);
+      updateSetStateFromRows(rows);
+    });
     persistState();
   };
 
