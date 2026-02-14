@@ -1642,6 +1642,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function initSetTracking() {
     document.querySelectorAll(EXERCISE_ITEM_SELECTOR).forEach(li => {
       if (li.querySelector('.set-tracker')) return;
+      const trackerHost = li.querySelector('.exercise-card__body') || li;
       const tracker = document.createElement('div');
       tracker.className = 'set-tracker';
       tracker.innerHTML = `
@@ -1652,7 +1653,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <button type="button" class="clear-sets">Clear sets</button>
         </div>
       `;
-      li.appendChild(tracker);
+      trackerHost.appendChild(tracker);
 
       const rows = tracker.querySelector('.set-rows');
       populateRecommendedRows(rows);
