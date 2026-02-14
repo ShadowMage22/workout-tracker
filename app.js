@@ -500,6 +500,22 @@ document.addEventListener('click', (e) => {
 });
 
 document.addEventListener('click', (event) => {
+  const cardToggle = event.target.closest('.exercise-card__toggle');
+  if (cardToggle) {
+    event.preventDefault();
+    const card = cardToggle.closest('.exercise-card');
+    if (!card) return;
+    card.classList.toggle('is-collapsed');
+    const isCollapsed = card.classList.contains('is-collapsed');
+    cardToggle.setAttribute('aria-expanded', String(!isCollapsed));
+    cardToggle.textContent = isCollapsed ? 'Expand' : 'Collapse';
+    const exerciseId = card.dataset.exerciseId;
+    if (exerciseId && window.setCardCollapsedState) {
+      window.setCardCollapsedState(exerciseId, isCollapsed);
+    }
+    return;
+  }
+
   const toggle = event.target.closest('.variants-toggle');
   if (toggle) {
     event.preventDefault();
@@ -587,6 +603,7 @@ const EXERCISE_ITEM_SELECTOR = '.exercise-item[data-exercise-id]';
 const renderWorkoutUI = (data = {}) => {
   if (!data || !Array.isArray(data.days)) return;
   document.querySelectorAll('.day.card .day-skeleton').forEach((node) => node.remove());
+  let cardBodyCounter = 0;
 
   data.days.forEach(day => {
     if (!day || !day.id) return;
@@ -637,6 +654,28 @@ const renderWorkoutUI = (data = {}) => {
         (section.exercises || []).forEach(exercise => {
           const listItem = document.createElement('div');
           listItem.className = 'exercise-card exercise-item workout-item';
+          const exerciseTitle = exercise.displayName || exercise.name || '';
+          const bodyId = `${day.id || 'day'}-exercise-card-body-${cardBodyCounter++}`;
+
+          const header = document.createElement('div');
+          header.className = 'exercise-card__header';
+          const titleEl = document.createElement('span');
+          titleEl.className = 'exercise-card__title';
+          titleEl.textContent = exerciseTitle;
+          const toggleBtn = document.createElement('button');
+          toggleBtn.type = 'button';
+          toggleBtn.className = 'exercise-card__toggle';
+          toggleBtn.setAttribute('aria-expanded', 'true');
+          toggleBtn.setAttribute('aria-controls', bodyId);
+          toggleBtn.textContent = 'Collapse';
+          header.appendChild(titleEl);
+          header.appendChild(toggleBtn);
+          listItem.appendChild(header);
+
+          const body = document.createElement('div');
+          body.className = 'exercise-card__body';
+          body.id = bodyId;
+
           if (exercise.instructions && exercise.instructions.sets) {
             listItem.dataset.recommendedSets = exercise.instructions.sets;
           }
@@ -665,28 +704,23 @@ const renderWorkoutUI = (data = {}) => {
           visual.appendChild(expandHint);
           exerciseWrap.appendChild(visual);
 
-          const name = document.createElement('span');
-          name.className = 'exercise-name';
-          name.textContent = exercise.displayName || exercise.name || '';
-          exerciseWrap.appendChild(name);
-
-          listItem.appendChild(exerciseWrap);
+          body.appendChild(exerciseWrap);
 
           const instructionsEl = document.createElement('div');
           instructionsEl.className = 'instructions';
           instructionsEl.innerHTML = buildInstructionHtml(exercise.instructions);
-          listItem.appendChild(instructionsEl);
+          body.appendChild(instructionsEl);
 
           listItem.dataset.coaching = exercise.instructions?.notes || '';
           const coachTip = document.createElement('div');
           coachTip.className = 'coach-tip';
           setCoachTip(coachTip, exercise.instructions?.notes);
-          listItem.appendChild(coachTip);
+          body.appendChild(coachTip);
 
           const progressionHint = document.createElement('div');
           progressionHint.className = 'progression-hint';
           progressionHint.textContent = 'Log a session to get progression tips.';
-          listItem.appendChild(progressionHint);
+          body.appendChild(progressionHint);
 
           const videoLink = document.createElement('a');
           const media = exercise.mediaKey ? exerciseMedia[exercise.mediaKey] : null;
@@ -696,12 +730,12 @@ const renderWorkoutUI = (data = {}) => {
           videoLink.rel = 'noopener noreferrer';
           videoLink.className = 'video-link';
           videoLink.textContent = 'Watch Form Tutorial';
-          listItem.appendChild(videoLink);
+          body.appendChild(videoLink);
 
           const variantsToggle = document.createElement('div');
           variantsToggle.className = 'variants-toggle';
           variantsToggle.textContent = 'Change exercise (same muscles)';
-          listItem.appendChild(variantsToggle);
+          body.appendChild(variantsToggle);
 
           const variantsList = document.createElement('div');
           variantsList.className = 'exercise-variants';
@@ -745,7 +779,8 @@ const renderWorkoutUI = (data = {}) => {
             variantsList.appendChild(option);
           });
 
-          listItem.appendChild(variantsList);
+          body.appendChild(variantsList);
+          listItem.appendChild(body);
           list.appendChild(listItem);
         });
 
@@ -760,29 +795,48 @@ const renderWorkoutUI = (data = {}) => {
 
           const listItem = document.createElement('div');
           listItem.className = 'exercise-card workout-item prep-item';
+          const bodyId = `${day.id || 'day'}-exercise-card-body-${cardBodyCounter++}`;
+
+          const header = document.createElement('div');
+          header.className = 'exercise-card__header';
+          const titleEl = document.createElement('span');
+          titleEl.className = 'exercise-card__title';
+          titleEl.textContent = itemName || '';
+          const toggleBtn = document.createElement('button');
+          toggleBtn.type = 'button';
+          toggleBtn.className = 'exercise-card__toggle';
+          toggleBtn.setAttribute('aria-expanded', 'true');
+          toggleBtn.setAttribute('aria-controls', bodyId);
+          toggleBtn.textContent = 'Collapse';
+          header.appendChild(titleEl);
+          header.appendChild(toggleBtn);
+          listItem.appendChild(header);
+
+          const body = document.createElement('div');
+          body.className = 'exercise-card__body';
+          body.id = bodyId;
+
           const card = document.createElement('div');
           card.className = 'prep-card';
           const label = document.createElement('label');
           label.className = 'prep-label';
           const checkbox = document.createElement('input');
           checkbox.type = 'checkbox';
-          const span = document.createElement('span');
-          span.className = 'prep-name';
-          span.textContent = itemName || '';
           label.appendChild(checkbox);
-          label.appendChild(span);
           card.appendChild(label);
-          listItem.appendChild(card);
+          body.appendChild(card);
 
           const instructionsEl = document.createElement('div');
           instructionsEl.className = 'instructions';
           instructionsEl.innerHTML = buildInstructionHtml(itemInstructions || {});
-          listItem.appendChild(instructionsEl);
+          body.appendChild(instructionsEl);
 
           const coachTip = document.createElement('div');
           coachTip.className = 'coach-tip';
           setCoachTip(coachTip, itemInstructions?.notes);
-          listItem.appendChild(coachTip);
+          body.appendChild(coachTip);
+
+          listItem.appendChild(body);
 
           list.appendChild(listItem);
         });
@@ -896,6 +950,14 @@ document.addEventListener('DOMContentLoaded', () => {
   initApp();
 
   // ---------- Public API ----------
+  window.setCardCollapsedState = function(exerciseId, isCollapsed) {
+    if (!exerciseId) return;
+    state.collapsedCards[exerciseId] = Boolean(isCollapsed);
+    if (!isHydratingState && !isApplyingExternalState) {
+      persistState();
+    }
+  };
+
   window.clearChecks = function(dayId) {
     if (!ensureEditable()) return;
     const container = document.getElementById(dayId);
@@ -1191,6 +1253,7 @@ document.addEventListener('DOMContentLoaded', () => {
       checkmarks: {},
       sets: {},
       selections: {},
+      collapsedCards: {},
       lastUpdated: 0,
       lastUpdatedBy: null
     };
@@ -1235,9 +1298,20 @@ document.addEventListener('DOMContentLoaded', () => {
       checkmarks: parsed.checkmarks && typeof parsed.checkmarks === 'object' ? parsed.checkmarks : {},
       sets: normalizeSets(parsed.sets),
       selections: parsed.selections && typeof parsed.selections === 'object' ? parsed.selections : {},
+      collapsedCards: normalizeCollapsedCards(parsed.collapsedCards),
       lastUpdated: typeof parsed.lastUpdated === 'number' ? parsed.lastUpdated : 0,
       lastUpdatedBy: parsed.lastUpdatedBy || null
     };
+  }
+
+
+  function normalizeCollapsedCards(rawCollapsedCards) {
+    if (!rawCollapsedCards || typeof rawCollapsedCards !== 'object') return {};
+    const normalized = {};
+    Object.entries(rawCollapsedCards).forEach(([exerciseId, isCollapsed]) => {
+      normalized[exerciseId] = Boolean(isCollapsed);
+    });
+    return normalized;
   }
 
   function normalizeSets(rawSets) {
@@ -2536,7 +2610,7 @@ document.addEventListener('DOMContentLoaded', () => {
           itemId = `${dayId}-item-${miscIdx++}`;
         }
 
-        if (!li.dataset.exerciseId && (visual && li.querySelector('.exercise-name'))) {
+        if (!li.dataset.exerciseId) {
           li.dataset.exerciseId = itemId;
         }
 
@@ -2687,6 +2761,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const checkbox = li.querySelector('input[type="checkbox"][data-check-id]');
       if (!checkbox) return;
       li.classList.toggle('exercise-completed', checkbox.checked);
+    });
+
+    document.querySelectorAll('.exercise-card[data-exercise-id]').forEach(card => {
+      const exerciseId = card.dataset.exerciseId;
+      if (!exerciseId) return;
+      const isCollapsed = !!state.collapsedCards[exerciseId];
+      card.classList.toggle('is-collapsed', isCollapsed);
+      const toggle = card.querySelector('.exercise-card__toggle');
+      if (toggle) {
+        toggle.setAttribute('aria-expanded', String(!isCollapsed));
+        toggle.textContent = isCollapsed ? 'Expand' : 'Collapse';
+      }
     });
 
     // Apply saved variant selections
