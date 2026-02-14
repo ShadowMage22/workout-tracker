@@ -599,6 +599,7 @@ const parseDurationFromTitle = (title = '', sectionType = '') => {
 };
 
 const EXERCISE_ITEM_SELECTOR = '.exercise-item[data-exercise-id]';
+const EXERCISE_CONTAINER_SELECTOR = '.exercise-item, .exercise-card';
 
 const renderWorkoutUI = (data = {}) => {
   if (!data || !Array.isArray(data.days)) return;
@@ -1098,7 +1099,8 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.toggleVariants = function(btn) {
-    const list = btn.closest('li')?.querySelector('.exercise-variants');
+    const exerciseItem = btn.closest(EXERCISE_CONTAINER_SELECTOR);
+    const list = exerciseItem?.querySelector('.exercise-variants');
     if (!list) return;
     const day = btn.closest('.day');
     if (day) {
@@ -1114,7 +1116,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.selectVariant = function(option) {
     if (!ensureEditable({ allowIfReadOnly: isHydratingState || isApplyingExternalState })) return;
     const container = option.closest('.exercise-variants');
-    const exerciseItem = option.closest('li');
+    const exerciseItem = option.closest(EXERCISE_CONTAINER_SELECTOR);
     if (!container || !exerciseItem) return;
 
     const nameEl = exerciseItem.querySelector('.exercise-name');
