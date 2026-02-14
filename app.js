@@ -2767,6 +2767,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const dayId = day.id || 'day';
       let warmIdx = 0;
       let coolIdx = 0;
+      let prepIdx = 0;
       let strengthIdx = 0;
       let miscIdx = 0;
       const idCounts = new Map();
@@ -2779,11 +2780,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       day.querySelectorAll('.workout-item').forEach(li => {
         const checkbox = li.querySelector('input[type="checkbox"]');
-        if (!checkbox) return;
 
         const section = li.closest('.section');
         const sectionIsWarm = section && section.classList.contains('warmup');
         const sectionIsCool = section && section.classList.contains('cooldown');
+        const isPrepItem = li.classList.contains('prep-item');
         const isStrengthItem = li.classList.contains('exercise-item');
 
         const visual = li.querySelector('.exercise-visual');
@@ -2801,6 +2802,8 @@ document.addEventListener('DOMContentLoaded', () => {
           itemId = `${dayId}-warmup-${warmIdx++}`;
         } else if (sectionIsCool) {
           itemId = `${dayId}-cooldown-${coolIdx++}`;
+        } else if (isPrepItem) {
+          itemId = `${dayId}-prep-${prepIdx++}`;
         } else if (isStrengthItem) {
           itemId = `${dayId}-ex-${mediaKey || strengthIdx++}`;
         } else {
@@ -2811,7 +2814,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         li.dataset.exerciseId = itemId;
 
-        checkbox.dataset.checkId = itemId;
+        if (checkbox) {
+          checkbox.dataset.checkId = itemId;
+        }
 
         const variants = li.querySelectorAll('.variant-option');
         variants.forEach(v => {
