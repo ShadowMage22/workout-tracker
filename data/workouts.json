@@ -20,7 +20,8 @@
                 "notes": "Setup: Start upright with a tall spine and relaxed shoulders, choosing an easy pace you could talk through on a treadmill, bike, or open floor. Move: Take small, steady strides or smooth pedal strokes for two minutes at a conversational cadence, slowing further if you feel winded. Breathe: Inhale through the nose for 2\u20133 steps or pedals and exhale for 3\u20134, keeping the breath calm. Avoid: Avoid sprinting or shrugging, and shorten your stride or lower resistance if your joints feel stiff.",
                 "durationSeconds": 120
               },
-              "id": "push-warmup-light-cardio-walk-row-bike"
+              "id": "push-warmup-light-cardio-walk-row-bike",
+              "itemType": "warmup"
             },
             {
               "name": "Band pull-aparts + arm circles",
@@ -32,7 +33,8 @@
                 "notes": "Setup: Stand tall with soft knees, a light band at chest height, and ribs stacked over hips. Move: Circle the arms forward and backward for 5\u20138 reps each direction, then perform slow pull-aparts for 2 seconds out and 2 seconds back, using a smaller range if your shoulders feel tight. Breathe: Inhale as the arms open and exhale as they return to center. Avoid: Avoid cranking range or arching the low back, and switch to smaller circles or a lighter band if needed.",
                 "durationSeconds": 180
               },
-              "id": "push-warmup-band-pull-aparts-arm-circles"
+              "id": "push-warmup-band-pull-aparts-arm-circles",
+              "itemType": "warmup"
             },
             {
               "name": "Light warm-up sets for the first two lifts",
@@ -46,14 +48,15 @@
                 "restSecondsMax": 30,
                 "durationSeconds": 180
               },
-              "id": "push-warmup-light-warm-up-sets-for-the-first-two-lifts"
+              "id": "push-warmup-light-warm-up-sets-for-the-first-two-lifts",
+              "itemType": "warmup"
             }
           ]
         },
         {
           "type": "strength",
           "title": "Strength + Core (\u224835 minutes)",
-          "exercises": [
+          "items": [
             {
               "name": "Dumbbell Bench Press",
               "displayName": "Dumbbell Bench Press \u2014 3\u00d78\u201310",
@@ -105,7 +108,8 @@
                   "id": "push-dumbbell-bench-press-dumbbell-chest-fly"
                 }
               ],
-              "id": "push-dumbbell-bench-press"
+              "id": "push-dumbbell-bench-press",
+              "itemType": "strength"
             },
             {
               "name": "Dumbbell Standing Overhead Press",
@@ -160,7 +164,8 @@
                   "id": "push-dumbbell-standing-overhead-press-half-kneeling-dumbbell-press"
                 }
               ],
-              "id": "push-dumbbell-standing-overhead-press"
+              "id": "push-dumbbell-standing-overhead-press",
+              "itemType": "strength"
             },
             {
               "name": "Incline Press",
@@ -213,7 +218,8 @@
                   "id": "push-dumbbell-incline-press-cable-fly"
                 }
               ],
-              "id": "push-dumbbell-incline-press"
+              "id": "push-dumbbell-incline-press",
+              "itemType": "strength"
             },
             {
               "name": "Tricep Pushdown",
@@ -268,7 +274,8 @@
                   "id": "push-tricep-pushdown-close-grip-pushup"
                 }
               ],
-              "id": "push-tricep-pushdown"
+              "id": "push-tricep-pushdown",
+              "itemType": "strength"
             },
             {
               "name": "Plank",
@@ -320,7 +327,8 @@
                   "id": "push-plank-plank-walk-out"
                 }
               ],
-              "id": "push-plank"
+              "id": "push-plank",
+              "itemType": "strength"
             }
           ]
         },
@@ -338,7 +346,8 @@
                 "notes": "Setup: Stand in a doorway or by a wall with one forearm on the frame and the chest lifted. Move: Step forward until you feel a gentle stretch and hold it for 20\u201330 seconds, easing back a step if the stretch is too intense. Breathe: Take slow 4-count inhales and 6-count exhales to let the chest soften. Avoid: Avoid shrugging or forcing range, and keep the elbow lower if the shoulder feels pinchy.",
                 "durationSeconds": 30
               },
-              "id": "push-cooldown-chest-stretch"
+              "id": "push-cooldown-chest-stretch",
+              "itemType": "cooldown"
             },
             {
               "name": "Shoulder Stretch",
@@ -350,7 +359,8 @@
                 "notes": "Setup: Stand tall with one arm across your chest and the opposite hand supporting just above the elbow. Move: Gently pull the arm in until you feel a mild stretch and hold for 20\u201330 seconds, keeping the torso square and lowering the arm if needed. Breathe: Breathe slowly and evenly, letting each exhale relax the shoulder. Avoid: Avoid twisting the torso or hiking the shoulder toward the ear.",
                 "durationSeconds": 30
               },
-              "id": "push-cooldown-shoulder-stretch"
+              "id": "push-cooldown-shoulder-stretch",
+              "itemType": "cooldown"
             },
             {
               "name": "Breathing",
@@ -363,7 +373,8 @@
                 "durationSecondsMin": 60,
                 "durationSecondsMax": 120
               },
-              "id": "push-cooldown-breathing"
+              "id": "push-cooldown-breathing",
+              "itemType": "cooldown"
             }
           ]
         }
@@ -389,7 +400,8 @@
                 "notes": "Setup: Sit or stand tall with a relaxed grip on the handle or rails and shoulders down. Move: Use smooth, even strokes or steps for two minutes at a steady, talkable cadence, reducing resistance if your heart rate spikes. Breathe: Inhale through the nose for 2\u20133 strokes or steps and exhale longer for 3\u20134 to stay calm. Avoid: Avoid sprinting or tensing the shoulders, and shorten the range if any joint feels cranky.",
                 "durationSeconds": 120
               },
-              "id": "pull-warmup-light-cardio-walk-row-bike"
+              "id": "pull-warmup-light-cardio-walk-row-bike",
+              "itemType": "warmup"
             },
             {
               "name": "Band pull-aparts + arm circles",
@@ -401,7 +413,8 @@
                 "notes": "Setup: Stand tall with the band held at chest height, soft knees, and ribs stacked over hips. Move: Perform controlled pull-aparts for 2 seconds out and 2 seconds in, then do smooth arm circles for 5\u20138 reps each direction, using a lighter band if you cannot keep control. Breathe: Keep a steady breath, inhaling as the arms open and exhaling as they return. Avoid: Avoid jerky reps or flared ribs, and shrink the range if the shoulders feel tight.",
                 "durationSeconds": 180
               },
-              "id": "pull-warmup-band-pull-aparts-arm-circles"
+              "id": "pull-warmup-band-pull-aparts-arm-circles",
+              "itemType": "warmup"
             },
             {
               "name": "Light warm-up sets for the first two lifts",
@@ -415,14 +428,15 @@
                 "restSecondsMax": 30,
                 "durationSeconds": 180
               },
-              "id": "pull-warmup-light-warm-up-sets-for-the-first-two-lifts"
+              "id": "pull-warmup-light-warm-up-sets-for-the-first-two-lifts",
+              "itemType": "warmup"
             }
           ]
         },
         {
           "type": "strength",
           "title": "Strength + Core (\u224835 minutes)",
-          "exercises": [
+          "items": [
             {
               "name": "Seated Cable Row",
               "displayName": "Seated Cable Row \u2014 3\u00d78\u201310",
@@ -476,7 +490,8 @@
                   "id": "pull-cable-row-bent-over-dumbbell-row"
                 }
               ],
-              "id": "pull-cable-row"
+              "id": "pull-cable-row",
+              "itemType": "strength"
             },
             {
               "name": "Lat Pulldown",
@@ -530,7 +545,8 @@
                   "id": "pull-lat-pulldown-straight-arm-pulldown"
                 }
               ],
-              "id": "pull-lat-pulldown"
+              "id": "pull-lat-pulldown",
+              "itemType": "strength"
             },
             {
               "name": "Face Pulls",
@@ -585,7 +601,8 @@
                   "id": "pull-face-pulls-lateral-raise"
                 }
               ],
-              "id": "pull-face-pulls"
+              "id": "pull-face-pulls",
+              "itemType": "strength"
             },
             {
               "name": "Bicep Curls",
@@ -640,7 +657,8 @@
                   "id": "pull-bicep-curls-cable-curls"
                 }
               ],
-              "id": "pull-bicep-curls"
+              "id": "pull-bicep-curls",
+              "itemType": "strength"
             },
             {
               "name": "Dead Bug",
@@ -692,7 +710,8 @@
                   "id": "pull-dead-bug-hollow-body"
                 }
               ],
-              "id": "pull-dead-bug"
+              "id": "pull-dead-bug",
+              "itemType": "strength"
             }
           ]
         },
@@ -710,7 +729,8 @@
                 "notes": "Setup: Hold a stable support with both hands, hinge the hips back, and lengthen the spine. Move: Reach the hips back and chest down until you feel a stretch along the side, then hold 20\u201330 seconds, bending the knees slightly if needed. Breathe: Take slow, deep inhales and longer exhales to let the lats soften. Avoid: Avoid flaring the ribs or twisting, and reduce the reach if the shoulder feels pinchy.",
                 "durationSeconds": 30
               },
-              "id": "pull-cooldown-lat-stretch"
+              "id": "pull-cooldown-lat-stretch",
+              "itemType": "cooldown"
             },
             {
               "name": "Upper Back Stretch",
@@ -722,7 +742,8 @@
                 "notes": "Setup: Stand or sit tall, clasp the hands in front, and gently round the upper back. Move: Reach the hands forward and spread the shoulder blades, holding the stretch for 20\u201330 seconds while keeping the chin slightly tucked, or shorten the reach if you feel strain. Breathe: Inhale into the upper back and exhale to soften the stretch. Avoid: Avoid neck strain or shrugging the shoulders.",
                 "durationSeconds": 30
               },
-              "id": "pull-cooldown-upper-back-stretch"
+              "id": "pull-cooldown-upper-back-stretch",
+              "itemType": "cooldown"
             },
             {
               "name": "Breathing",
@@ -735,7 +756,8 @@
                 "durationSecondsMin": 60,
                 "durationSecondsMax": 120
               },
-              "id": "pull-cooldown-breathing"
+              "id": "pull-cooldown-breathing",
+              "itemType": "cooldown"
             }
           ]
         }
@@ -761,7 +783,8 @@
                 "notes": "Setup: Stand tall with soft knees and relaxed shoulders, choosing an easy pace on a treadmill, bike, or open floor. Move: Keep a steady, easy cadence for two minutes, lengthening or shortening your stride to stay comfortable. Breathe: Inhale through the nose for 2\u20133 steps or pedals and exhale for 3\u20134 to stay relaxed. Avoid: Avoid rushing into a sprint, and lower resistance if your legs feel heavy.",
                 "durationSeconds": 120
               },
-              "id": "legs-warmup-light-cardio-walk-row-bike"
+              "id": "legs-warmup-light-cardio-walk-row-bike",
+              "itemType": "warmup"
             },
             {
               "name": "Hip circles + leg swings",
@@ -773,7 +796,8 @@
                 "notes": "Setup: Hold a stable support with the core lightly braced and weight balanced on the standing leg. Move: Make slow hip circles for 5\u20138 reps each way and then perform controlled leg swings for 8\u201310 reps, keeping the swings small if balance is challenging. Breathe: Keep a steady rhythm, inhaling on the back swing and exhaling on the forward swing. Avoid: Avoid snapping the leg or twisting the pelvis, and reduce range if you feel pinching.",
                 "durationSeconds": 180
               },
-              "id": "legs-warmup-hip-circles-leg-swings"
+              "id": "legs-warmup-hip-circles-leg-swings",
+              "itemType": "warmup"
             },
             {
               "name": "Light warm-up sets for the first two lifts",
@@ -787,14 +811,15 @@
                 "restSecondsMax": 30,
                 "durationSeconds": 180
               },
-              "id": "legs-warmup-light-warm-up-sets-for-the-first-two-lifts"
+              "id": "legs-warmup-light-warm-up-sets-for-the-first-two-lifts",
+              "itemType": "warmup"
             }
           ]
         },
         {
           "type": "strength",
           "title": "Strength + Core (\u224835 minutes)",
-          "exercises": [
+          "items": [
             {
               "name": "Goblet Squat",
               "displayName": "Goblet Squat \u2014 3\u00d78\u201310",
@@ -847,7 +872,8 @@
                   "id": "legs-goblet-squat-dumbbell-front-squat"
                 }
               ],
-              "id": "legs-goblet-squat"
+              "id": "legs-goblet-squat",
+              "itemType": "strength"
             },
             {
               "name": "Dumbbell Romanian Deadlift",
@@ -900,7 +926,8 @@
                   "id": "legs-dumbbell-rdl-single-leg-rdl"
                 }
               ],
-              "id": "legs-dumbbell-rdl"
+              "id": "legs-dumbbell-rdl",
+              "itemType": "strength"
             },
             {
               "name": "Bulgarian Split Squat",
@@ -955,7 +982,8 @@
                   "id": "legs-bulgarian-split-squat-step-ups"
                 }
               ],
-              "id": "legs-bulgarian-split-squat"
+              "id": "legs-bulgarian-split-squat",
+              "itemType": "strength"
             },
             {
               "name": "Calf Raises",
@@ -1008,7 +1036,8 @@
                   "id": "legs-calf-raises-single-leg-calf-raise"
                 }
               ],
-              "id": "legs-calf-raises"
+              "id": "legs-calf-raises",
+              "itemType": "strength"
             },
             {
               "name": "Side Plank",
@@ -1060,7 +1089,8 @@
                   "id": "legs-side-plank-russian-twists"
                 }
               ],
-              "id": "legs-side-plank"
+              "id": "legs-side-plank",
+              "itemType": "strength"
             }
           ]
         },
@@ -1078,7 +1108,8 @@
                 "notes": "Setup: Stand tall, hinge at the hips with a long spine, and rest hands lightly on the thighs or a support. Move: Ease into the stretch until you feel mild tension and hold for 20\u201330 seconds, bending the knees slightly if hamstrings feel tight. Breathe: Take slow inhales and longer exhales to let the hamstrings relax. Avoid: Avoid bouncing or rounding the back.",
                 "durationSeconds": 30
               },
-              "id": "legs-cooldown-hamstring-stretch"
+              "id": "legs-cooldown-hamstring-stretch",
+              "itemType": "cooldown"
             },
             {
               "name": "Quad Stretch",
@@ -1090,7 +1121,8 @@
                 "notes": "Setup: Stand tall with knees together and one hand on support for balance. Move: Draw the heel toward the glute, tuck the hips slightly, and hold for 20\u201330 seconds, using a strap or lower hold if you cannot reach comfortably. Breathe: Breathe slow and even, letting each exhale soften the front of the thigh. Avoid: Avoid arching the low back or pulling the knee wide.",
                 "durationSeconds": 30
               },
-              "id": "legs-cooldown-quad-stretch"
+              "id": "legs-cooldown-quad-stretch",
+              "itemType": "cooldown"
             },
             {
               "name": "Breathing",
@@ -1103,7 +1135,8 @@
                 "durationSecondsMin": 60,
                 "durationSecondsMax": 120
               },
-              "id": "legs-cooldown-breathing"
+              "id": "legs-cooldown-breathing",
+              "itemType": "cooldown"
             }
           ]
         }
