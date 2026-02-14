@@ -1309,8 +1309,8 @@ document.addEventListener('DOMContentLoaded', () => {
           const durationSeconds = getExerciseRestSeconds(exerciseItem);
           window.startRestTimer({
             allowPrompt: false,
-            sourceExerciseId,
-            sourceExerciseName,
+            exerciseId: sourceExerciseId,
+            exerciseName: sourceExerciseName,
             durationSeconds
           });
         }
@@ -1342,8 +1342,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const sourceExerciseName = exerciseCard.querySelector('.exercise-card__title')?.textContent?.trim() || '';
       window.startRestTimer({
         allowPrompt: false,
-        sourceExerciseId,
-        sourceExerciseName,
+        exerciseId: sourceExerciseId,
+        exerciseName: sourceExerciseName,
         durationSeconds
       });
       return;
@@ -1864,6 +1864,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const soundPrefKey = 'restSoundEnabled';
     const vibratePrefKey = 'restVibrateEnabled';
     let audioContext = null;
+    let currentRestContext = null;
 
     const playRestBeep = () => {
       if (!restSoundToggle?.checked) return;
@@ -1959,6 +1960,7 @@ document.addEventListener('DOMContentLoaded', () => {
         intervalId = null;
       }
       endTime = null;
+      currentRestContext = null;
       updateButtons(false);
       setPillState(completed ? 'done' : 'ready');
       bannerDismissed = completed ? false : bannerDismissed;
@@ -1989,13 +1991,17 @@ document.addEventListener('DOMContentLoaded', () => {
         maybeNotify();
         return;
       }
-      updateRestStatus(`Resting… ${formatMs(remainingMs)} remaining.`);
+      const restContextLabel = currentRestContext?.label || '';
+      updateRestStatus(`Resting${restContextLabel ? ` after ${restContextLabel}` : ''}… ${formatMs(remainingMs)} remaining.`);
       renderTime();
     };
 
     const startTimer = async ({
       allowPrompt = true,
       durationSeconds,
+      exerciseId,
+      exerciseName,
+      setIndex,
       sourceExerciseId,
       sourceExerciseName
     } = {}) => {
@@ -2020,13 +2026,26 @@ document.addEventListener('DOMContentLoaded', () => {
       updateButtons(true);
       bannerDismissed = false;
       updateBannerState({ state: 'running' });
-      const contextSuffix = sourceExerciseName ? ` for ${sourceExerciseName}` : '';
-      if (sourceExerciseId) {
-        restTimerCard.dataset.sourceExerciseId = sourceExerciseId;
+      const resolvedExerciseId = exerciseId || sourceExerciseId;
+      const resolvedExerciseName = exerciseName || sourceExerciseName;
+      const resolvedSetIndex = Number.isFinite(Number(setIndex)) && Number(setIndex) > 0
+        ? Number(setIndex)
+        : null;
+      const contextLabel = resolvedExerciseName
+        ? `${resolvedExerciseName}${resolvedSetIndex ? ` (Set ${resolvedSetIndex})` : ''}`
+        : '';
+      currentRestContext = {
+        exerciseId: resolvedExerciseId || '',
+        exerciseName: resolvedExerciseName || '',
+        setIndex: resolvedSetIndex,
+        label: contextLabel
+      };
+      if (resolvedExerciseId) {
+        restTimerCard.dataset.sourceExerciseId = resolvedExerciseId;
       } else {
         delete restTimerCard.dataset.sourceExerciseId;
       }
-      updateRestStatus(`Resting${contextSuffix}…`);
+      updateRestStatus(`Resting${contextLabel ? ` after ${contextLabel}` : ''}…`);
       renderTime();
       intervalId = window.setInterval(tick, 500);
     };
@@ -2352,10 +2371,14 @@ document.addEventListener('DOMContentLoaded', () => {
           if (row) toggleSetRowCompleted(row, event.target.checked);
           if (event.target.checked && typeof window.startRestTimer === 'function') {
             const durationSeconds = getExerciseRestSeconds(li);
+            const exerciseName = li.querySelector('.exercise-card__title')?.textContent?.trim() || '';
+            const setRows = Array.from(rows.querySelectorAll('.set-row'));
+            const setIndex = row ? setRows.indexOf(row) + 1 : null;
             window.startRestTimer({
               allowPrompt: false,
-              sourceExerciseId: li.dataset.exerciseId,
-              sourceExerciseName: li.querySelector('.exercise-card__title')?.textContent?.trim() || '',
+              exerciseId: li.dataset.exerciseId,
+              exerciseName,
+              setIndex: setIndex > 0 ? setIndex : undefined,
               durationSeconds
             });
           }
