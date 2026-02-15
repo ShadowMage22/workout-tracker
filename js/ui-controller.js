@@ -56,7 +56,8 @@ const setCoachTip = (element, noteText) => {
     element.classList.remove('show');
     return;
   }
-  element.textContent = `Coach tip: ${trimmed}`;
+  const tipText = /^Coach tip:/i.test(trimmed) ? trimmed : `Coach tip: ${trimmed}`;
+  element.textContent = tipText;
   element.classList.add('show');
 };
 
