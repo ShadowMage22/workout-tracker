@@ -859,13 +859,13 @@
               "variants": [
                 {
                   "label": "Leg Curl",
-                  "muscles": "biceps",
+                  "muscles": "hamstrings",
                   "mediaKey": "leg-curl",
                   "instructions": {
                     "sets": "3\u00d710\u201312",
                     "rest": "60 sec",
                     "time": "~6 min",
-                    "targets": "biceps",
+                    "targets": "hamstrings",
                     "notes": "Keep elbows close; curl without swinging and lower slowly.",
                     "restSecondsMin": 60,
                     "restSecondsMax": 60,
