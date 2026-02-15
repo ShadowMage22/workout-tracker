@@ -269,7 +269,7 @@
               "name": "Plank",
               "mediaKey": "plank",
               "instructions": {
-                "sets": "",
+                "sets": "3\u00d730 sec",
                 "rest": "30 sec",
                 "time": "~4 min",
                 "targets": "full body",
@@ -284,7 +284,7 @@
                   "muscles": "full body",
                   "mediaKey": "mountain-climbers",
                   "instructions": {
-                    "sets": "",
+                    "sets": "3\u00d730 sec",
                     "rest": "30 sec",
                     "time": "~4 min",
                     "targets": "full body",
@@ -300,7 +300,7 @@
                   "muscles": "full body",
                   "mediaKey": "plank-walk-out",
                   "instructions": {
-                    "sets": "",
+                    "sets": "3\u00d730 sec",
                     "rest": "30 sec",
                     "time": "~4 min",
                     "targets": "full body",
@@ -637,7 +637,7 @@
               "name": "Dead Bug",
               "mediaKey": "dead-bug",
               "instructions": {
-                "sets": "",
+                "sets": "3\u00d730 sec",
                 "rest": "30 sec",
                 "time": "~4 min",
                 "targets": "full body",
@@ -652,7 +652,7 @@
                   "muscles": "full body",
                   "mediaKey": "bird-dog",
                   "instructions": {
-                    "sets": "",
+                    "sets": "3\u00d730 sec/side",
                     "rest": "30 sec",
                     "time": "~4 min",
                     "targets": "full body",
@@ -668,7 +668,7 @@
                   "muscles": "full body",
                   "mediaKey": "hollow-body",
                   "instructions": {
-                    "sets": "",
+                    "sets": "3\u00d730 sec",
                     "rest": "30 sec",
                     "time": "~4 min",
                     "targets": "full body",
@@ -1001,7 +1001,7 @@
               "name": "Side Plank",
               "mediaKey": "side-plank",
               "instructions": {
-                "sets": "",
+                "sets": "3\u00d730 sec/side",
                 "rest": "30 sec",
                 "time": "~4 min",
                 "targets": "full body",
@@ -1016,7 +1016,7 @@
                   "muscles": "core, obliques",
                   "mediaKey": "pallof-press",
                   "instructions": {
-                    "sets": "",
+                    "sets": "3\u00d730 sec/side",
                     "rest": "30 sec",
                     "time": "~4 min",
                     "targets": "core, obliques",
@@ -1032,7 +1032,7 @@
                   "muscles": "full body",
                   "mediaKey": "russian-twists",
                   "instructions": {
-                    "sets": "",
+                    "sets": "3\u00d730 sec",
                     "rest": "30 sec",
                     "time": "~4 min",
                     "targets": "full body",
