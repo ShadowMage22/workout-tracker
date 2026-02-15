@@ -1,11 +1,17 @@
-const CACHE_NAME = 'workout-tracker-v18'; // bump when you deploy
-const RUNTIME_CACHE = 'workout-tracker-runtime-v3';
+const CACHE_NAME = 'workout-tracker-v19'; // bump when you deploy
+const RUNTIME_CACHE = 'workout-tracker-runtime-v4';
 const RUNTIME_CACHE_LIMIT = 60;
 
 const urlsToCache = [
   './',
   './index.html',
   './styles.css',
+  './js/state-manager.js',
+  './js/ui-controller.js',
+  './js/media.js',
+  './js/timers.js',
+  './js/history.js',
+  './js/set-tracking.js',
   './app.js',
   './manifest.json',
   './data/workouts.json',
@@ -131,14 +137,58 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 4) Everything else: CACHE-FIRST then runtime
-  event.respondWith((async () => {
-    const cached = await caches.match(request);
-    if (cached) return cached;
+  // 4) Workout data: NETWORK-FIRST, fallback to cache
+  if (url.pathname === new URL('./data/workouts.json', self.location).pathname) {
+    event.respondWith((async () => {
+      try {
+        const response = await fetch(request);
+        if (response && response.ok) {
+          const cache = await caches.open(CACHE_NAME);
+          await cache.put(request, response.clone());
+        }
+        return response;
+      } catch (_) {
+        const cached = await caches.match(request);
+        return cached || Response.error();
+      }
+    })());
+    return;
+  }
 
-    const response = await fetch(request);
+  // 5) JSON/API/documents: NETWORK-FIRST, fallback to cache
+  if (request.destination === 'document' || request.destination === 'json' || url.pathname.endsWith('.json') || url.pathname.startsWith('/api/')) {
+    event.respondWith((async () => {
+      try {
+        const response = await fetch(request);
+        if (response && response.ok) {
+          const cache = await caches.open(RUNTIME_CACHE);
+          await cache.put(request, response.clone());
+          await trimCache(RUNTIME_CACHE, RUNTIME_CACHE_LIMIT);
+        }
+        return response;
+      } catch (_) {
+        const cached = await caches.match(request);
+        return cached || Response.error();
+      }
+    })());
+    return;
+  }
+
+  // 6) Other static assets: STALE-WHILE-REVALIDATE
+  event.respondWith((async () => {
     const cache = await caches.open(RUNTIME_CACHE);
-    await cache.put(request, response.clone());
-    return response;
+    const cached = await cache.match(request);
+
+    const fetchPromise = fetch(request)
+      .then(async (response) => {
+        if (response && response.ok) {
+          await cache.put(request, response.clone());
+          await trimCache(RUNTIME_CACHE, RUNTIME_CACHE_LIMIT);
+        }
+        return response;
+      })
+      .catch(() => null);
+
+    return cached || (await fetchPromise) || Response.error();
   })());
 });
