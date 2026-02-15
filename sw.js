@@ -1,5 +1,5 @@
-const CACHE_NAME = 'workout-tracker-v17'; // bump when you deploy
-const RUNTIME_CACHE = 'workout-tracker-runtime-v2';
+const CACHE_NAME = 'workout-tracker-v18'; // bump when you deploy
+const RUNTIME_CACHE = 'workout-tracker-runtime-v3';
 const RUNTIME_CACHE_LIMIT = 60;
 
 const urlsToCache = [
