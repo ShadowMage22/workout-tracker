@@ -2033,11 +2033,10 @@ document.addEventListener('DOMContentLoaded', () => {
         request.onerror = () => reject(request.error);
       }))
       .then(sessions => {
-        const sorted = sessions.sort((a, b) => b.dateTs - a.dateTs);
-        if (sorted.length === 0) return;
+        if (!Array.isArray(sessions) || sessions.length === 0) return;
 
         const findLatestComparableEntry = (exerciseId, mediaKey, baseExerciseId) => {
-          for (const session of sorted) {
+          for (const session of sessions) {
             const exercises = Array.isArray(session.exercises) ? session.exercises : [];
             const exact = exercises.find(entry => entry.exerciseId === exerciseId);
             if (exact) return exact;
