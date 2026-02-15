@@ -1842,10 +1842,17 @@ document.addEventListener('DOMContentLoaded', () => {
         };
       }).filter(Boolean);
       if (sets.length > 0) {
+        const recommendedRestSeconds = Number.parseInt(li.dataset.restSeconds || '', 10);
+        const prescription = {
+          recommendedSetsText: li.dataset.recommendedSets || '',
+          recommendedRestSeconds: Number.isFinite(recommendedRestSeconds) ? recommendedRestSeconds : null,
+          coachingNote: li.dataset.coaching || ''
+        };
         exerciseEntries.push({
           exerciseId: li.dataset.exerciseId,
           name: name || 'Exercise',
-          sets
+          sets,
+          prescription
         });
       }
     });
@@ -2028,7 +2035,24 @@ document.addEventListener('DOMContentLoaded', () => {
               const completionLabel = set.completed ? ' ✓' : '';
               return `${set.reps}×${weightLabel}${completionLabel}`;
             }).join(', ');
-            exerciseEl.textContent = `${exercise.name}: ${setsLabel}`;
+            const prescription = exercise.prescription || {};
+            const prescriptionSegments = [];
+            if (prescription.recommendedSetsText) {
+              prescriptionSegments.push(`target ${prescription.recommendedSetsText}`);
+            }
+            if (Number.isFinite(prescription.recommendedRestSeconds)) {
+              prescriptionSegments.push(`${prescription.recommendedRestSeconds}s rest`);
+            }
+
+            const prescriptionLabel = prescriptionSegments.length > 0
+              ? ` (${prescriptionSegments.join(' • ')})`
+              : '';
+            exerciseEl.textContent = `${exercise.name}: ${setsLabel}${prescriptionLabel}`;
+
+            if (prescription.coachingNote) {
+              exerciseEl.dataset.coaching = prescription.coachingNote;
+              exerciseEl.title = prescription.coachingNote;
+            }
             card.appendChild(exerciseEl);
           });
           historyList.appendChild(card);
