@@ -1907,7 +1907,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return {
           reps: reps || 0,
           weight: weight || 0,
-          completed: Boolean(completed)
+          completed: Boolean(completed),
+          countsTowardTotals: Boolean(completed)
         };
       }).filter(Boolean);
       if (sets.length > 0) {
@@ -1977,7 +1978,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function buildProgressionHint(exerciseItem, entry) {
     if (!entry || !exerciseItem) return 'Log a session to get progression tips.';
     const repRange = getRepRangeForExercise(exerciseItem);
-    const sets = entry.sets || [];
+    const allSets = entry.sets || [];
+    const completedSets = allSets.filter(set => set && set.completed);
+    const sets = completedSets.length > 0 ? completedSets : allSets;
     if (sets.length === 0 || !repRange) {
       return 'Match your last session and aim to improve one rep.';
     }
@@ -2082,9 +2085,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         historyList.innerHTML = '';
         sorted.forEach(session => {
-          const totalSets = session.exercises.reduce((sum, ex) => sum + ex.sets.length, 0);
+          const completedSets = session.exercises.reduce((sum, ex) => {
+            return sum + ex.sets.filter(set => {
+              if (typeof set?.countsTowardTotals === 'boolean') return set.countsTowardTotals;
+              return Boolean(set?.completed);
+            }).length;
+          }, 0);
           const totals = session.exercises.reduce((acc, ex) => {
             ex.sets.forEach(set => {
+              const countsTowardTotals = typeof set?.countsTowardTotals === 'boolean'
+                ? set.countsTowardTotals
+                : Boolean(set?.completed);
+              if (!countsTowardTotals) return;
               acc.reps += set.reps || 0;
               const weightValue = typeof set.weight === 'number' ? set.weight : 0;
               acc.volume += (set.reps || 0) * weightValue;
@@ -2102,7 +2114,7 @@ document.addEventListener('DOMContentLoaded', () => {
           });
           card.innerHTML = `
             <h3>${dateLabel}</h3>
-            <div class="history-summary">${totalSets} sets • ${totals.reps} reps • ${totals.volume.toFixed(0)} total volume</div>
+            <div class="history-summary">${completedSets} completed sets • ${totals.reps} reps • ${totals.volume.toFixed(0)} total volume</div>
           `;
           session.exercises.forEach(exercise => {
             const exerciseEl = document.createElement('div');
