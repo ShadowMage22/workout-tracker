@@ -319,6 +319,11 @@ const {
   loadWorkoutData
 } = window.WorkoutUIController;
 
+const {
+  formatCountdownFromMs,
+  formatElapsedFromMs
+} = window.WorkoutTimers;
+
 document.addEventListener('DOMContentLoaded', () => {
   if (isIosSafari() && !isStandaloneMode()) {
     showIosInstallHint();
@@ -843,14 +848,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }, timeoutMs);
     }
   }
-
-  function formatTimer(ms) {
-    const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-  }
-
   function updateSyncStatus({ message, state } = {}) {
     if (!syncStatus) return;
     const online = navigator.onLine;
@@ -1018,18 +1015,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (_) {
       persistedElapsed = {};
     }
-
-    const formatElapsed = (ms) => {
-      const totalSeconds = Math.max(0, Math.floor(ms / 1000));
-      const hours = Math.floor(totalSeconds / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
-      if (hours > 0) {
-        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-      }
-      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    };
-
     const ensureDayState = (dayId) => {
       if (!stopwatchState[dayId]) {
         stopwatchState[dayId] = {
@@ -1078,7 +1063,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateStopwatchUI = (dayId) => {
       const state = ensureDayState(dayId);
-      stopwatchDisplay.textContent = formatElapsed(getElapsedMs(dayId));
+      stopwatchDisplay.textContent = formatElapsedFromMs(getElapsedMs(dayId));
       const isRunning = state.isRunning;
       statusPill.dataset.state = isRunning ? 'running' : 'paused';
       statusPill.textContent = isRunning ? 'Running' : 'Paused';
@@ -1251,14 +1236,6 @@ document.addEventListener('DOMContentLoaded', () => {
       oscillator.start();
       oscillator.stop(audioContext.currentTime + 0.25);
     };
-
-    const formatMs = (ms) => {
-      const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
-      const minutes = Math.floor(totalSeconds / 60);
-      const seconds = totalSeconds % 60;
-      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    };
-
     const setBannerVisibility = (shouldShow) => {
       if (!restBanner) return;
       restBanner.classList.toggle('show', shouldShow);
@@ -1304,13 +1281,13 @@ document.addEventListener('DOMContentLoaded', () => {
       let timeText = '';
       if (!endTime) {
         const durationMs = Number(restDurationSelect.value || 60) * 1000;
-        timeText = formatMs(durationMs);
+        timeText = formatCountdownFromMs(durationMs);
         restTimeDisplay.textContent = timeText;
         updateBannerState({ timeText });
         return;
       }
       const remainingMs = endTime - Date.now();
-      timeText = formatMs(remainingMs);
+      timeText = formatCountdownFromMs(remainingMs);
       restTimeDisplay.textContent = timeText;
       updateBannerState({ timeText });
     };
@@ -1360,7 +1337,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       const restContextLabel = currentRestContext?.label || '';
-      updateRestStatus(`Resting${restContextLabel ? ` after ${restContextLabel}` : ''}… ${formatMs(remainingMs)} remaining.`);
+      updateRestStatus(`Resting${restContextLabel ? ` after ${restContextLabel}` : ''}… ${formatCountdownFromMs(remainingMs)} remaining.`);
       renderTime();
     };
 
@@ -1546,7 +1523,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const durationSeconds = Number(timer.dataset.duration || 0);
       const display = timer.querySelector('.timer-display');
       if (display) {
-        display.textContent = formatTimer(durationSeconds * 1000);
+        display.textContent = formatCountdownFromMs(durationSeconds * 1000);
       }
       setSectionTimerState(timer, 'ready');
     });
@@ -1599,16 +1576,16 @@ document.addEventListener('DOMContentLoaded', () => {
       timerEl,
       state: 'running',
       statusText: 'Running',
-      timeText: formatTimer(durationSeconds * 1000)
+      timeText: formatCountdownFromMs(durationSeconds * 1000)
     });
     const intervalId = window.setInterval(() => {
       const remaining = endTime - Date.now();
-      if (display) display.textContent = formatTimer(remaining);
+      if (display) display.textContent = formatCountdownFromMs(remaining);
       updateSectionBannerState({
         timerEl,
         state: 'running',
         statusText: 'Running',
-        timeText: formatTimer(remaining)
+        timeText: formatCountdownFromMs(remaining)
       });
       if (remaining <= 0) {
         stopPrepCardTimer(timerEl, { completed: true });
@@ -1617,7 +1594,7 @@ document.addEventListener('DOMContentLoaded', () => {
     sectionTimerState.set(timerEl, { intervalId, endTime });
     if (startButton) startButton.disabled = true;
     if (stopButton) stopButton.disabled = false;
-    if (display) display.textContent = formatTimer(durationSeconds * 1000);
+    if (display) display.textContent = formatCountdownFromMs(durationSeconds * 1000);
     setSectionTimerState(timerEl, 'running');
   }
 
@@ -1630,7 +1607,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const durationSeconds = Number(timerEl?.dataset?.duration || 0);
     const display = timerEl?.querySelector('.timer-display');
     if (display) {
-      display.textContent = formatTimer(completed ? 0 : durationSeconds * 1000);
+      display.textContent = formatCountdownFromMs(completed ? 0 : durationSeconds * 1000);
     }
     const startButton = timerEl?.querySelector('.start-timer');
     const stopButton = timerEl?.querySelector('.stop-timer');
@@ -1644,14 +1621,14 @@ document.addEventListener('DOMContentLoaded', () => {
           timerEl,
           state: 'done',
           statusText: 'Done',
-          timeText: formatTimer(0)
+          timeText: formatCountdownFromMs(0)
         });
       } else {
         updateSectionBannerState({
           timerEl,
           state: 'ready',
           statusText: 'Ready',
-          timeText: formatTimer(durationSeconds * 1000)
+          timeText: formatCountdownFromMs(durationSeconds * 1000)
         });
         clearSectionBanner();
       }
