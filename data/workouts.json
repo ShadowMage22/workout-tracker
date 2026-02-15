@@ -1013,14 +1013,14 @@
               "variants": [
                 {
                   "label": "Pallof Press",
-                  "muscles": "chest, shoulders, triceps",
+                  "muscles": "core, obliques",
                   "mediaKey": "pallof-press",
                   "instructions": {
                     "sets": "",
                     "rest": "30 sec",
                     "time": "~4 min",
-                    "targets": "chest, shoulders, triceps",
-                    "notes": "Press smoothly; keep wrists stacked and shoulder blades set.",
+                    "targets": "core, obliques",
+                    "notes": "Brace your core, resist torso rotation, press straight out, and return under control.",
                     "restSecondsMin": 30,
                     "restSecondsMax": 30,
                     "durationSeconds": 240
