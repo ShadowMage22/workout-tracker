@@ -272,6 +272,14 @@ const renderWorkoutUI = (data = {}) => {
             listItem.dataset.recommendedSets = item.instructions.sets;
           }
 
+          if (item.id) {
+            listItem.dataset.baseExerciseId = item.id;
+          }
+          if (item.mediaKey) {
+            listItem.dataset.baseMediaKey = item.mediaKey;
+            listItem.dataset.mediaKey = item.mediaKey;
+          }
+
           const numericRestSeconds = getInstructionRestSeconds(item.instructions);
           const parsedRestSeconds = Number.isFinite(numericRestSeconds)
             ? numericRestSeconds
@@ -365,6 +373,7 @@ const renderWorkoutUI = (data = {}) => {
             baseOption.className = 'variant-option';
             baseOption.dataset.variantBase = 'true';
             if (item.id) baseOption.dataset.variantId = item.id;
+            if (item.id) baseOption.dataset.baseExerciseId = item.id;
             baseOption.dataset.name = itemName;
             baseOption.dataset.instructions = buildInstructionString(item.instructions);
             const baseNumericRestSeconds = getInstructionRestSeconds(item.instructions);
@@ -389,6 +398,7 @@ const renderWorkoutUI = (data = {}) => {
               const option = document.createElement('div');
               option.className = 'variant-option';
               if (variant.id) option.dataset.variantId = variant.id;
+              if (item.id) option.dataset.baseExerciseId = item.id;
               option.dataset.name = buildExerciseDisplayLabel(variant, true);
               option.dataset.instructions = buildInstructionString(variant.instructions);
               const variantNumericRestSeconds = getInstructionRestSeconds(variant.instructions);

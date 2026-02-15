@@ -515,6 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mediaKey = option.dataset.mediaKey;
     const media = mediaKey ? exerciseMedia[mediaKey] : null;
     const isBaseOption = option.dataset.variantBase === 'true';
+    const selectedBaseExerciseId = option.dataset.baseExerciseId || exerciseItem.dataset.baseExerciseId || '';
 
     if (nameEl) nameEl.textContent = option.dataset.name || nameEl.textContent;
     if (instructionsEl && option.dataset.instructions) {
@@ -539,6 +540,9 @@ document.addEventListener('DOMContentLoaded', () => {
         exerciseItem.dataset.coaching = option.dataset.coaching;
       }
     }
+    if (selectedBaseExerciseId) {
+      exerciseItem.dataset.baseExerciseId = selectedBaseExerciseId;
+    }
     if (option.dataset.recommendedSets) {
       exerciseItem.dataset.recommendedSets = option.dataset.recommendedSets;
     }
@@ -550,6 +554,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Update media key on the exercise (single source of truth)
+    if (mediaKey) {
+      exerciseItem.dataset.mediaKey = mediaKey;
+      exerciseItem.dataset.variantMediaKey = mediaKey;
+    } else {
+      delete exerciseItem.dataset.mediaKey;
+      delete exerciseItem.dataset.variantMediaKey;
+    }
+    if (isBaseOption && selectedBaseExerciseId) {
+      exerciseItem.dataset.selectedExerciseId = selectedBaseExerciseId;
+    } else if (option.dataset.variantId) {
+      exerciseItem.dataset.selectedExerciseId = option.dataset.variantId;
+    } else {
+      delete exerciseItem.dataset.selectedExerciseId;
+    }
+
     if (visualEl && mediaKey) {
       visualEl.dataset.mediaKey = mediaKey;
     } else if (visualEl) {
@@ -1829,6 +1848,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const exerciseEntries = [];
     day.querySelectorAll(EXERCISE_ITEM_SELECTOR).forEach(li => {
       const name = getExerciseTitleText(li);
+      const exerciseId = li.dataset.selectedExerciseId || li.dataset.exerciseId;
+      const mediaKey = li.dataset.variantMediaKey || li.dataset.mediaKey || li.querySelector('.exercise-visual')?.dataset.mediaKey || '';
+      const baseExerciseId = li.dataset.baseExerciseId || li.dataset.exerciseId || '';
+      const variantMediaKey = li.dataset.variantMediaKey || '';
       const sets = Array.from(li.querySelectorAll('.set-row')).map(row => {
         const reps = Number(row.querySelector('.set-reps')?.value || 0);
         const weight = readWeightValue(row.querySelector('.set-weight'));
@@ -1843,8 +1866,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }).filter(Boolean);
       if (sets.length > 0) {
         exerciseEntries.push({
-          exerciseId: li.dataset.exerciseId,
+          exerciseId,
           name: name || 'Exercise',
+          mediaKey,
+          baseExerciseId,
+          variantMediaKey,
           sets
         });
       }
@@ -1945,13 +1971,32 @@ document.addEventListener('DOMContentLoaded', () => {
       }))
       .then(sessions => {
         const sorted = sessions.sort((a, b) => b.dateTs - a.dateTs);
-        const latest = sorted[0];
-        if (!latest) return;
-        const lookup = new Map(latest.exercises.map(entry => [entry.exerciseId, entry]));
+        if (sorted.length === 0) return;
+
+        const findLatestComparableEntry = (exerciseId, mediaKey, baseExerciseId) => {
+          for (const session of sorted) {
+            const exercises = Array.isArray(session.exercises) ? session.exercises : [];
+            const exact = exercises.find(entry => entry.exerciseId === exerciseId);
+            if (exact) return exact;
+
+            const fallback = exercises.find(entry => {
+              const entryMediaKey = entry.variantMediaKey || entry.mediaKey;
+              const mediaMatches = Boolean(mediaKey) && entryMediaKey === mediaKey;
+              const baseMatches = Boolean(baseExerciseId) && entry.baseExerciseId === baseExerciseId;
+              return mediaMatches || baseMatches;
+            });
+            if (fallback) return fallback;
+          }
+          return null;
+        };
+
         day.querySelectorAll(EXERCISE_ITEM_SELECTOR).forEach(li => {
           const hintEl = li.querySelector('.progression-hint');
           if (!hintEl) return;
-          const entry = lookup.get(li.dataset.exerciseId);
+          const exerciseId = li.dataset.selectedExerciseId || li.dataset.exerciseId;
+          const mediaKey = li.dataset.variantMediaKey || li.dataset.mediaKey || li.querySelector('.exercise-visual')?.dataset.mediaKey || '';
+          const baseExerciseId = li.dataset.baseExerciseId || li.dataset.exerciseId || '';
+          const entry = findLatestComparableEntry(exerciseId, mediaKey, baseExerciseId);
           hintEl.textContent = buildProgressionHint(li, entry);
         });
       })
@@ -2105,6 +2150,17 @@ document.addEventListener('DOMContentLoaded', () => {
         itemId = makeUniqueId(itemId);
 
         li.dataset.exerciseId = itemId;
+
+        const baseOption = li.querySelector('.variant-option[data-variant-base="true"]');
+        if (baseOption?.dataset?.variantId && !li.dataset.baseExerciseId) {
+          li.dataset.baseExerciseId = baseOption.dataset.variantId;
+        }
+        if (baseOption?.dataset?.mediaKey && !li.dataset.baseMediaKey) {
+          li.dataset.baseMediaKey = baseOption.dataset.mediaKey;
+        }
+        if (!li.dataset.mediaKey) {
+          li.dataset.mediaKey = li.dataset.variantMediaKey || li.dataset.baseMediaKey || mediaKey || '';
+        }
 
         if (checkbox) {
           checkbox.dataset.checkId = itemId;
