@@ -544,14 +544,14 @@
               "variants": [
                 {
                   "label": "Reverse Fly",
-                  "muscles": "chest, shoulders",
+                  "muscles": "rear delts, upper back",
                   "mediaKey": "reverse-fly",
                   "instructions": {
                     "sets": "3\u00d712\u201315",
                     "rest": "45\u201360 sec",
                     "time": "~5\u20136 min",
-                    "targets": "chest, shoulders",
-                    "notes": "Keep a slight elbow bend; open to a stretch and squeeze at the top.",
+                    "targets": "rear delts, upper back",
+                    "notes": "Hinge slightly with a neutral spine; lead out with elbows and squeeze shoulder blades together under control.",
                     "restSecondsMin": 45,
                     "restSecondsMax": 60,
                     "durationSecondsMin": 300,
