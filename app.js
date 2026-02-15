@@ -1373,7 +1373,7 @@ document.addEventListener('DOMContentLoaded', () => {
       sourceExerciseId,
       sourceExerciseName
     } = {}) => {
-      if (endTime) return;
+      const isRestarting = Boolean(endTime);
       const hasCustomDuration = Number.isFinite(Number(durationSeconds)) && Number(durationSeconds) > 0;
       const durationMs = hasCustomDuration
         ? Number(durationSeconds) * 1000
@@ -1382,7 +1382,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (allowPrompt && 'Notification' in window && Notification.permission === 'default') {
         await requestNotificationPermission();
       }
-      if (intervalId) window.clearInterval(intervalId);
+      if (intervalId) {
+        window.clearInterval(intervalId);
+        intervalId = null;
+      }
+      endTime = null;
+      currentRestContext = null;
       if (hasCustomDuration && restDurationSelect) {
         const durationValue = String(Number(durationSeconds));
         if ([...restDurationSelect.options].some((option) => option.value === durationValue)) {
@@ -1413,7 +1418,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         delete restTimerCard.dataset.sourceExerciseId;
       }
-      updateRestStatus(`Resting${contextLabel ? ` after ${contextLabel}` : ''}…`);
+      updateRestStatus(`${isRestarting ? 'Restarted' : 'Resting'}${contextLabel ? ` after ${contextLabel}` : ''}…`);
       renderTime();
       intervalId = window.setInterval(tick, 500);
     };
