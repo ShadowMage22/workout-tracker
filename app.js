@@ -330,10 +330,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const STORAGE_KEY = 'workoutTrackerState';
   const STATE_VERSION = 2;
   const PROGRAM_VERSION = '2026-02-v2.6';
+  const APP_PROGRAM_VERSION = PROGRAM_VERSION;
   const ACTIVE_TAB_KEY = 'workoutTrackerActiveTab';
   const ACTIVE_TAB_TTL_MS = 6000;
   const HISTORY_DB = 'workoutTrackerHistory';
+  const HISTORY_DB_VERSION = 2;
   const HISTORY_STORE = 'sessions';
+  const SESSION_SCHEMA_VERSION = 1;
   const TAB_ID = (window.crypto && window.crypto.randomUUID)
     ? window.crypto.randomUUID()
     : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -762,6 +765,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const migrated = normalizeState(parsed || {});
     showStatusMessage('We updated your program version. Your last saved selections were kept.', 6000);
     return migrated;
+  }
+
+  function normalizeHistorySessionRow(session, fallbackDayId) {
+    if (!session || typeof session !== 'object') return null;
+    const dateTs = Number(session.dateTs || Date.parse(session.date || '')) || Date.now();
+    const normalizedExercises = Array.isArray(session.exercises)
+      ? session.exercises.map((exercise, exerciseIndex) => {
+        if (!exercise || typeof exercise !== 'object') return null;
+        const sets = Array.isArray(exercise.sets)
+          ? exercise.sets.map(set => {
+            if (!set || typeof set !== 'object') return null;
+            const reps = Number(set.reps || 0);
+            const weight = set.weight === 'BW' ? 'BW' : Number(set.weight || 0);
+            const hasWeight = weight === 'BW' || weight > 0;
+            if (!reps && !hasWeight) return null;
+            return {
+              reps: reps || 0,
+              weight: weight === 'BW' || weight > 0 ? weight : 0,
+              completed: Boolean(set.completed)
+            };
+          }).filter(Boolean)
+          : [];
+        if (!sets.length) return null;
+        return {
+          exerciseId: exercise.exerciseId || `legacy-exercise-${exerciseIndex + 1}`,
+          name: exercise.name || 'Exercise',
+          sets
+        };
+      }).filter(Boolean)
+      : [];
+
+    return {
+      id: session.id || `legacy-${session.dayId || fallbackDayId || 'day'}-${dateTs}`,
+      schemaVersion: SESSION_SCHEMA_VERSION,
+      appProgramVersion: typeof session.appProgramVersion === 'string' && session.appProgramVersion.trim()
+        ? session.appProgramVersion
+        : APP_PROGRAM_VERSION,
+      dayId: session.dayId || fallbackDayId || 'push',
+      date: session.date || new Date(dateTs).toISOString(),
+      dateTs,
+      exercises: normalizedExercises
+    };
   }
 
   function showStatusMessage(message, timeoutMs = 4000) {
@@ -1807,13 +1852,37 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!('indexedDB' in window)) return Promise.reject(new Error('IndexedDB unavailable'));
     if (!historyDbPromise) {
       historyDbPromise = new Promise((resolve, reject) => {
-        const request = indexedDB.open(HISTORY_DB, 1);
+        const request = indexedDB.open(HISTORY_DB, HISTORY_DB_VERSION);
         request.onupgradeneeded = (event) => {
           const db = event.target.result;
+          const tx = event.target.transaction;
+          let store;
           if (!db.objectStoreNames.contains(HISTORY_STORE)) {
-            const store = db.createObjectStore(HISTORY_STORE, { keyPath: 'id' });
+            store = db.createObjectStore(HISTORY_STORE, { keyPath: 'id' });
+          } else {
+            store = tx.objectStore(HISTORY_STORE);
+          }
+          if (!store.indexNames.contains('by-day')) {
             store.createIndex('by-day', 'dayId', { unique: false });
+          }
+          if (!store.indexNames.contains('by-date')) {
             store.createIndex('by-date', 'dateTs', { unique: false });
+          }
+
+          if (event.oldVersion < 2) {
+            const cursorRequest = store.openCursor();
+            cursorRequest.onsuccess = () => {
+              const cursor = cursorRequest.result;
+              if (!cursor) return;
+              const row = cursor.value;
+              if (typeof row.schemaVersion !== 'number' || !row.appProgramVersion) {
+                const normalizedRow = normalizeHistorySessionRow(row);
+                if (normalizedRow) {
+                  cursor.update(normalizedRow);
+                }
+              }
+              cursor.continue();
+            };
           }
         };
         request.onsuccess = () => resolve(request.result);
@@ -1858,6 +1927,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const now = new Date();
     const session = {
       id: (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      schemaVersion: SESSION_SCHEMA_VERSION,
+      appProgramVersion: APP_PROGRAM_VERSION,
       dayId,
       date: now.toISOString(),
       dateTs: now.getTime(),
@@ -1944,7 +2015,10 @@ document.addEventListener('DOMContentLoaded', () => {
         request.onerror = () => reject(request.error);
       }))
       .then(sessions => {
-        const sorted = sessions.sort((a, b) => b.dateTs - a.dateTs);
+        const normalizedSessions = sessions
+          .map(session => normalizeHistorySessionRow(session, dayId))
+          .filter(Boolean);
+        const sorted = normalizedSessions.sort((a, b) => b.dateTs - a.dateTs);
         const latest = sorted[0];
         if (!latest) return;
         const lookup = new Map(latest.exercises.map(entry => [entry.exerciseId, entry]));
@@ -1991,7 +2065,10 @@ document.addEventListener('DOMContentLoaded', () => {
         request.onerror = () => reject(request.error);
       }))
       .then(sessions => {
-        const sorted = sessions.sort((a, b) => b.dateTs - a.dateTs);
+        const normalizedSessions = sessions
+          .map(session => normalizeHistorySessionRow(session, dayId))
+          .filter(Boolean);
+        const sorted = normalizedSessions.sort((a, b) => b.dateTs - a.dateTs);
         if (sorted.length === 0) {
           historyList.innerHTML = '<div class="history-card">No sessions logged yet for this day.</div>';
           return;
